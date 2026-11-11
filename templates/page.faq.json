@@ -1,0 +1,203 @@
+{
+  "sections": {
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "eyebrow": "Customer care",
+        "heading": "Frequently asked questions",
+        "text": "<p>Answers about orders, delivery, returns, payments and our fragrances.</p>",
+        "center": true,
+        "background": "none"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "g1": {
+          "type": "group",
+          "settings": {
+            "title": "Orders"
+          }
+        },
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "How do I know my order has been placed?",
+            "answer": "<p>After you place an order you will see a confirmation page and receive an order confirmation email. If the email has not arrived within an hour, please check your spam folder, then <a href=\"/pages/contact\">contact us</a>.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Can I change or cancel my order?",
+            "answer": "<p>Please <a href=\"/pages/contact\">contact us</a> as soon as possible with your order number, and we will let you know what is possible.</p>"
+          }
+        },
+        "g2": {
+          "type": "group",
+          "settings": {
+            "title": "Delivery"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "How much does delivery cost, and how long does it take?",
+            "answer": "<p>Delivery options, costs and estimated times are shown at checkout before you pay. Full details are in our <a href=\"/policies/shipping-policy\">shipping policy</a>.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Do you deliver outside the UK?",
+            "answer": "<p>The countries we deliver to are listed at checkout. If your country is not listed, we are not currently able to deliver there.</p>"
+          }
+        },
+        "g3": {
+          "type": "group",
+          "settings": {
+            "title": "Returns"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "What is your returns policy?",
+            "answer": "<p>Our full returns terms are set out in our <a href=\"/policies/refund-policy\">refund policy</a>. If you have a question about a return, please <a href=\"/pages/contact\">contact us</a>.</p>"
+          }
+        },
+        "g4": {
+          "type": "group",
+          "settings": {
+            "title": "Payments"
+          }
+        },
+        "q6": {
+          "type": "question",
+          "settings": {
+            "question": "Which payment methods do you accept?",
+            "answer": "<p>All the payment methods we accept are shown at checkout.</p>"
+          }
+        },
+        "q7": {
+          "type": "question",
+          "settings": {
+            "question": "Is my payment secure?",
+            "answer": "<p>Yes. Checkout and payment are handled by Shopify's secure checkout. Your card details are encrypted and are never stored by Valoria London.</p>"
+          }
+        },
+        "g5": {
+          "type": "group",
+          "settings": {
+            "title": "Products"
+          }
+        },
+        "q8": {
+          "type": "question",
+          "settings": {
+            "question": "Are your fragrances genuine?",
+            "answer": "<p>Yes. Valoria London sells genuine designer fragrances from established fragrance houses.</p>"
+          }
+        },
+        "q9": {
+          "type": "question",
+          "settings": {
+            "question": "What is the difference between eau de parfum and eau de toilette?",
+            "answer": "<p>Eau de parfum generally contains a higher concentration of perfume oils than eau de toilette, so it tends to feel richer and last longer on the skin. Exact concentrations vary from brand to brand.</p>"
+          }
+        },
+        "q10": {
+          "type": "question",
+          "settings": {
+            "question": "How do I choose a fragrance?",
+            "answer": "<p>Start with a scent family you already enjoy, such as fresh, floral, woody, amber or gourmand, and explore from there. Where the information is available, each product page lists the top, heart and base notes, so you can compare fragrances side by side.</p>"
+          }
+        },
+        "g6": {
+          "type": "group",
+          "settings": {
+            "title": "Fragrance sizes"
+          }
+        },
+        "q11": {
+          "type": "question",
+          "settings": {
+            "question": "What size should I choose?",
+            "answer": "<p>Sizes are shown in millilitres (ml) on each product. A smaller bottle is a good way to get to know a fragrance; a larger bottle usually costs less per ml.</p>"
+          }
+        },
+        "g7": {
+          "type": "group",
+          "settings": {
+            "title": "Customer support"
+          }
+        },
+        "q12": {
+          "type": "question",
+          "settings": {
+            "question": "How can I contact you?",
+            "answer": "<p>Send us a message through our <a href=\"/pages/contact\">contact page</a> and we will reply by email.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "g1",
+        "q1",
+        "q2",
+        "g2",
+        "q3",
+        "q4",
+        "g3",
+        "q5",
+        "g4",
+        "q6",
+        "q7",
+        "g5",
+        "q8",
+        "q9",
+        "q10",
+        "g6",
+        "q11",
+        "g7",
+        "q12"
+      ],
+      "settings": {
+        "background": "none"
+      }
+    },
+    "help": {
+      "type": "rich-text",
+      "blocks": {
+        "h": {
+          "type": "heading",
+          "settings": {
+            "heading": "Still have a question?",
+            "size": "h2"
+          }
+        },
+        "b": {
+          "type": "button",
+          "settings": {
+            "label": "Contact us",
+            "link": "/pages/contact",
+            "style": "primary"
+          }
+        }
+      },
+      "block_order": [
+        "h",
+        "b"
+      ],
+      "settings": {
+        "alignment": "center",
+        "background": "cloud",
+        "padding": 5
+      }
+    }
+  },
+  "order": [
+    "header",
+    "faq",
+    "help"
+  ]
+}

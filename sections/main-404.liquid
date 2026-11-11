@@ -1,0 +1,14 @@
+<div class="page-width not-found">
+  <span class="eyebrow">404</span>
+  <h1>{{ 'templates.404.title' | t }}</h1>
+  <p class="text-secondary">{{ 'templates.404.subtext' | t }}</p>
+  <form action="{{ routes.search_url }}" method="get" role="search" class="search-page__form">
+    <label for="NotFoundSearch" class="visually-hidden">{{ 'general.search.placeholder' | t }}</label>
+    <input id="NotFoundSearch" class="input" type="search" name="q" placeholder="{{ 'general.search.placeholder' | t }}">
+    <button type="submit" class="button">{{ 'general.search.submit' | t }}</button>
+  </form>
+  <a href="{{ routes.all_products_collection_url }}">{{ 'cart.general.continue_shopping' | t }}</a>
+</div>
+{% schema %}
+{ "name": "404 page", "settings": [] }
+{% endschema %}

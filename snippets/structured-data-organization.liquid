@@ -1,0 +1,37 @@
+{%- if request.page_type == 'index' -%}
+  {%- liquid
+    assign same_as = ''
+    assign social_keys = 'social_instagram,social_tiktok,social_facebook,social_pinterest,social_youtube,social_x' | split: ','
+    for key in social_keys
+      if settings[key] != blank
+        assign same_as = same_as | append: settings[key] | append: '|'
+      endif
+    endfor
+    assign same_as = same_as | split: '|'
+  -%}
+  <script type="application/ld+json">
+    [{
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": {{ shop.name | json }},
+      "url": {{ request.origin | append: routes.root_url | json }}
+      {%- if settings.logo != blank -%},
+      "logo": {{ settings.logo | image_url: width: 600 | prepend: 'https:' | json }}
+      {%- endif -%}
+      {%- if same_as.size > 0 -%},
+      "sameAs": {{ same_as | json }}
+      {%- endif %}
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": {{ shop.name | json }},
+      "url": {{ request.origin | append: routes.root_url | json }},
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {{ request.origin | append: routes.search_url | append: '?q={search_term_string}' | json }},
+        "query-input": "required name=search_term_string"
+      }
+    }]
+  </script>
+{%- endif -%}

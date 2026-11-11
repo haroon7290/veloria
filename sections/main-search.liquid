@@ -1,0 +1,88 @@
+{%- liquid
+  assign sort_by = search.sort_by | default: search.default_sort_by
+  assign product_results = search.results | where: 'object_type', 'product'
+  assign other_results = search.results | where: 'object_type', 'page'
+  assign article_results = search.results | where: 'object_type', 'article'
+-%}
+<header class="page-header page-header--center section--cloud">
+  <div class="page-width">
+    <div class="page-header__inner">
+      <h1>{% if search.performed %}{{ 'templates.search.results_for' | t: terms: search.terms | escape }}{% else %}{{ 'templates.search.title' | t }}{% endif %}</h1>
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search-page__form">
+        <label for="SearchPageInput" class="visually-hidden">{{ 'general.search.placeholder' | t }}</label>
+        <input id="SearchPageInput" class="input" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}">
+        <input type="hidden" name="options[prefix]" value="last">
+        <button type="submit" class="button">{{ 'general.search.submit' | t }}</button>
+      </form>
+    </div>
+  </div>
+</header>
+
+<div class="page-width" id="CollectionContainer" data-collection-container data-section-id="{{ section.id }}">
+  {%- if search.performed -%}
+    {%- paginate search.results by 24 -%}
+      <div class="collection-layout{% if search.filters.size > 0 %} collection-layout--sidebar{% endif %}">
+        {%- if search.filters.size > 0 -%}
+          <aside aria-label="{{ 'products.facets.title' | t }}" data-facets-container>
+            {% render 'facets', results: search, sort_by: sort_by, url_base: routes.search_url, terms: search.terms %}
+          </aside>
+        {%- endif -%}
+        <div class="collection-results" data-collection-results>
+          <div class="toolbar">
+            <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+              {%- if search.filters.size > 0 -%}
+                <button type="button" class="button button--secondary facets-toggle" data-facets-open aria-controls="FacetsPanel" aria-expanded="false" style="min-height:2.75rem;padding:0 1.25rem">{% render 'icon', name: 'filter', class: 'icon--small' %}{{ 'products.facets.title' | t }}</button>
+              {%- endif -%}
+              <span class="toolbar__count" role="status">{{ 'templates.search.results_count' | t: count: search.results_count }}</span>
+            </div>
+            <div class="toolbar__sort">
+              <label for="SortBy">{{ 'products.facets.sort_by' | t }}</label>
+              <select id="SortBy" class="select" data-sort-select>
+                {%- for option in search.sort_options -%}
+                  <option value="{{ option.value | escape }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name | escape }}</option>
+                {%- endfor -%}
+              </select>
+            </div>
+          </div>
+          {%- capture clear_url -%}{{ routes.search_url }}?q={{ search.terms | url_encode }}&options%5Bprefix%5D=last{%- endcapture -%}
+          {% render 'active-filters', results: search, clear_url: clear_url %}
+
+          {%- if search.results_count > 0 -%}
+            {%- if product_results.size > 0 -%}
+              <ul class="product-grid" role="list">
+                {%- for item in product_results -%}
+                  <li>{% render 'product-card', card_product: item, section_id: section.id, index: forloop.index0, heading_level: 'h2' %}</li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+            {%- if other_results.size > 0 or article_results.size > 0 -%}
+              <ul class="result-list" role="list">
+                {%- for item in article_results -%}
+                  <li><a href="{{ item.url }}"><span class="label text-secondary">{{ 'templates.search.article' | t }}</span><span class="h4" style="display:block">{{ item.title | escape }}</span></a></li>
+                {%- endfor -%}
+                {%- for item in other_results -%}
+                  <li><a href="{{ item.url }}"><span class="label text-secondary">{{ 'templates.search.page' | t }}</span><span class="h4" style="display:block">{{ item.title | escape }}</span></a></li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+            {% render 'pagination', paginate: paginate %}
+          {%- else -%}
+            <div class="empty-state">
+              <p class="h3">{{ 'templates.search.no_results' | t: terms: search.terms | escape }}</p>
+              <a class="button" href="{{ routes.all_products_collection_url }}">{{ 'cart.general.continue_shopping' | t }}</a>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endpaginate -%}
+  {%- else -%}
+    <div class="empty-state"><a class="button" href="{{ routes.all_products_collection_url }}">{{ 'templates.search.browse' | t }}</a></div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Search results",
+  "settings": []
+}
+{% endschema %}

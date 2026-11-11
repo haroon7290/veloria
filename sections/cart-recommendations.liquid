@@ -1,0 +1,33 @@
+{%- comment -%}
+  Compact recommendations for the cart drawer, loaded through the Section Rendering API:
+  /recommendations/products?section_id=cart-recommendations&product_id=…&limit=4
+{%- endcomment -%}
+<div data-cart-recs-content>
+  {%- if recommendations.performed? and recommendations.products_count > 0 -%}
+    <ul class="mini-cards" role="list">
+      {%- for rec in recommendations.products -%}
+        {%- if rec.available -%}
+          {%- assign v = rec.selected_or_first_available_variant -%}
+          <li class="mini-card" data-product-id="{{ rec.id }}">
+            <a href="{{ rec.url }}" class="mini-card__media" tabindex="-1" aria-hidden="true">
+              {%- if rec.featured_media -%}
+                {{ rec.featured_media.preview_image | image_url: width: 240 | image_tag: loading: 'lazy', alt: '', widths: '120, 240', sizes: '80px' }}
+              {%- endif -%}
+            </a>
+            <div class="mini-card__info">
+              {%- if rec.vendor != blank -%}<span class="mini-card__vendor">{{ rec.vendor | escape }}</span>{%- endif -%}
+              <a href="{{ rec.url }}" class="mini-card__title">{{ rec.title | escape }}</a>
+              <span class="mini-card__price">{%- unless rec.has_only_default_variant -%}{{ v.title | escape }} · {% endunless -%}{{ v.price | money }}</span>
+            </div>
+            {%- form 'product', rec, class: 'mini-card__form', data-quick-add: '', novalidate: 'novalidate' -%}
+              <input type="hidden" name="id" value="{{ v.id }}">
+              <input type="hidden" name="quantity" value="1">
+              <button type="submit" class="button button--secondary mini-card__add" aria-label="{{ 'products.product.add_named' | t: title: rec.title | escape }}">{{ 'products.product.add_short' | t }}</button>
+              <p class="product-form__error small" role="alert" data-form-error hidden></p>
+            {%- endform -%}
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+</div>

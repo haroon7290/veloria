@@ -1,0 +1,151 @@
+{
+  "sections": {
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "eyebrow": "Our story",
+        "heading": "About Valoria London",
+        "text": "<p>A curated destination for genuine designer fragrance, inspired by the quiet elegance of London.</p>",
+        "center": true,
+        "background": "none"
+      }
+    },
+    "story": {
+      "type": "editorial-split",
+      "settings": {
+        "image_ratio": "portrait",
+        "image_position": "left",
+        "proportion": "asymmetric",
+        "background": "ivory",
+        "padding_top": 7,
+        "padding_bottom": 7,
+        "eyebrow": "Our approach",
+        "heading": "Fragrance discovery,",
+        "heading_accent": "made clearer.",
+        "text": "<p>Valoria London is a multi-brand fragrance retailer. We bring together designer fragrances from established houses and present them in one calm, considered place.</p><p>Every product page sets out the essentials: the brand, the concentration, the available sizes and, where the information is available, the notes from top to base, so you can compare fragrances with confidence.</p>",
+        "button_label": "Shop fragrances",
+        "button_link": "shopify://collections/all",
+        "button_style": "button",
+        "placeholder_label": "OUR_STORY_IMAGE"
+      }
+    },
+    "content": {
+      "type": "main-page",
+      "settings": {
+        "show_title": false,
+        "center": false,
+        "narrow": true,
+        "padding_bottom": 2
+      }
+    },
+    "trust": {
+      "type": "trust-strip",
+      "blocks": {
+        "t1": {
+          "type": "item",
+          "settings": {
+            "icon": "sparkle",
+            "title": "Genuine designer fragrances",
+            "text": "From established fragrance houses"
+          }
+        },
+        "t2": {
+          "type": "item",
+          "settings": {
+            "icon": "lock",
+            "title": "Secure checkout",
+            "text": "Powered by Shopify"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2"
+      ],
+      "settings": {
+        "label": "Shopping with Valoria"
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "eyebrow": "The list",
+        "heading": "An invitation to Valoria",
+        "text": "<p>Be the first to discover new fragrances, exclusive releases and stories from our world.</p>",
+        "button_label": "Join the list",
+        "note": "<p>Unsubscribe at any time.</p>",
+        "show_mark": false,
+        "background": "ivory",
+        "padding_top": 7,
+        "padding_bottom": 7
+      }
+    },
+    "philosophy": {
+      "type": "brand-story",
+      "settings": {
+        "eyebrow": "Our philosophy",
+        "heading": "The philosophy of Valoria.",
+        "statement": "Inspired by the timeless elegance of London, Valoria represents a modern approach to personal fragrance.",
+        "text": "<p>We believe the right scent becomes part of your identity, creating impressions that words cannot always express.</p>",
+        "button_label": "Explore the collection",
+        "button_link": "shopify://collections/all",
+        "signature": "Valoria London",
+        "decorative_word": "London",
+        "background": "ink",
+        "padding_top": 8,
+        "padding_bottom": 8
+      }
+    },
+    "values": {
+      "type": "values",
+      "blocks": {
+        "value-1": {
+          "type": "value",
+          "settings": {
+            "icon": "sparkle",
+            "title": "Thoughtfully selected fragrances",
+            "text": "<p>A considered edit of designer fragrances, chosen for character rather than volume.</p>"
+          }
+        },
+        "value-2": {
+          "type": "value",
+          "settings": {
+            "icon": "bottle",
+            "title": "Elegance in every detail",
+            "text": "<p>From first browse to checkout, every step is designed to feel calm, clear and unhurried.</p>"
+          }
+        },
+        "value-3": {
+          "type": "value",
+          "settings": {
+            "icon": "gift",
+            "title": "A signature for every occasion",
+            "text": "<p>Fresh daytime scents to rich evening compositions, organised so you can find yours with ease.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "value-1",
+        "value-2",
+        "value-3"
+      ],
+      "settings": {
+        "eyebrow": "Why Valoria London",
+        "heading": "What we stand for",
+        "marker": "numbers",
+        "background": "white",
+        "padding_top": 7,
+        "padding_bottom": 7
+      }
+    }
+  },
+  "order": [
+    "header",
+    "story",
+    "content",
+    "philosophy",
+    "values",
+    "trust",
+    "newsletter"
+  ]
+}

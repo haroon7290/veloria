@@ -1,0 +1,120 @@
+{%- liquid
+  assign s = section.settings
+  assign live = 0
+  for block in section.blocks
+    if block.settings.collection != blank or request.design_mode
+      assign live = live | plus: 1
+    endif
+  endfor
+  case s.image_ratio
+    when 'square'
+      assign ratio = '1 / 1'
+    when 'landscape'
+      assign ratio = '4 / 3'
+    else
+      assign ratio = '4 / 5'
+  endcase
+-%}
+{%- if live > 0 -%}
+<section class="section collections-feature section--{{ s.background }}" style="--pt: {{ s.padding_top | times: 0.6 }}rem; --pb: {{ s.padding_bottom | times: 0.6 }}rem; --pt-d: {{ s.padding_top }}rem; --pb-d: {{ s.padding_bottom }}rem; --tile-ratio: {{ ratio }};">
+  <div class="page-width">
+    <div class="section-header section-header--{{ s.header_alignment }} reveal">
+      <div class="section-header__text">
+        {%- if s.eyebrow != blank -%}<p class="eyebrow eyebrow--rule">{{ s.eyebrow | escape }}</p>{%- endif -%}
+        {%- if s.heading != blank -%}<h2>{{ s.heading | escape }}</h2>{%- endif -%}
+        {%- if s.text != blank -%}<div class="section-header__lead rte">{{ s.text }}</div>{%- endif -%}
+      </div>
+      {%- if s.link_label != blank -%}
+        <div class="section-header__actions">
+          <a class="link-arrow" href="{{ s.link | default: routes.collections_url }}"><span>{{ s.link_label | escape }}</span>{% render 'icon', name: 'arrow-right' %}</a>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <ul class="tiles tiles--{{ s.layout }}" role="list" style="--count: {{ live }};">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign c = block.settings.collection
+          if c == blank and request.design_mode == false
+            continue
+          endif
+          assign title = block.settings.title | default: c.title
+          assign img = block.settings.image | default: c.featured_image
+          assign href = c.url | default: routes.collections_url
+          assign slot = title | default: 'collection' | handleize | upcase | replace: '-', '_'
+          assign slot = 'COLLECTION_' | append: slot | append: '_IMAGE'
+        -%}
+        <li class="tile reveal" style="--reveal-delay: {{ forloop.index0 | modulo: 3 | times: 90 }}ms" {{ block.shopify_attributes }}>
+          <a href="{{ href }}" class="tile__link">
+            <span class="tile__media">
+              {%- if img != blank -%}
+                {{ img | image_url: width: 1600 | image_tag: widths: '400, 600, 800, 1000, 1300, 1600', sizes: '(min-width: 990px) 50vw, 90vw', loading: 'lazy', alt: img.alt | default: '' }}
+              {%- else -%}
+                {%- liquid
+                  assign tone = 'beige'
+                  assign m = forloop.index0 | modulo: 3
+                  if m == 1
+                    assign tone = 'stone'
+                  elsif m == 2
+                    assign tone = 'dark'
+                  endif
+                -%}
+                {% render 'media-placeholder', label: slot, size: '1600 × 2000 px (4:5)', tone: tone %}
+              {%- endif -%}
+            </span>
+            <span class="tile__body">
+              {%- if title != blank -%}<span class="tile__title">{{ title | escape }}</span>{%- endif -%}
+              {%- if block.settings.text != blank -%}<span class="tile__text">{{ block.settings.text | escape }}</span>{%- endif -%}
+              {%- if s.link_text != blank -%}<span class="tile__cta">{{ s.link_text | escape }}</span>{%- endif -%}
+            </span>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Collection list",
+  "class": "section-collection-list",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "Collections" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Explore our world of fragrance" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "select", "id": "header_alignment", "label": "Heading alignment", "options": [ { "value": "split", "label": "Left, with link on the right" }, { "value": "center", "label": "Centred" } ], "default": "split" },
+    { "type": "select", "id": "layout", "label": "Layout", "options": [ { "value": "editorial", "label": "Editorial (mixed sizes)" }, { "value": "grid", "label": "Even grid" }, { "value": "row", "label": "Horizontal scroll" } ], "default": "editorial" },
+    { "type": "select", "id": "image_ratio", "label": "Image shape (grid and scroll)", "options": [ { "value": "portrait", "label": "Portrait" }, { "value": "square", "label": "Square" }, { "value": "landscape", "label": "Landscape" } ], "default": "portrait" },
+    { "type": "text", "id": "link_text", "label": "Link text on each card", "default": "Explore collection" },
+    { "type": "text", "id": "link_label", "label": "Section link label", "default": "All collections" },
+    { "type": "url", "id": "link", "label": "Section link" },
+    { "type": "select", "id": "background", "label": "Background", "options": [ { "value": "white", "label": "White" }, { "value": "ivory", "label": "Ivory" }, { "value": "cloud", "label": "Light grey" } ], "default": "ivory" },
+    { "type": "range", "id": "padding_top", "label": "Space above", "min": 0, "max": 10, "step": 1, "unit": "rem", "default": 7 },
+    { "type": "range", "id": "padding_bottom", "label": "Space below", "min": 0, "max": 10, "step": 1, "unit": "rem", "default": 7 }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "text", "id": "title", "label": "Title", "info": "Leave empty to use the collection title." },
+        { "type": "text", "id": "text", "label": "Short description" },
+        { "type": "image_picker", "id": "image", "label": "Image", "info": "Leave empty to use the collection image. Portrait, about 1600 × 2000 px." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection list",
+      "blocks": [
+        { "type": "collection", "settings": { "title": "For Her" } },
+        { "type": "collection", "settings": { "title": "For Him" } },
+        { "type": "collection", "settings": { "title": "Unisex" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

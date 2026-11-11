@@ -1,0 +1,18 @@
+<section class="section" data-recently-viewed data-limit="{{ section.settings.limit }}" hidden style="--pt-d: 4rem; --pb-d: 6rem;">
+  <div class="page-width">
+    <div class="section-header"><h2 class="h3">{{ section.settings.heading | escape }}</h2></div>
+    <ul class="recently-viewed__list" role="list" data-recently-viewed-list></ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Recently viewed",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Recently viewed" },
+    { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 8, "step": 1, "default": 6 },
+    { "type": "paragraph", "content": "Stored only in the shopper's browser. The current product is not shown." }
+  ],
+  "presets": [ { "name": "Recently viewed" } ]
+}
+{% endschema %}

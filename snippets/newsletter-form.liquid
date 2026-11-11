@@ -1,0 +1,25 @@
+{%- comment -%} Shopify customer newsletter form. Params: form_id, button_class, button_label {%- endcomment -%}
+{%- liquid
+  assign btn_text = button_label
+  if btn_text == blank
+    assign btn_text = 'newsletter.button' | t
+  endif
+-%}
+{%- form 'customer', id: form_id, class: 'newsletter__form-wrap' -%}
+  <input type="hidden" name="contact[tags]" value="newsletter">
+  {%- if form.posted_successfully? -%}
+    <p class="form-message form-message--success newsletter__success" role="status" tabindex="-1" autofocus>
+      {% render 'icon', name: 'check' %}<span>{{ 'newsletter.success' | t }}</span>
+    </p>
+  {%- else -%}
+    {%- if form.errors -%}
+      <p class="form-message form-message--error" role="alert" id="{{ form_id }}-error">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>
+    {%- endif -%}
+    <div class="newsletter__form">
+      <label for="{{ form_id }}-email" class="visually-hidden">{{ 'newsletter.label' | t }}</label>
+      <input id="{{ form_id }}-email" type="email" name="contact[email]" class="input" value="{{ form.email }}" autocomplete="email" autocorrect="off" autocapitalize="off" required placeholder="{{ 'newsletter.placeholder' | t }}"{% if form.errors %} aria-invalid="true" aria-describedby="{{ form_id }}-error"{% endif %} data-email-input>
+      <button type="submit" class="button {{ button_class }}">{{ btn_text | escape }}</button>
+    </div>
+    <p class="newsletter__invalid" id="{{ form_id }}-invalid" role="alert" data-email-error hidden>{{ 'newsletter.invalid' | t }}</p>
+  {%- endif -%}
+{%- endform -%}

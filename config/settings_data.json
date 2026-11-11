@@ -1,0 +1,10 @@
+{
+  "current": "Default",
+  "presets": {
+    "Default": {
+      "use_house_fonts": true,
+      "cart_type": "drawer",
+      "card_quick_add": true
+    }
+  }
+}

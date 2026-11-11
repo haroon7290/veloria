@@ -1,0 +1,24 @@
+<div class="page-width{% if section.settings.narrow %} page-width--text{% endif %}">
+  {%- if section.settings.show_title -%}
+    <header class="page-header{% if section.settings.center %} page-header--center{% endif %}">
+      <div class="page-header__inner">
+        <h1>{{ page.title | escape }}</h1>
+      </div>
+    </header>
+  {%- endif -%}
+  {%- if page.content != blank -%}
+    <div class="rte" style="padding-bottom: {{ section.settings.padding_bottom }}rem; font-size: 1.0625rem;">{{ page.content }}</div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Page content",
+  "settings": [
+    { "type": "checkbox", "id": "show_title", "label": "Show page title", "default": true },
+    { "type": "checkbox", "id": "center", "label": "Centre the title", "default": false },
+    { "type": "checkbox", "id": "narrow", "label": "Narrow text column", "default": true },
+    { "type": "range", "id": "padding_bottom", "label": "Space below", "min": 0, "max": 8, "step": 1, "unit": "rem", "default": 4 }
+  ]
+}
+{% endschema %}

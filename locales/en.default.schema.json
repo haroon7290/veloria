@@ -1,0 +1,145 @@
+{
+  "settings_schema": {
+    "logo": {
+      "name": "Logo and favicon",
+      "settings": {
+        "logo": {
+          "label": "Logo (light backgrounds)",
+          "info": "Leave empty to use the built-in Valoria London logo. SVG or PNG with a transparent background works best."
+        },
+        "logo_inverse": {
+          "label": "Logo (dark backgrounds)",
+          "info": "Used in the footer. Leave empty to use the built-in white logo."
+        },
+        "logo_width": {
+          "label": "Logo width on desktop"
+        },
+        "favicon": {
+          "label": "Favicon",
+          "info": "Shown at 32 × 32 px. Leave empty to use the built-in Valoria favicon."
+        }
+      }
+    },
+    "colors": {
+      "name": "Colours",
+      "settings": {
+        "ink": "Ink (text, buttons, footer, hero)",
+        "stone": "Stone (product image backgrounds)",
+        "paper": "Paper (page background)",
+        "cloud": "Cloud (cards, secondary sections)",
+        "smoke": "Smoke (lines and details)",
+        "white": "White",
+        "graphite": "Graphite (secondary text)",
+        "graphite_info": "Keep this dark enough to read on Paper (at least 4.5:1 contrast).",
+        "line": "Line (borders and dividers)",
+        "accent": "Accent (sale badges and highlights)",
+        "accent_info": "Use sparingly. A deep colour reads as luxury; bright colours cheapen the look.",
+        "success": "In-stock indicator",
+        "error": "Errors and low stock"
+      }
+    },
+    "typography": {
+      "name": "Typography",
+      "settings": {
+        "use_house_fonts": {
+          "label": "Use the Valoria house fonts",
+          "info": "Bodoni Moda for headings and Inter for text, built into the theme. Untick to use the fonts chosen below."
+        },
+        "heading_font": "Heading font",
+        "body_font": "Body font",
+        "heading_scale": "Heading size",
+        "body_scale": "Body text size",
+        "product_name_font": {
+          "label": "Product name font",
+          "options": {
+            "body": "Clean sans-serif (Inter)",
+            "heading": "Heading serif (Bodoni Moda)"
+          }
+        }
+      }
+    },
+    "layout": {
+      "name": "Layout",
+      "settings": {
+        "page_width": "Maximum page width",
+        "animations": "Enable subtle hover and reveal animations"
+      }
+    },
+    "products": {
+      "name": "Product cards",
+      "settings": {
+        "card_image_ratio": {
+          "label": "Image shape",
+          "options": {
+            "portrait": "Portrait (4:5)",
+            "square": "Square",
+            "natural": "Natural (as uploaded)"
+          }
+        },
+        "card_image_background": {
+          "label": "Image background",
+          "options": {
+            "alternate": "Alternate stone and cloud",
+            "stone": "Stone",
+            "cloud": "Cloud",
+            "white": "White"
+          }
+        },
+        "card_show_vendor": "Show brand (vendor)",
+        "card_show_second_image": "Show second image on hover",
+        "card_quick_add": "Show add to bag on product cards",
+        "size_option_names": {
+          "label": "Size option names",
+          "info": "Comma-separated variant option names that hold the bottle size. Used for the size shown on product cards."
+        }
+      }
+    },
+    "cart": {
+      "name": "Cart",
+      "settings": {
+        "cart_type": {
+          "label": "When a product is added",
+          "options": {
+            "drawer": "Open the cart drawer",
+            "page": "Go to the cart page"
+          }
+        },
+        "cart_notes": "Allow order notes",
+        "free_delivery_threshold": {
+          "label": "Free delivery threshold",
+          "info": "Shows a progress message in the cart. Set to 0 to hide. Only set this if you actually offer free delivery at this amount."
+        },
+        "cart_delivery_note": {
+          "label": "Delivery note in cart",
+          "info": "Short, accurate note from your delivery policy. Leave empty to hide."
+        }
+      }
+    },
+    "delivery": {
+      "name": "Delivery and returns",
+      "settings": {
+        "paragraph": "These short summaries appear on product pages and in the trust strip. Only enter what your published policies say.",
+        "delivery_summary": {
+          "label": "Delivery summary",
+          "info": "For example, your standard UK delivery time and cost."
+        },
+        "returns_summary": {
+          "label": "Returns summary"
+        },
+        "delivery_page": {
+          "label": "Delivery and returns page"
+        }
+      }
+    },
+    "social": {
+      "name": "Social media"
+    },
+    "search": {
+      "name": "Search",
+      "settings": {
+        "predictive_search": "Show suggestions while typing",
+        "search_show_vendor": "Show brand in search results"
+      }
+    }
+  }
+}

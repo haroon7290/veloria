@@ -1,0 +1,213 @@
+{%- liquid
+  assign menu = section.settings.menu
+  assign logo_alt = shop.name | escape
+  assign promos = section.blocks | where: 'type', 'promo'
+  assign account_url = routes.account_login_url
+  if customer
+    assign account_url = routes.account_url
+  endif
+-%}
+{%- if section.settings.sticky -%}
+  <style>.shopify-section-header { position: sticky; top: 0; z-index: 40; }</style>
+{%- endif -%}
+<div
+  class="header-wrapper header-wrapper--{{ section.settings.layout }}{% if section.settings.transparent %} header-wrapper--can-overlay{% endif %}"
+  data-header
+>
+  <header class="page-width header">
+    <div class="header__left">
+      <button type="button" class="icon-button header__menu-toggle" aria-controls="MenuDrawer" aria-expanded="false" data-drawer-open="MenuDrawer">
+        {% render 'icon', name: 'menu' %}
+        <span class="visually-hidden">{{ 'general.menu.open' | t }}</span>
+      </button>
+      <button type="button" class="icon-button header__search-mobile" aria-controls="SearchModal" aria-expanded="false" data-search-open>
+        {% render 'icon', name: 'search' %}
+        <span class="visually-hidden">{{ 'general.search.open' | t }}</span>
+      </button>
+
+      {%- if menu != blank and section.settings.layout == 'split' -%}
+        {% render 'header-nav', menu: menu, promos: promos %}
+      {%- endif -%}
+    </div>
+
+    <a href="{{ routes.root_url }}" class="header__logo">
+      {%- assign logo_w = settings.logo_width | times: 2 -%}
+      <span class="header__logo-default">
+        {%- if settings.logo != blank -%}
+          {{ settings.logo | image_url: width: logo_w | image_tag: alt: logo_alt, width: settings.logo_width, height: '', loading: 'eager' }}
+        {%- else -%}
+          <img src="{{ 'valoria-logo-dark.svg' | asset_url }}" alt="{{ logo_alt }}" width="{{ settings.logo_width }}" height="{{ settings.logo_width | times: 876 | divided_by: 4158 }}" loading="eager">
+        {%- endif -%}
+      </span>
+      {%- if section.settings.transparent -%}
+        <span class="header__logo-inverse">
+          {%- if settings.logo_inverse != blank -%}
+            {{ settings.logo_inverse | image_url: width: logo_w | image_tag: alt: logo_alt, width: settings.logo_width, height: '', loading: 'eager' }}
+          {%- else -%}
+            <img src="{{ 'valoria-logo-light.svg' | asset_url }}" alt="{{ logo_alt }}" width="{{ settings.logo_width }}" height="{{ settings.logo_width | times: 876 | divided_by: 4158 }}" loading="eager">
+          {%- endif -%}
+        </span>
+      {%- endif -%}
+    </a>
+
+    {%- if menu != blank and section.settings.layout == 'classic' -%}
+      <div class="header__center">
+        {% render 'header-nav', menu: menu, promos: promos %}
+      </div>
+    {%- endif -%}
+
+    <div class="header__right">
+      <button type="button" class="icon-button header__icon header__icon--search" aria-controls="SearchModal" aria-expanded="false" data-search-open>
+        {% render 'icon', name: 'search' %}
+        <span class="visually-hidden">{{ 'general.search.open' | t }}</span>
+      </button>
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{{ account_url }}" class="icon-button header__icon header__icon--account">
+          {% render 'icon', name: 'account' %}
+          <span class="visually-hidden">{% if customer %}{{ 'customer.account.title' | t }}{% else %}{{ 'customer.log_in' | t }}{% endif %}</span>
+        </a>
+      {%- endif -%}
+      <a href="{{ routes.cart_url }}" class="icon-button header__icon header__icon--cart" id="cart-icon-bubble" {% if settings.cart_type == 'drawer' %}data-cart-open aria-haspopup="dialog"{% endif %}>
+        {% render 'cart-icon-bubble' %}
+      </a>
+    </div>
+  </header>
+</div>
+
+<div id="MenuDrawer" class="drawer drawer--left menu-drawer" role="dialog" aria-modal="true" aria-label="{{ 'general.menu.title' | t }}" tabindex="-1" data-drawer>
+  <div class="drawer__header">
+    <span class="drawer__title">{{ 'general.menu.title' | t }}</span>
+    <button type="button" class="icon-button" data-drawer-close>{% render 'icon', name: 'close' %}<span class="visually-hidden">{{ 'general.menu.close' | t }}</span></button>
+  </div>
+  <div class="drawer__body">
+    {%- if menu != blank -%}
+      <nav aria-label="{{ 'general.menu.main' | t }}">
+        <ul class="mobile-nav" role="list">
+          {%- for link in menu.links -%}
+            <li style="--i: {{ forloop.index0 }}">
+              {%- if link.links != blank -%}
+                <details>
+                  <summary>{{ link.title | escape }} {% render 'icon', name: 'plus' %}</summary>
+                  <ul class="mobile-nav__sub" role="list">
+                    <li><a href="{{ link.url }}">{{ 'general.menu.view_all' | t: title: link.title | escape }}</a></li>
+                    {%- for child in link.links -%}
+                      <li>
+                        <a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a>
+                        {%- if child.links != blank -%}
+                          <ul class="mobile-nav__sub" role="list">
+                            {%- for grandchild in child.links -%}
+                              <li><a href="{{ grandchild.url }}"{% if grandchild.current %} aria-current="page"{% endif %}>{{ grandchild.title | escape }}</a></li>
+                            {%- endfor -%}
+                          </ul>
+                        {%- endif -%}
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </details>
+              {%- else -%}
+                <a href="{{ link.url }}" class="mobile-nav__link"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    {%- liquid
+      assign drawer_promos = 0
+      for promo in promos
+        if promo.settings.image != blank and promo.settings.show_in_drawer
+          assign drawer_promos = drawer_promos | plus: 1
+        endif
+      endfor
+    -%}
+    {%- if drawer_promos > 0 -%}
+      <ul class="menu-drawer__promos" role="list">
+        {%- for promo in promos -%}
+          {%- if promo.settings.image != blank and promo.settings.show_in_drawer -%}
+            <li>{% render 'menu-promo', promo: promo, sizes: '45vw' %}</li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    <div class="mobile-menu__utility">
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{{ account_url }}">{% render 'icon', name: 'account' %}{% if customer %}{{ 'customer.account.title' | t }}{% else %}{{ 'customer.log_in' | t }}{% endif %}</a>
+      {%- endif -%}
+      {%- if section.settings.contact_page != blank -%}
+        <a href="{{ section.settings.contact_page.url }}">{% render 'icon', name: 'mail' %}{{ section.settings.contact_page.title | escape }}</a>
+      {%- endif -%}
+      {% render 'social-icons' %}
+    </div>
+  </div>
+</div>
+
+<div id="SearchModal" class="search-modal" role="dialog" aria-modal="true" aria-label="{{ 'general.search.title' | t }}" tabindex="-1" data-search-modal>
+  <div class="page-width search-modal__inner">
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-form" data-predictive-form>
+      <label for="SearchInput" class="visually-hidden">{{ 'general.search.placeholder' | t }}</label>
+      {% render 'icon', name: 'search' %}
+      <input
+        id="SearchInput"
+        class="search-form__input"
+        type="search"
+        name="q"
+        value="{{ search.terms | escape }}"
+        placeholder="{{ 'general.search.placeholder' | t }}"
+        autocomplete="off"
+        {% if settings.predictive_search %}
+          role="combobox"
+          aria-expanded="false"
+          aria-controls="PredictiveResults"
+          aria-autocomplete="list"
+          data-predictive-input
+        {% endif %}
+      >
+      <input type="hidden" name="options[prefix]" value="last">
+      <button type="button" class="icon-button" data-search-close>{% render 'icon', name: 'close' %}<span class="visually-hidden">{{ 'general.search.close' | t }}</span></button>
+    </form>
+    {%- if settings.search_menu != blank and settings.search_menu.links.size > 0 -%}
+      <div class="search-suggest" data-search-suggest>
+        <p class="label">{{ 'general.search.popular' | t }}</p>
+        <ul class="search-suggest__list" role="list">
+          {%- for link in settings.search_menu.links -%}
+            <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+    {%- if settings.predictive_search -%}
+      <div id="PredictiveResults" class="predictive" data-predictive-results aria-live="polite"></div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "shopify-section-header",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu", "info": "Suggested top level: Shop, Collections, Our Story. Add sub-links to create dropdown menus." },
+    { "type": "select", "id": "layout", "label": "Desktop layout", "options": [ { "value": "split", "label": "Menu left, logo centre, icons right" }, { "value": "classic", "label": "Logo left, menu centre, icons right" } ], "default": "split" },
+    { "type": "checkbox", "id": "sticky", "label": "Keep header visible when scrolling", "default": true },
+    { "type": "checkbox", "id": "transparent", "label": "Transparent over the first image", "info": "On pages that start with a full image Hero, the header sits over the image in white and turns solid as the visitor scrolls.", "default": true },
+    { "type": "page", "id": "contact_page", "label": "Contact page (mobile menu)" }
+  ],
+  "blocks": [
+    {
+      "type": "promo",
+      "name": "Menu image",
+      "settings": [
+        { "type": "text", "id": "menu_item", "label": "Show in dropdown of", "info": "Type the top-level menu title exactly, for example Shop.", "default": "Shop" },
+        { "type": "image_picker", "id": "image", "label": "Image", "info": "MEGA_MENU_IMAGE · portrait, about 900 × 1125 px." },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "New arrivals" },
+        { "type": "text", "id": "link_label", "label": "Link label", "default": "Discover" },
+        { "type": "url", "id": "link", "label": "Link" },
+        { "type": "checkbox", "id": "show_in_drawer", "label": "Also show in the mobile menu", "default": false }
+      ]
+    }
+  ]
+}
+{% endschema %}

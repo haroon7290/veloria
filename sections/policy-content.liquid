@@ -1,0 +1,33 @@
+{%- liquid
+  case section.settings.policy
+    when 'shipping'
+      assign pol = shop.shipping_policy
+    when 'refund'
+      assign pol = shop.refund_policy
+    when 'privacy'
+      assign pol = shop.privacy_policy
+    when 'terms'
+      assign pol = shop.terms_of_service
+  endcase
+-%}
+<section class="section" style="--pt: 1rem; --pt-d: 1rem; --pb-d: 4rem;">
+  <div class="page-width page-width--text">
+    {%- if section.settings.heading != blank -%}<h2 class="h2" style="margin-bottom:1.5rem">{{ section.settings.heading | escape }}</h2>{%- endif -%}
+    {%- if pol != blank and pol.body != blank -%}
+      <div class="rte">{{ pol.body }}</div>
+    {%- else -%}
+      <p class="text-secondary">{{ 'templates.policy.missing' | t }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Store policy",
+  "settings": [
+    { "type": "select", "id": "policy", "label": "Policy", "info": "Shows the policy text from Settings › Policies, so this page always matches your published policy.", "options": [ { "value": "shipping", "label": "Shipping policy" }, { "value": "refund", "label": "Refund policy" }, { "value": "privacy", "label": "Privacy policy" }, { "value": "terms", "label": "Terms of service" } ], "default": "shipping" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Delivery" }
+  ],
+  "presets": [ { "name": "Store policy" } ]
+}
+{% endschema %}

@@ -1,0 +1,67 @@
+{%- liquid
+  assign limit = section.settings.limit
+  assign source_list = blank
+  assign title = section.settings.heading
+  case section.settings.source
+    when 'vendor'
+      if product.vendor != blank
+        assign source_list = collections.all.products | where: 'vendor', product.vendor
+        assign title = 'products.product.more_from' | t: title: product.vendor
+      endif
+    when 'type'
+      if product.type != blank
+        assign source_list = collections.all.products | where: 'type', product.type
+      endif
+    else
+      if section.settings.collection != blank and section.settings.collection.products_count > 0
+        assign source_list = section.settings.collection.products
+      else
+        assign source_list = collections.all.products
+      endif
+  endcase
+  if section.settings.heading != blank and section.settings.source != 'vendor'
+    assign title = section.settings.heading
+  endif
+  assign count = 0
+  for item in source_list
+    if item.id != product.id
+      assign count = count | plus: 1
+    endif
+  endfor
+-%}
+{%- if count > 0 -%}
+  <section class="section section--{{ section.settings.background }}" style="--pt-d: 5rem; --pb-d: 5rem;">
+    <div class="page-width">
+      <div class="section-header section-header--split">
+        <div class="section-header__text">
+          {%- if section.settings.eyebrow != blank -%}<p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+          <h2>{{ title | escape }}</h2>
+        </div>
+      </div>
+      <ul class="product-grid product-grid--4" role="list">
+        {%- assign shown = 0 -%}
+        {%- for item in source_list -%}
+          {%- if item.id != product.id and shown < limit -%}
+            {%- assign shown = shown | plus: 1 -%}
+            <li>{% render 'product-card', card_product: item, section_id: section.id, index: shown %}</li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product row",
+  "settings": [
+    { "type": "select", "id": "source", "label": "Show", "options": [ { "value": "vendor", "label": "Same brand" }, { "value": "type", "label": "Same product type" }, { "value": "collection", "label": "A collection (e.g. trending)" } ], "default": "collection" },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Used when Show is a collection. If empty, all products are used." },
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "Trending" },
+    { "type": "text", "id": "heading", "label": "Heading", "info": "Same brand rows use \"More from [brand]\" automatically.", "default": "Trending now" },
+    { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 12, "step": 1, "default": 4 },
+    { "type": "select", "id": "background", "label": "Background", "options": [ { "value": "white", "label": "White" }, { "value": "ivory", "label": "Ivory" }, { "value": "cloud", "label": "Light grey" } ], "default": "white" }
+  ],
+  "presets": [ { "name": "Product row" } ]
+}
+{% endschema %}

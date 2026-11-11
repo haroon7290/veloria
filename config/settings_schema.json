@@ -1,0 +1,538 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Valoria London",
+    "theme_version": "4.0.0",
+    "theme_author": "Valoria London",
+    "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
+    "theme_support_url": "https://help.shopify.com/manual/online-store/themes"
+  },
+  {
+    "name": "t:settings_schema.logo.name",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "t:settings_schema.logo.settings.logo.label",
+        "info": "t:settings_schema.logo.settings.logo.info"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo_inverse",
+        "label": "t:settings_schema.logo.settings.logo_inverse.label",
+        "info": "t:settings_schema.logo.settings.logo_inverse.info"
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "min": 100,
+        "max": 320,
+        "step": 5,
+        "unit": "px",
+        "label": "t:settings_schema.logo.settings.logo_width.label",
+        "default": 230
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "t:settings_schema.logo.settings.favicon.label",
+        "info": "t:settings_schema.logo.settings.favicon.info"
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.colors.name",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Brand palette"
+      },
+      {
+        "type": "color",
+        "id": "color_ivory",
+        "label": "Warm ivory (alternate sections)",
+        "default": "#F5F1E9"
+      },
+      {
+        "type": "color",
+        "id": "color_beige",
+        "label": "Soft beige (image placeholders, fine details)",
+        "default": "#D9CCB8"
+      },
+      {
+        "type": "color",
+        "id": "color_gold",
+        "label": "Champagne gold (fine lines and small accents)",
+        "info": "Used sparingly: hairlines, stars and accents on dark backgrounds. Not used for body text on light backgrounds, where it would be hard to read.",
+        "default": "#C6A66B"
+      },
+      {
+        "type": "color",
+        "id": "color_charcoal",
+        "label": "Dark charcoal (dark sections, hover states)",
+        "default": "#242424"
+      },
+      {
+        "type": "header",
+        "content": "Interface"
+      },
+      {
+        "type": "color",
+        "id": "color_ink",
+        "label": "t:settings_schema.colors.settings.ink",
+        "default": "#111111"
+      },
+      {
+        "type": "color",
+        "id": "color_stone",
+        "label": "t:settings_schema.colors.settings.stone",
+        "default": "#EEEEEB"
+      },
+      {
+        "type": "color",
+        "id": "color_paper",
+        "label": "t:settings_schema.colors.settings.paper",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "color_cloud",
+        "label": "t:settings_schema.colors.settings.cloud",
+        "default": "#F6F6F4"
+      },
+      {
+        "type": "color",
+        "id": "color_smoke",
+        "label": "t:settings_schema.colors.settings.smoke",
+        "default": "#8A8A86"
+      },
+      {
+        "type": "color",
+        "id": "color_white",
+        "label": "t:settings_schema.colors.settings.white",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "color_graphite",
+        "label": "t:settings_schema.colors.settings.graphite",
+        "info": "t:settings_schema.colors.settings.graphite_info",
+        "default": "#5A5A57"
+      },
+      {
+        "type": "color",
+        "id": "color_line",
+        "label": "t:settings_schema.colors.settings.line",
+        "default": "#E6E6E2"
+      },
+      {
+        "type": "color",
+        "id": "color_sale",
+        "label": "t:settings_schema.colors.settings.accent",
+        "info": "t:settings_schema.colors.settings.accent_info",
+        "default": "#6E1E2B"
+      },
+      {
+        "type": "color",
+        "id": "color_success",
+        "label": "t:settings_schema.colors.settings.success",
+        "default": "#2F5D3A"
+      },
+      {
+        "type": "color",
+        "id": "color_error",
+        "label": "t:settings_schema.colors.settings.error",
+        "default": "#9B2C2C"
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.typography.name",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "use_house_fonts",
+        "label": "t:settings_schema.typography.settings.use_house_fonts.label",
+        "info": "t:settings_schema.typography.settings.use_house_fonts.info",
+        "default": true
+      },
+      {
+        "type": "font_picker",
+        "id": "type_heading_font",
+        "label": "t:settings_schema.typography.settings.heading_font",
+        "default": "serif"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font",
+        "label": "t:settings_schema.typography.settings.body_font",
+        "default": "sans_serif_n4"
+      },
+      {
+        "type": "select",
+        "id": "product_name_font",
+        "label": "t:settings_schema.typography.settings.product_name_font.label",
+        "options": [
+          {
+            "value": "body",
+            "label": "t:settings_schema.typography.settings.product_name_font.options.body"
+          },
+          {
+            "value": "heading",
+            "label": "t:settings_schema.typography.settings.product_name_font.options.heading"
+          }
+        ],
+        "default": "body"
+      },
+      {
+        "type": "range",
+        "id": "heading_scale",
+        "min": 80,
+        "max": 130,
+        "step": 5,
+        "unit": "%",
+        "label": "t:settings_schema.typography.settings.heading_scale",
+        "default": 100
+      },
+      {
+        "type": "range",
+        "id": "body_scale",
+        "min": 90,
+        "max": 120,
+        "step": 5,
+        "unit": "%",
+        "label": "t:settings_schema.typography.settings.body_scale",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.layout.name",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "min": 1100,
+        "max": 1680,
+        "step": 20,
+        "unit": "px",
+        "label": "t:settings_schema.layout.settings.page_width",
+        "default": 1440
+      },
+      {
+        "type": "checkbox",
+        "id": "animations",
+        "label": "t:settings_schema.layout.settings.animations",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Motion"
+      },
+      {
+        "type": "select",
+        "id": "reveal_style",
+        "label": "Scroll reveal",
+        "options": [
+          {
+            "value": "fade-up",
+            "label": "Fade and rise"
+          },
+          {
+            "value": "fade",
+            "label": "Fade"
+          },
+          {
+            "value": "none",
+            "label": "Off"
+          }
+        ],
+        "default": "fade-up",
+        "info": "Headings, text and images ease in as they scroll into view."
+      },
+      {
+        "type": "checkbox",
+        "id": "hero_zoom",
+        "label": "Slow image zoom when the hero loads",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "hover_zoom",
+        "label": "Gentle image zoom on hover",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "page_transitions",
+        "label": "Smooth fade between pages",
+        "info": "Uses the browser's built-in page transitions where supported. Has no effect in other browsers.",
+        "default": true
+      },
+      {
+        "type": "paragraph",
+        "content": "All motion is switched off automatically for visitors who ask their device to reduce motion."
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.products.name",
+    "settings": [
+      {
+        "type": "select",
+        "id": "card_image_ratio",
+        "label": "t:settings_schema.products.settings.card_image_ratio.label",
+        "options": [
+          {
+            "value": "portrait",
+            "label": "t:settings_schema.products.settings.card_image_ratio.options.portrait"
+          },
+          {
+            "value": "square",
+            "label": "t:settings_schema.products.settings.card_image_ratio.options.square"
+          },
+          {
+            "value": "natural",
+            "label": "t:settings_schema.products.settings.card_image_ratio.options.natural"
+          }
+        ],
+        "default": "portrait"
+      },
+      {
+        "type": "select",
+        "id": "card_image_background",
+        "label": "t:settings_schema.products.settings.card_image_background.label",
+        "options": [
+          {
+            "value": "alternate",
+            "label": "t:settings_schema.products.settings.card_image_background.options.alternate"
+          },
+          {
+            "value": "stone",
+            "label": "t:settings_schema.products.settings.card_image_background.options.stone"
+          },
+          {
+            "value": "cloud",
+            "label": "t:settings_schema.products.settings.card_image_background.options.cloud"
+          },
+          {
+            "value": "white",
+            "label": "t:settings_schema.products.settings.card_image_background.options.white"
+          }
+        ],
+        "default": "cloud"
+      },
+      {
+        "type": "checkbox",
+        "id": "card_show_vendor",
+        "label": "t:settings_schema.products.settings.card_show_vendor",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "card_show_second_image",
+        "label": "t:settings_schema.products.settings.card_show_second_image",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "card_quick_add",
+        "label": "t:settings_schema.products.settings.card_quick_add",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "size_option_names",
+        "label": "t:settings_schema.products.settings.size_option_names.label",
+        "info": "t:settings_schema.products.settings.size_option_names.info",
+        "default": "size,volume,ml,bottle size"
+      },
+      {
+        "type": "checkbox",
+        "id": "card_show_family",
+        "label": "Show fragrance family on product cards",
+        "info": "From the custom.fragrance_family product metafield.",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "card_show_rating",
+        "label": "Show star rating on product cards",
+        "info": "Only appears when a reviews app fills Shopify's standard product rating metafield.",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "card_badge_tag",
+        "label": "Product tag for the label badge",
+        "info": "Products with this tag show the label below on their card, for example tag 'bestseller'.",
+        "default": "bestseller"
+      },
+      {
+        "type": "text",
+        "id": "card_badge_label",
+        "label": "Label badge text",
+        "default": "Bestseller"
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.cart.name",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "t:settings_schema.cart.settings.cart_type.label",
+        "options": [
+          {
+            "value": "drawer",
+            "label": "t:settings_schema.cart.settings.cart_type.options.drawer"
+          },
+          {
+            "value": "page",
+            "label": "t:settings_schema.cart.settings.cart_type.options.page"
+          }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_notes",
+        "label": "t:settings_schema.cart.settings.cart_notes",
+        "default": false
+      },
+      {
+        "type": "range",
+        "id": "free_delivery_threshold",
+        "min": 0,
+        "max": 300,
+        "step": 5,
+        "unit": "£",
+        "label": "t:settings_schema.cart.settings.free_delivery_threshold.label",
+        "info": "t:settings_schema.cart.settings.free_delivery_threshold.info",
+        "default": 0
+      },
+      {
+        "type": "richtext",
+        "id": "cart_delivery_note",
+        "label": "t:settings_schema.cart.settings.cart_delivery_note.label",
+        "info": "t:settings_schema.cart.settings.cart_delivery_note.info"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_discount",
+        "label": "Show discount code field",
+        "info": "Codes are checked by Shopify. Invalid codes show a message and are not applied.",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_recommendations",
+        "label": "Show recommendations in the cart drawer",
+        "info": "Uses Shopify's product recommendations for the first item in the bag.",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "cart_recommendations_heading",
+        "label": "Recommendations heading",
+        "default": "You may also like"
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.delivery.name",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "t:settings_schema.delivery.settings.paragraph"
+      },
+      {
+        "type": "text",
+        "id": "delivery_summary",
+        "label": "t:settings_schema.delivery.settings.delivery_summary.label",
+        "info": "t:settings_schema.delivery.settings.delivery_summary.info"
+      },
+      {
+        "type": "text",
+        "id": "returns_summary",
+        "label": "t:settings_schema.delivery.settings.returns_summary.label"
+      },
+      {
+        "type": "page",
+        "id": "delivery_page",
+        "label": "t:settings_schema.delivery.settings.delivery_page.label"
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.social.name",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram",
+        "info": "https://instagram.com/…"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok",
+        "info": "https://tiktok.com/@…"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "Facebook",
+        "info": "https://facebook.com/…"
+      },
+      {
+        "type": "text",
+        "id": "social_pinterest",
+        "label": "Pinterest",
+        "info": "https://pinterest.com/…"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube",
+        "label": "YouTube",
+        "info": "https://youtube.com/…"
+      },
+      {
+        "type": "text",
+        "id": "social_x",
+        "label": "X (Twitter)",
+        "info": "https://x.com/…"
+      },
+      {
+        "type": "text",
+        "id": "contact_email",
+        "label": "Customer email address",
+        "info": "Shown in the footer Connect column. Leave empty to hide."
+      }
+    ]
+  },
+  {
+    "name": "t:settings_schema.search.name",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "predictive_search",
+        "label": "t:settings_schema.search.settings.predictive_search",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "search_show_vendor",
+        "label": "t:settings_schema.search.settings.search_show_vendor",
+        "default": true
+      },
+      {
+        "type": "link_list",
+        "id": "search_menu",
+        "label": "Popular searches menu",
+        "info": "Links shown in the search panel before the shopper types. Leave empty to hide."
+      }
+    ]
+  }
+]

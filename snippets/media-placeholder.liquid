@@ -1,0 +1,24 @@
+{%- comment -%}
+  Replaceable image slot, shown when a section has no image chosen.
+  Customers see a quiet, designed surface. The slot name and recommended size
+  appear only inside the Shopify theme editor, so the store owner knows what to upload.
+
+  Params:
+  - label: slot name, e.g. 'HERO_CAMPAIGN_IMAGE'
+  - size: recommended size, e.g. '2400 × 1350 px · 16:9'
+  - tone: 'dark' | 'light' | 'beige' | 'stone' (default 'light')
+  - word: optional display word set in large italic serif (e.g. a collection name)
+  - class: optional extra class
+{%- endcomment -%}
+<div class="placeholder placeholder--{{ tone | default: 'light' }}{% if class %} {{ class }}{% endif %}" aria-hidden="true">
+  {%- if word != blank -%}
+    <span class="placeholder__word">{{ word | escape }}</span>
+  {%- endif -%}
+  {%- if request.design_mode -%}
+    <span class="placeholder__label">
+      <strong>{{ label | default: 'IMAGE' }}</strong>
+      {%- if size != blank -%}<span>{{ size }}</span>{%- endif -%}
+      <span>{{ 'general.placeholder.upload' | t }}</span>
+    </span>
+  {%- endif -%}
+</div>

@@ -1,0 +1,30 @@
+{%- comment -%}
+  Returns the fragrance concentration for a product, taken only from the product's own data:
+  1. metafield custom.concentration, if set
+  2. otherwise a recognised term in the title, product type or tags (e.g. "Eau de Parfum", "EDT").
+  Prints nothing if none is found.
+{%- endcomment -%}
+{%- liquid
+  assign result = ''
+  if product.metafields.custom.concentration != blank
+    assign result = product.metafields.custom.concentration.value
+  else
+    assign tag_text = product.tags | join: ' '
+    assign hay = product.title | append: ' ' | append: product.type | append: ' ' | append: tag_text | downcase
+    assign hay = hay | replace: '-', ' ' | replace: ',', ' ' | replace: '(', ' ' | replace: ')', ' ' | replace: '/', ' ' | replace: '.', ' ' | prepend: ' ' | append: ' '
+    if hay contains 'extrait'
+      assign result = 'Extrait de Parfum'
+    elsif hay contains 'eau de parfum' or hay contains ' edp '
+      assign result = 'Eau de Parfum'
+    elsif hay contains 'eau de toilette' or hay contains ' edt '
+      assign result = 'Eau de Toilette'
+    elsif hay contains 'eau de cologne' or hay contains ' edc ' or hay contains ' cologne '
+      assign result = 'Eau de Cologne'
+    elsif hay contains ' parfum ' or hay contains ' perfume oil '
+      assign result = 'Parfum'
+    elsif hay contains 'body mist' or hay contains 'hair mist'
+      assign result = 'Mist'
+    endif
+  endif
+-%}
+{{- result -}}

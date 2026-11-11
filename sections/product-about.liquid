@@ -1,0 +1,58 @@
+{%- liquid
+  assign mf = product.metafields.custom
+  assign heart = mf.heart_notes | default: mf.middle_notes
+  capture concentration
+    render 'product-concentration', product: product
+  endcapture
+  assign concentration = concentration | strip
+  capture size_text
+    render 'product-sizes', product: product
+  endcapture
+  assign size_text = size_text | strip
+  assign has_notes = false
+  if mf.top_notes != blank or heart != blank or mf.base_notes != blank
+    assign has_notes = true
+  endif
+-%}
+{%- if product.description != blank or has_notes -%}
+<section id="ProductAbout" class="section section--{{ section.settings.background }} product-about" style="--pt-d: 6rem; --pb-d: 6rem;">
+  <div class="page-width">
+    <div class="product-about__grid">
+      <div class="product-about__story">
+        <p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow | escape }}</p>
+        <h2 class="h2">{{ product.title | escape }}</h2>
+        {%- if product.vendor != blank -%}<p class="product-about__by">{{ 'products.product.by_vendor' | t: vendor: product.vendor | escape }}</p>{%- endif -%}
+        {%- if product.description != blank -%}
+          <div class="rte product-about__text">{{ product.description }}</div>
+        {%- endif -%}
+      </div>
+      <div class="product-about__side">
+        {%- if has_notes -%}
+          <div class="pyramid">
+            <h3 class="label">{{ 'products.product.notes.title' | t }}</h3>
+            <ol class="pyramid__list" role="list">
+              {%- if mf.top_notes != blank -%}<li class="pyramid__tier pyramid__tier--top"><span class="pyramid__label label">{{ 'products.product.notes.top' | t }}</span><span class="pyramid__notes">{% render 'metafield-text', field: mf.top_notes %}</span><span class="pyramid__hint">{{ 'products.product.notes.top_hint' | t }}</span></li>{%- endif -%}
+              {%- if heart != blank -%}<li class="pyramid__tier pyramid__tier--heart"><span class="pyramid__label label">{{ 'products.product.notes.heart' | t }}</span><span class="pyramid__notes">{% render 'metafield-text', field: heart %}</span><span class="pyramid__hint">{{ 'products.product.notes.heart_hint' | t }}</span></li>{%- endif -%}
+              {%- if mf.base_notes != blank -%}<li class="pyramid__tier pyramid__tier--base"><span class="pyramid__label label">{{ 'products.product.notes.base' | t }}</span><span class="pyramid__notes">{% render 'metafield-text', field: mf.base_notes %}</span><span class="pyramid__hint">{{ 'products.product.notes.base_hint' | t }}</span></li>{%- endif -%}
+            </ol>
+          </div>
+        {%- endif -%}
+        <div class="product-about__facts">
+          <h3 class="label">{{ 'products.product.tabs.details' | t }}</h3>
+          {% render 'product-details-table', product: product, concentration: concentration, size_text: size_text, current_variant: product.selected_or_first_available_variant, show_sku: false %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "About the fragrance",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "About the fragrance" },
+    { "type": "select", "id": "background", "label": "Background", "options": [ { "value": "white", "label": "White" }, { "value": "ivory", "label": "Ivory" }, { "value": "cloud", "label": "Light grey" } ], "default": "ivory" }
+  ]
+}
+{% endschema %}

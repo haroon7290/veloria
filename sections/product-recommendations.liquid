@@ -1,0 +1,33 @@
+<div data-recommendations data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.limit }}&intent={{ section.settings.intent }}">
+  {%- if recommendations.performed? and recommendations.products_count > 0 -%}
+    <section class="section section--{{ section.settings.background }} recommendations" style="--pt-d: 6rem; --pb-d: 6rem;">
+      <div class="page-width">
+        <div class="section-header section-header--split">
+          <div class="section-header__text">
+            {%- if section.settings.eyebrow != blank -%}<p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+            <h2>{{ section.settings.heading | escape }}</h2>
+          </div>
+        </div>
+        <ul class="product-grid product-grid--4" role="list">
+          {%- for rec in recommendations.products -%}
+            <li>{% render 'product-card', card_product: rec, section_id: section.id, index: forloop.index0 %}</li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </section>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Product recommendations",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "Recommended" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "You may also like" },
+    { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 8, "step": 1, "default": 4 },
+    { "type": "select", "id": "intent", "label": "Recommendation type", "info": "Complementary products are chosen per product in the Shopify Search & Discovery app. The section stays hidden until some are set.", "options": [ { "value": "related", "label": "Related (automatic)" }, { "value": "complementary", "label": "Complementary (set in Search & Discovery)" } ], "default": "related" },
+    { "type": "select", "id": "background", "label": "Background", "options": [ { "value": "white", "label": "White" }, { "value": "ivory", "label": "Ivory" } ], "default": "white" }
+  ],
+  "presets": [ { "name": "Product recommendations" } ]
+}
+{% endschema %}

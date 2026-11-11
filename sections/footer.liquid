@@ -1,0 +1,201 @@
+{%- liquid
+  assign has_social_links = false
+  if settings.social_instagram != blank or settings.social_facebook != blank or settings.social_tiktok != blank or settings.social_pinterest != blank or settings.social_youtube != blank or settings.contact_email != blank
+    assign has_social_links = true
+  endif
+  assign col_count = 0
+  for b in section.blocks
+    case b.type
+      when 'brand'
+        continue
+      when 'connect'
+        if has_social_links or request.design_mode
+          assign col_count = col_count | plus: 1
+        endif
+      when 'links'
+        if b.settings.menu != blank or request.design_mode
+          assign col_count = col_count | plus: 1
+        endif
+      else
+        assign col_count = col_count | plus: 1
+    endcase
+  endfor
+  if col_count < 1
+    assign col_count = 1
+  endif
+  assign show_country = false
+  if section.settings.show_country and localization.available_countries.size > 1
+    assign show_country = true
+  endif
+  assign show_language = false
+  if section.settings.show_language and localization.available_languages.size > 1
+    assign show_language = true
+  endif
+-%}
+<footer class="footer footer--{{ section.settings.background }}" style="--footer-cols: {{ col_count }};">
+  <div class="page-width footer__top">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'brand' -%}
+          <div class="footer__brand" {{ block.shopify_attributes }}>
+            <a href="{{ routes.root_url }}" class="footer__logo">
+              {%- if settings.logo_inverse != blank -%}
+                {{ settings.logo_inverse | image_url: width: 440 | image_tag: alt: shop.name, loading: 'lazy' }}
+              {%- else -%}
+                <img src="{{ 'valoria-logo-light.svg' | asset_url }}" alt="{{ shop.name | escape }}" width="220" height="46" loading="lazy">
+              {%- endif -%}
+            </a>
+            {%- if block.settings.text != blank -%}<div class="footer__text rte">{{ block.settings.text }}</div>{%- endif -%}
+            {%- if block.settings.show_social -%}{% render 'social-icons' %}{%- endif -%}
+          </div>
+        {%- when 'links' -%}
+          {%- if block.settings.menu != blank or request.design_mode -%}
+          <div class="footer__col" {{ block.shopify_attributes }}>
+            {%- if block.settings.heading != blank -%}<h2 class="footer__heading label">{{ block.settings.heading | escape }}</h2>{%- endif -%}
+            {%- if block.settings.menu != blank -%}
+              <ul class="footer__list" role="list">
+                {%- for link in block.settings.menu.links -%}
+                  <li><a href="{{ link.url }}" class="link-underline"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a></li>
+                {%- endfor -%}
+              </ul>
+            {%- elsif request.design_mode -%}
+              <p class="footer__text">{{ 'sections.footer.choose_menu' | t }}</p>
+            {%- endif -%}
+          </div>
+          {%- endif -%}
+        {%- when 'connect' -%}
+          {%- assign has_connect = has_social_links -%}
+          {%- if has_connect or request.design_mode -%}
+            <div class="footer__col" {{ block.shopify_attributes }}>
+              {%- if block.settings.heading != blank -%}<h2 class="footer__heading label">{{ block.settings.heading | escape }}</h2>{%- endif -%}
+              <ul class="footer__list" role="list">
+                {%- if settings.social_instagram != blank -%}<li><a href="{{ settings.social_instagram }}" class="link-underline" target="_blank" rel="noopener">Instagram</a></li>{%- endif -%}
+                {%- if settings.social_facebook != blank -%}<li><a href="{{ settings.social_facebook }}" class="link-underline" target="_blank" rel="noopener">Facebook</a></li>{%- endif -%}
+                {%- if settings.social_tiktok != blank -%}<li><a href="{{ settings.social_tiktok }}" class="link-underline" target="_blank" rel="noopener">TikTok</a></li>{%- endif -%}
+                {%- if settings.social_pinterest != blank -%}<li><a href="{{ settings.social_pinterest }}" class="link-underline" target="_blank" rel="noopener">Pinterest</a></li>{%- endif -%}
+                {%- if settings.social_youtube != blank -%}<li><a href="{{ settings.social_youtube }}" class="link-underline" target="_blank" rel="noopener">YouTube</a></li>{%- endif -%}
+                {%- if settings.contact_email != blank -%}<li><a href="mailto:{{ settings.contact_email | strip }}" class="link-underline">{{ 'sections.footer.email' | t }}</a></li>{%- endif -%}
+              </ul>
+              {%- if has_connect == false -%}<p class="footer__text">{{ 'sections.footer.connect_empty' | t }}</p>{%- endif -%}
+            </div>
+          {%- endif -%}
+        {%- when 'newsletter' -%}
+          <div class="footer__newsletter footer__col" {{ block.shopify_attributes }}>
+            {%- if block.settings.heading != blank -%}<h2 class="footer__heading label">{{ block.settings.heading | escape }}</h2>{%- endif -%}
+            {%- if block.settings.text != blank -%}<p class="footer__text">{{ block.settings.text | escape }}</p>{%- endif -%}
+            {% render 'newsletter-form', form_id: 'FooterNewsletter', button_class: 'button--white' %}
+          </div>
+        {%- when 'text' -%}
+          <div class="footer__col" {{ block.shopify_attributes }}>
+            {%- if block.settings.heading != blank -%}<h2 class="footer__heading label">{{ block.settings.heading | escape }}</h2>{%- endif -%}
+            <div class="footer__text rte">{{ block.settings.text }}</div>
+          </div>
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+
+  {%- if show_country or show_language -%}
+    <div class="page-width footer__localization">
+      {%- if show_country -%}
+        {%- form 'localization', id: 'FooterCountryForm', class: 'localization-form' -%}
+          <label for="FooterCountry" class="label footer__heading">{{ 'general.localization.country' | t }}</label>
+          <select id="FooterCountry" name="country_code" class="select select--dark" data-localization-select>
+            {%- for country in localization.available_countries -%}
+              <option value="{{ country.iso_code }}"{% if country.iso_code == localization.country.iso_code %} selected{% endif %}>{{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})</option>
+            {%- endfor -%}
+          </select>
+          <noscript><button type="submit" class="button button--light">{{ 'general.localization.update' | t }}</button></noscript>
+        {%- endform -%}
+      {%- endif -%}
+      {%- if show_language -%}
+        {%- form 'localization', id: 'FooterLanguageForm', class: 'localization-form' -%}
+          <label for="FooterLanguage" class="label footer__heading">{{ 'general.localization.language' | t }}</label>
+          <select id="FooterLanguage" name="language_code" class="select select--dark" data-localization-select>
+            {%- for language in localization.available_languages -%}
+              <option value="{{ language.iso_code }}"{% if language.iso_code == localization.language.iso_code %} selected{% endif %}>{{ language.endonym_name | capitalize }}</option>
+            {%- endfor -%}
+          </select>
+          <noscript><button type="submit" class="button button--light">{{ 'general.localization.update' | t }}</button></noscript>
+        {%- endform -%}
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="page-width footer__bottom">
+    <p class="footer__copyright">&copy; {{ 'now' | date: '%Y' }} {{ shop.name | link_to: routes.root_url }}{% if section.settings.company_details != blank %} · {{ section.settings.company_details | escape }}{% endif %}</p>
+    {%- if shop.policies.size > 0 -%}
+      <ul class="footer__policies" role="list">
+        {%- for policy in shop.policies -%}
+          {%- if policy != blank -%}<li><a href="{{ policy.url }}">{{ policy.title | escape }}</a></li>{%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+    {%- if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+      <ul class="payment-icons" role="list" aria-label="{{ 'sections.footer.payment' | t }}">
+        {%- for type in shop.enabled_payment_types -%}
+          <li>{{ type | payment_type_svg_tag }}</li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "section-footer",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "select", "id": "background", "label": "Background", "options": [ { "value": "ink", "label": "Black" }, { "value": "charcoal", "label": "Charcoal" } ], "default": "ink" },
+    { "type": "text", "id": "company_details", "label": "Company details", "info": "For example your registered company name, number and address. Required for UK limited companies." },
+    { "type": "checkbox", "id": "show_country", "label": "Show country/region selector", "info": "Appears when you sell to more than one country in Settings › Markets.", "default": true },
+    { "type": "checkbox", "id": "show_language", "label": "Show language selector", "info": "Appears when more than one language is published.", "default": true },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Brand",
+      "limit": 1,
+      "settings": [
+        { "type": "richtext", "id": "text", "label": "Brand statement", "default": "<p>A curated destination for designer fragrance, inspired by the quiet elegance of London.</p>" },
+        { "type": "checkbox", "id": "show_social", "label": "Show social icons", "info": "Add links in Theme settings › Social media.", "default": false }
+      ]
+    },
+    {
+      "type": "links",
+      "name": "Menu",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Explore" },
+        { "type": "link_list", "id": "menu", "label": "Menu", "default": "footer" }
+      ]
+    },
+    {
+      "type": "connect",
+      "name": "Connect",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Connect" },
+        { "type": "paragraph", "content": "Lists your social profiles and customer email from Theme settings › Social media." }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": "Newsletter",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "An invitation to Valoria" },
+        { "type": "text", "id": "text", "label": "Text", "default": "New arrivals and considered recommendations." }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Customer care" },
+        { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Add your contact details or opening hours.</p>" }
+      ]
+    }
+  ]
+}
+{% endschema %}

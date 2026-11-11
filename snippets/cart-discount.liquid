@@ -1,0 +1,28 @@
+{%- comment -%} Discount code field for the cart drawer and cart page. Params: id {%- endcomment -%}
+{%- if settings.cart_discount -%}
+  {%- assign has_codes = false -%}
+  {%- if cart.discount_codes.size > 0 -%}{%- assign has_codes = true -%}{%- endif -%}
+  <div class="cart-discount" data-cart-discount>
+    {%- if has_codes -%}
+      <ul class="cart-discount__codes" role="list">
+        {%- for d in cart.discount_codes -%}
+          <li class="cart-discount__code{% unless d.applicable %} is-invalid{% endunless %}">
+            {% render 'icon', name: 'tag', class: 'icon--small' %}
+            <span class="cart-discount__name">{{ d.code | escape }}</span>
+            {%- unless d.applicable -%}<span class="cart-discount__status">{{ 'cart.discount.not_applicable' | t }}</span>{%- endunless -%}
+            <button type="button" class="cart-discount__remove" data-discount-remove="{{ d.code | escape }}" aria-label="{{ 'cart.discount.remove' | t: code: d.code | escape }}">{% render 'icon', name: 'close', class: 'icon--small' %}</button>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+    <details class="cart-discount__toggle"{% if has_codes %} open{% endif %}>
+      <summary>{{ 'cart.discount.title' | t }} {% render 'icon', name: 'plus' %}</summary>
+      <div class="cart-discount__form">
+        <label for="Discount-{{ id }}" class="visually-hidden">{{ 'cart.discount.label' | t }}</label>
+        <input id="Discount-{{ id }}" type="text" class="input" placeholder="{{ 'cart.discount.placeholder' | t }}" autocomplete="off" autocapitalize="characters" spellcheck="false" data-discount-input>
+        <button type="button" class="button button--secondary" data-discount-apply>{{ 'cart.discount.apply' | t }}</button>
+      </div>
+      <p class="cart-discount__error" role="alert" data-discount-error hidden></p>
+    </details>
+  </div>
+{%- endif -%}

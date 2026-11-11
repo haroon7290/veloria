@@ -1,0 +1,42 @@
+{
+  "sections": {
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "eyebrow": "Customer care",
+        "heading": "Delivery & returns",
+        "center": true,
+        "background": "none"
+      }
+    },
+    "content": {
+      "type": "main-page",
+      "settings": {
+        "show_title": false,
+        "center": false,
+        "narrow": true,
+        "padding_bottom": 2
+      }
+    },
+    "shipping": {
+      "type": "policy-content",
+      "settings": {
+        "policy": "shipping",
+        "heading": "Delivery"
+      }
+    },
+    "returns": {
+      "type": "policy-content",
+      "settings": {
+        "policy": "refund",
+        "heading": "Returns"
+      }
+    }
+  },
+  "order": [
+    "header",
+    "content",
+    "shipping",
+    "returns"
+  ]
+}

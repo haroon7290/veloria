@@ -1,0 +1,52 @@
+{%- liquid
+  assign messages = section.blocks | where: 'type', 'message'
+-%}
+{%- if messages.size > 0 -%}
+  <div
+    class="announcement announcement--{{ section.settings.display }} announcement--{{ section.settings.background }}"
+    {{ section.shopify_attributes }}
+    data-announcement
+    data-rotate="{% if section.settings.display == 'rotate' or section.settings.display == 'inline' %}true{% else %}false{% endif %}"
+    data-speed="{{ section.settings.speed }}"
+  >
+    <div class="page-width announcement__inner">
+      <ul class="announcement__list" role="list">
+        {%- for block in messages -%}
+          <li class="announcement__message{% if forloop.first %} is-active{% endif %}" {{ block.shopify_attributes }}>
+            {%- if block.settings.link != blank -%}
+              <a href="{{ block.settings.link }}">{{ block.settings.text | escape }}</a>
+            {%- else -%}
+              {{ block.settings.text | escape }}
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "class": "section-announcement",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "select", "id": "display", "label": "With more than one message", "options": [ { "value": "rotate", "label": "Show one at a time" }, { "value": "inline", "label": "Show all in a row on desktop, rotate on mobile" } ], "default": "inline" },
+    { "type": "range", "id": "speed", "label": "Seconds per message", "min": 3, "max": 12, "step": 1, "unit": "s", "default": 6 },
+    { "type": "select", "id": "background", "label": "Background", "options": [ { "value": "ink", "label": "Black" }, { "value": "charcoal", "label": "Charcoal" } ], "default": "ink" }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "Discover the art of fine fragrance" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Announcement bar", "blocks": [ { "type": "message" } ] }
+  ]
+}
+{% endschema %}

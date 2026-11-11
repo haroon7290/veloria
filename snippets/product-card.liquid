@@ -1,0 +1,177 @@
+{%- comment -%}
+  Product card.
+  - card_product: product object (required)
+  - index: position, used to alternate image backgrounds and for eager loading
+  - sizes: image sizes attribute
+  - hide_quick_add: true to suppress quick add
+  - heading_level: 'h2' | 'h3' (default h3)
+  - badge_text: optional label shown on every card in a section (e.g. Bestseller)
+{%- endcomment -%}
+{%- liquid
+  assign i = index | default: 0
+  assign bg = 'var(--c-stone)'
+  case settings.card_image_background
+    when 'stone'
+      assign bg = 'var(--c-stone)'
+    when 'cloud'
+      assign bg = 'var(--c-cloud)'
+    when 'white'
+      assign bg = 'var(--c-white)'
+    else
+      assign alt_mod = i | modulo: 2
+      if alt_mod == 1
+        assign bg = 'var(--c-cloud)'
+      endif
+  endcase
+  assign ratio = '4 / 5'
+  if settings.card_image_ratio == 'square'
+    assign ratio = '1 / 1'
+  endif
+  assign img_sizes = sizes | default: '(min-width: 1200px) 25vw, (min-width: 750px) 33vw, 50vw'
+  assign loading = 'lazy'
+  if i < 2 and eager
+    assign loading = 'eager'
+  endif
+  assign tag = heading_level | default: 'h3'
+  assign concentration = ''
+  capture concentration
+    render 'product-concentration', product: card_product
+  endcapture
+  capture size_text
+    render 'product-sizes', product: card_product
+  endcapture
+  assign concentration = concentration | strip
+  assign size_text = size_text | strip
+  assign on_sale = false
+  if card_product.compare_at_price > card_product.price
+    assign on_sale = true
+  endif
+  assign first_variant = card_product.selected_or_first_available_variant
+  assign label_badge = badge_text
+  if label_badge == blank and settings.card_badge_tag != blank and settings.card_badge_label != blank
+    assign badge_tag = settings.card_badge_tag | strip | downcase
+    for t in card_product.tags
+      assign t_lower = t | downcase
+      if t_lower == badge_tag
+        assign label_badge = settings.card_badge_label
+      endif
+    endfor
+  endif
+  assign family = ''
+  if settings.card_show_family and card_product.metafields.custom.fragrance_family != blank
+    capture family
+      render 'metafield-text', field: card_product.metafields.custom.fragrance_family
+    endcapture
+    assign family = family | strip | strip_html
+  endif
+  assign rating = card_product.metafields.reviews.rating.value
+  assign rating_count = card_product.metafields.reviews.rating_count.value | default: 0
+-%}
+<div class="product-card" style="--card-bg: {{ bg }}; --card-ratio: {{ ratio }};">
+  <div class="product-card__media{% if settings.card_image_ratio == 'natural' %} product-card__media--natural{% endif %}">
+    {%- if card_product.featured_media -%}
+      {{ card_product.featured_media.preview_image | image_url: width: 1200 | image_tag:
+        widths: '240, 360, 480, 600, 800, 1000, 1200',
+        sizes: img_sizes,
+        loading: loading,
+        alt: card_product.featured_media.alt | default: card_product.title,
+        class: 'product-card__img'
+      }}
+      {%- if settings.card_show_second_image and card_product.media[1] != blank -%}
+        {{ card_product.media[1].preview_image | image_url: width: 1200 | image_tag:
+          widths: '240, 360, 480, 600, 800, 1000, 1200',
+          sizes: img_sizes,
+          loading: 'lazy',
+          alt: '',
+          class: 'product-card__img product-card__img--hover'
+        }}
+      {%- endif -%}
+    {%- else -%}
+      {% render 'media-placeholder', label: 'PRODUCT_MEDIA', size: '1600 × 2000 px, added to the product in Shopify', tone: 'stone' %}
+    {%- endif -%}
+
+    <div class="product-card__badges">
+      {%- if card_product.available == false -%}
+        <span class="badge badge--muted">{{ 'products.product.sold_out' | t }}</span>
+      {%- elsif on_sale -%}
+        <span class="badge badge--sale">{{ 'products.product.on_sale' | t }}</span>
+      {%- endif -%}
+      {%- if label_badge != blank and card_product.available -%}
+        <span class="badge badge--label">{{ label_badge | escape }}</span>
+      {%- endif -%}
+    </div>
+
+  </div>
+
+  <div class="product-card__info">
+    {%- if settings.card_show_vendor and card_product.vendor != blank -%}
+      <span class="product-card__vendor">{{ card_product.vendor | escape }}</span>
+    {%- endif -%}
+    <{{ tag }} class="product-card__title">
+      <a href="{{ card_product.url }}" class="product-card__link">{{ card_product.title | escape }}</a>
+    </{{ tag }}>
+    {%- liquid
+      assign concentration_safe = concentration | escape
+      assign size_safe = size_text | escape
+      assign meta_parts = ''
+      if family != blank
+        assign meta_parts = family
+      endif
+      if concentration != blank
+        if meta_parts != blank
+          assign meta_parts = meta_parts | append: ' · '
+        endif
+        assign meta_parts = meta_parts | append: concentration_safe
+      endif
+      if size_text != blank
+        if meta_parts != blank
+          assign meta_parts = meta_parts | append: ' · '
+        endif
+        assign meta_parts = meta_parts | append: size_safe
+      endif
+    -%}
+    {%- if meta_parts != blank -%}
+      <span class="product-card__meta">{{ meta_parts }}</span>
+    {%- endif -%}
+    {%- if settings.card_show_rating and rating != blank and rating.rating > 0 -%}
+      {% render 'rating-stars', rating: rating.rating, scale: rating.scale_max, count: rating_count, size: 'small' %}
+    {%- endif -%}
+    {% render 'price', target: card_product, show_from: true %}
+  </div>
+
+  {%- if settings.card_quick_add and hide_quick_add != true -%}
+    {%- liquid
+      assign simple = false
+      if card_product.has_only_default_variant or card_product.variants.size == 1
+        assign simple = true
+      endif
+    -%}
+    <div class="card-buy">
+      {%- if card_product.available == false -%}
+        <button type="button" class="button button--secondary card-buy__button" disabled>{{ 'products.product.sold_out' | t }}</button>
+      {%- elsif simple -%}
+        {%- form 'product', card_product, class: 'card-buy__form', data-quick-add: '', novalidate: 'novalidate' -%}
+          <input type="hidden" name="id" value="{{ first_variant.id }}">
+          <input type="hidden" name="quantity" value="1">
+          <button type="submit" class="button card-buy__button" aria-label="{{ 'products.product.add_named' | t: title: card_product.title | escape }}">{{ 'products.product.add_to_cart' | t }}</button>
+          <p class="product-form__error small" role="alert" data-form-error hidden></p>
+        {%- endform -%}
+      {%- elsif card_product.options.size == 1 -%}
+        {%- form 'product', card_product, class: 'card-buy__form card-buy__form--select', data-quick-add: '', novalidate: 'novalidate' -%}
+          <input type="hidden" name="quantity" value="1">
+          {%- assign select_id = 'CardSize-' | append: section_id | append: '-' | append: card_product.id -%}
+          <label for="{{ select_id }}" class="visually-hidden">{{ card_product.options.first | escape }}</label>
+          <select id="{{ select_id }}" name="id" class="select card-buy__select">
+            {%- for v in card_product.variants -%}
+              <option value="{{ v.id }}"{% if v.id == first_variant.id %} selected{% endif %}{% unless v.available %} disabled{% endunless %}>{{ v.title | escape }} · {{ v.price | money }}{% unless v.available %} ({{ 'products.product.sold_out' | t }}){% endunless %}</option>
+            {%- endfor -%}
+          </select>
+          <button type="submit" class="button card-buy__button" aria-label="{{ 'products.product.add_named' | t: title: card_product.title | escape }}">{{ 'products.product.add_short' | t }}</button>
+          <p class="product-form__error small" role="alert" data-form-error hidden style="grid-column: 1 / -1"></p>
+        {%- endform -%}
+      {%- else -%}
+        <a href="{{ card_product.url }}" class="button button--secondary card-buy__button">{{ 'products.product.choose_options' | t }}</a>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+</div>

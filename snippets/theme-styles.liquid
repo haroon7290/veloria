@@ -1,0 +1,65 @@
+{%- comment -%} Design tokens from theme settings. {%- endcomment -%}
+{%- liquid
+  if settings.use_house_fonts
+    assign heading_family = '"Bodoni Moda", "Didot", "Times New Roman", serif'
+    assign body_family = 'Inter, "Helvetica Neue", Arial, sans-serif'
+  else
+    assign heading_family = settings.type_heading_font.family | append: ', ' | append: settings.type_heading_font.fallback_families
+    assign body_family = settings.type_body_font.family | append: ', ' | append: settings.type_body_font.fallback_families
+    assign body_medium = settings.type_body_font | font_modify: 'weight', '500'
+    assign body_bold = settings.type_body_font | font_modify: 'weight', 'bold'
+  endif
+-%}
+<style>
+  {%- if settings.use_house_fonts %}
+  @font-face { font-family: "Bodoni Moda"; src: url({{ 'bodoni-moda-400.woff2' | asset_url }}) format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Bodoni Moda"; src: url({{ 'bodoni-moda-500.woff2' | asset_url }}) format("woff2"); font-weight: 500 700; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Bodoni Moda"; src: url({{ 'bodoni-moda-400-italic.woff2' | asset_url }}) format("woff2"); font-weight: 400 700; font-style: italic; font-display: swap; }
+  @font-face { font-family: "Inter"; src: url({{ 'inter-300.woff2' | asset_url }}) format("woff2"); font-weight: 300; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Inter"; src: url({{ 'inter-400.woff2' | asset_url }}) format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+  @font-face { font-family: "Inter"; src: url({{ 'inter-500.woff2' | asset_url }}) format("woff2"); font-weight: 500 700; font-style: normal; font-display: swap; }
+  {%- else %}
+  {{ settings.type_heading_font | font_face: font_display: 'swap' }}
+  {{ settings.type_body_font | font_face: font_display: 'swap' }}
+  {{ body_medium | font_face: font_display: 'swap' }}
+  {{ body_bold | font_face: font_display: 'swap' }}
+  {%- endif %}
+
+  {%- if settings.page_transitions %}
+  @media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }
+  {%- endif %}
+  :root {
+    --c-ink: {{ settings.color_ink }};
+    --c-ink-rgb: {{ settings.color_ink.red }}, {{ settings.color_ink.green }}, {{ settings.color_ink.blue }};
+    --c-stone: {{ settings.color_stone }};
+    --c-paper: {{ settings.color_paper }};
+    --c-cloud: {{ settings.color_cloud }};
+    --c-smoke: {{ settings.color_smoke }};
+    --c-white: {{ settings.color_white }};
+    --c-graphite: {{ settings.color_graphite }};
+    --c-line: {{ settings.color_line }};
+    --c-sale: {{ settings.color_sale }};
+    --c-success: {{ settings.color_success }};
+    --c-error: {{ settings.color_error }};
+    --c-ink-soft: {{ settings.color_ink | color_mix: settings.color_white, 88 }};
+    --c-ivory: {{ settings.color_ivory }};
+    --c-beige: {{ settings.color_beige }};
+    --c-gold: {{ settings.color_gold }};
+    --c-gold-deep: {{ settings.color_gold | color_darken: 30 }};
+    --c-charcoal: {{ settings.color_charcoal }};
+    --c-gold-rgb: {{ settings.color_gold.red }}, {{ settings.color_gold.green }}, {{ settings.color_gold.blue }};
+
+    --font-heading: {{ heading_family }};
+    --font-product: {% if settings.product_name_font == 'heading' %}var(--font-heading){% else %}var(--font-body){% endif %};
+    --font-product-weight: {% if settings.product_name_font == 'heading' %}400{% else %}500{% endif %};
+    --font-body: {{ body_family }};
+    --font-heading-weight: {% if settings.use_house_fonts %}400{% else %}{{ settings.type_heading_font.weight }}{% endif %};
+    --font-body-weight: {% if settings.use_house_fonts %}400{% else %}{{ settings.type_body_font.weight }}{% endif %};
+    --font-body-light: {% if settings.use_house_fonts %}300{% else %}{{ settings.type_body_font.weight }}{% endif %};
+    --heading-scale: {{ settings.heading_scale | divided_by: 100.0 }};
+    --body-scale: {{ settings.body_scale | divided_by: 100.0 }};
+
+    --page-width: {{ settings.page_width }}px;
+    --logo-width: {{ settings.logo_width }}px;
+  }
+</style>

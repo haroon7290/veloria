@@ -1,0 +1,47 @@
+<div id="CartDrawer" class="drawer drawer--right cart-drawer" role="dialog" aria-modal="true" aria-labelledby="CartDrawerTitle" tabindex="-1" data-drawer data-cart-drawer>
+  <div class="drawer__header">
+    <h2 id="CartDrawerTitle" class="drawer__title">{{ 'cart.general.title' | t }} <span class="text-secondary small" data-cart-drawer-count>({{ cart.item_count }})</span></h2>
+    <button type="button" class="icon-button" data-drawer-close>{% render 'icon', name: 'close' %}<span class="visually-hidden">{{ 'cart.general.close' | t }}</span></button>
+  </div>
+  <div class="drawer__body" data-cart-drawer-body>
+    {%- if cart.item_count > 0 -%}
+      {% render 'cart-progress' %}
+      {% render 'cart-line-items', show_line_total: false %}
+      {%- if settings.cart_recommendations -%}
+        {%- assign first_item = cart.items.first -%}
+        <div class="cart-recs" data-cart-recs data-url="{{ routes.product_recommendations_url }}?section_id=cart-recommendations&product_id={{ first_item.product_id }}&limit=6&intent=related" hidden>
+          <p class="label cart-recs__heading">{{ settings.cart_recommendations_heading | escape }}</p>
+          <div data-cart-recs-list></div>
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      <div class="cart-empty">
+        <p class="h3">{{ 'cart.general.empty' | t }}</p>
+        <p class="text-secondary">{{ 'cart.general.empty_text' | t }}</p>
+        <a href="{{ routes.all_products_collection_url }}" class="button">{{ 'cart.general.continue_shopping' | t }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+  {%- if cart.item_count > 0 -%}
+    <div class="drawer__footer" data-cart-drawer-footer>
+      <div class="cart-summary">
+        {% render 'cart-discount', id: 'drawer' %}
+        {%- if cart.cart_level_discount_applications != blank -%}
+          {%- for discount in cart.cart_level_discount_applications -%}
+            <div class="cart-summary__row small"><span>{{ discount.title | escape }}</span><span>−{{ discount.total_allocated_amount | money }}</span></div>
+          {%- endfor -%}
+        {%- endif -%}
+        <div class="cart-summary__row cart-summary__total"><span>{{ 'cart.general.subtotal' | t }}</span><span>{{ cart.total_price | money_with_currency }}</span></div>
+        <p class="cart-summary__note">{{ 'cart.general.taxes_and_shipping_at_checkout' | t }}</p>
+        {%- if settings.cart_delivery_note != blank -%}<div class="cart-summary__note rte">{{ settings.cart_delivery_note }}</div>{%- endif -%}
+        <form action="{{ routes.cart_url }}" method="post" id="CartDrawerForm">
+          <button type="submit" name="checkout" class="button button--full">{% render 'icon', name: 'lock', class: 'icon--small' %}{{ 'cart.general.checkout' | t }}</button>
+        </form>
+        <div class="cart-drawer__links">
+          <button type="button" class="link-underline" data-drawer-close>{{ 'cart.general.continue_shopping' | t }}</button>
+          <a href="{{ routes.cart_url }}" class="link-underline">{{ 'cart.general.view_bag' | t }}</a>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+</div>

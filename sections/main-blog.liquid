@@ -1,0 +1,41 @@
+<header class="page-header page-header--center">
+  <div class="page-width"><div class="page-header__inner">
+    <span class="eyebrow" style="margin:0">{{ 'blogs.journal' | t }}</span>
+    <h1>{{ blog.title | escape }}</h1>
+  </div></div>
+</header>
+<div class="page-width" style="padding-bottom:6rem">
+  {%- if blog.all_tags.size > 0 -%}
+    <ul class="blog-tags" role="list">
+      <li><a href="{{ blog.url }}"{% unless current_tags %} aria-current="page"{% endunless %}>{{ 'blogs.all' | t }}</a></li>
+      {%- for tag in blog.all_tags -%}
+        <li><a href="{{ blog.url }}/tagged/{{ tag | handleize }}"{% if current_tags contains tag %} aria-current="page"{% endif %}>{{ tag | escape }}</a></li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+  {%- paginate blog.articles by 9 -%}
+    <ul class="journal-grid" role="list">
+      {%- for article in blog.articles -%}
+        <li>
+          <a href="{{ article.url }}" class="journal-card">
+            <div class="journal-card__media">
+              {%- if article.image -%}
+                {{ article.image | image_url: width: 1000 | image_tag: widths: '400, 600, 800, 1000', sizes: '(min-width: 750px) 33vw, 100vw', loading: 'lazy', alt: article.image.alt | default: '' }}
+              {%- else -%}
+                {% render 'media-placeholder', label: 'ARTICLE_IMAGE', size: '1800 × 1200 px (3:2)', tone: 'beige', word: article.title %}
+              {%- endif -%}
+            </div>
+            <span class="label text-secondary">{{ article.published_at | time_tag: format: 'date' }}</span>
+            <h2 class="journal-card__title">{{ article.title | escape }}</h2>
+            {%- if article.excerpt != blank -%}<span class="journal-card__excerpt">{{ article.excerpt | strip_html | truncate: 140 }}</span>{%- endif -%}
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+    {% render 'pagination', paginate: paginate %}
+  {%- endpaginate -%}
+</div>
+
+{% schema %}
+{ "name": "Blog posts", "settings": [] }
+{% endschema %}

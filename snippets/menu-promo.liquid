@@ -1,0 +1,16 @@
+{%- comment -%} Image card inside a dropdown or the mobile menu. Params: promo (header block), sizes {%- endcomment -%}
+{%- liquid
+  assign p = promo.settings
+  assign href = p.link | default: routes.all_products_collection_url
+-%}
+<a href="{{ href }}" class="menu-promo">
+  <span class="menu-promo__media">
+    {%- if p.image != blank -%}
+      {{ p.image | image_url: width: 900 | image_tag: widths: '300, 450, 600, 900', sizes: sizes, loading: 'lazy', alt: p.image.alt | default: '' }}
+    {%- else -%}
+      {% render 'media-placeholder', label: 'MEGA_MENU_IMAGE', size: '900 × 1125 px', tone: 'beige' %}
+    {%- endif -%}
+  </span>
+  {%- if p.heading != blank -%}<span class="menu-promo__heading">{{ p.heading | escape }}</span>{%- endif -%}
+  {%- if p.link_label != blank -%}<span class="menu-promo__cta">{{ p.link_label | escape }}</span>{%- endif -%}
+</a>

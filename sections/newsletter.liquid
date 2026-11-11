@@ -1,0 +1,47 @@
+{%- liquid
+  assign s = section.settings
+  assign dark = false
+  if s.background == 'ink' or s.background == 'charcoal'
+    assign dark = true
+  endif
+-%}
+<section class="section newsletter section--{{ s.background }}" style="--pt: {{ s.padding_top | times: 0.6 }}rem; --pb: {{ s.padding_bottom | times: 0.6 }}rem; --pt-d: {{ s.padding_top }}rem; --pb-d: {{ s.padding_bottom }}rem;">
+  <div class="page-width">
+    <div class="newsletter__inner reveal">
+      {%- if s.show_mark -%}
+        <img class="newsletter__mark" src="{{ 'valoria-compact-dark.svg' | asset_url }}" alt="" width="40" height="40" loading="lazy">
+      {%- endif -%}
+      {%- if s.eyebrow != blank -%}<p class="eyebrow">{{ s.eyebrow | escape }}</p>{%- endif -%}
+      {%- if s.heading != blank -%}<h2>{{ s.heading | escape }}</h2>{%- endif -%}
+      {%- if s.text != blank -%}<div class="newsletter__text rte">{{ s.text }}</div>{%- endif -%}
+      {%- liquid
+        assign btn_class = ''
+        if dark
+          assign btn_class = 'button--white'
+        endif
+      -%}
+      {% render 'newsletter-form', form_id: 'NewsletterSection', button_class: btn_class, button_label: s.button_label %}
+      {%- if s.note != blank -%}<div class="newsletter__note rte">{{ s.note }}</div>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "class": "section-newsletter",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "The list" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "An invitation to Valoria" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Be the first to discover new fragrances, exclusive releases and stories from our world.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Join the list" },
+    { "type": "richtext", "id": "note", "label": "Small print", "default": "<p>Unsubscribe at any time.</p>" },
+    { "type": "checkbox", "id": "show_mark", "label": "Show Valoria mark", "default": false },
+    { "type": "select", "id": "background", "label": "Background", "options": [ { "value": "ivory", "label": "Ivory" }, { "value": "white", "label": "White" }, { "value": "cloud", "label": "Light grey" }, { "value": "charcoal", "label": "Charcoal" } ], "default": "ivory" },
+    { "type": "range", "id": "padding_top", "label": "Space above", "min": 0, "max": 10, "step": 1, "unit": "rem", "default": 7 },
+    { "type": "range", "id": "padding_bottom", "label": "Space below", "min": 0, "max": 10, "step": 1, "unit": "rem", "default": 7 },
+    { "type": "paragraph", "content": "Sign-ups are saved as customers in Shopify with email marketing consent, tagged newsletter." }
+  ],
+  "presets": [ { "name": "Newsletter" } ]
+}
+{% endschema %}

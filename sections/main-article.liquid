@@ -1,0 +1,32 @@
+<article class="article" itemscope itemtype="https://schema.org/BlogPosting">
+  <header class="page-header page-header--center">
+    <div class="page-width"><div class="page-header__inner">
+      <a href="{{ blog.url }}" class="eyebrow" style="margin:0;text-decoration:none">{{ blog.title | escape }}</a>
+      <h1 itemprop="headline">{{ article.title | escape }}</h1>
+      <p class="article__meta" style="margin:0">{{ article.published_at | time_tag: format: 'date' }}{% if section.settings.show_author %} · {{ article.author | escape }}{% endif %}</p>
+    </div></div>
+  </header>
+  {%- if article.image -%}
+    <div class="page-width"><div class="article__hero">
+      {{ article.image | image_url: width: 2000 | image_tag: widths: '800, 1200, 1600, 2000', sizes: '100vw', loading: 'eager', alt: article.image.alt | default: article.title }}
+    </div></div>
+  {%- endif -%}
+  <div class="page-width page-width--text">
+    <div class="rte article__body" itemprop="articleBody">{{ article.content }}</div>
+    <footer class="article__footer">
+      <a href="{{ blog.url }}">{{ 'blogs.back' | t: title: blog.title | escape }}</a>
+      {%- if article.tags.size > 0 -%}<span class="small text-secondary">{{ article.tags | join: ', ' | escape }}</span>{%- endif -%}
+    </footer>
+  </div>
+</article>
+
+<script type="application/ld+json">
+  {{ article | structured_data }}
+</script>
+
+{% schema %}
+{
+  "name": "Article",
+  "settings": [ { "type": "checkbox", "id": "show_author", "label": "Show author", "default": false } ]
+}
+{% endschema %}

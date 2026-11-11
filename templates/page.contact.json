@@ -1,0 +1,37 @@
+{
+  "sections": {
+    "header": {
+      "type": "page-header",
+      "settings": {
+        "eyebrow": "Customer care",
+        "heading": "Contact us",
+        "text": "<p>Questions about an order or a fragrance? Send us a message and we will reply by email.</p>",
+        "center": true,
+        "background": "none"
+      }
+    },
+    "form": {
+      "type": "contact-form",
+      "settings": {
+        "heading": "Send us a message",
+        "show_store_email": true,
+        "show_store_phone": true,
+        "show_store_address": false
+      }
+    },
+    "content": {
+      "type": "main-page",
+      "settings": {
+        "show_title": false,
+        "center": false,
+        "narrow": true,
+        "padding_bottom": 4
+      }
+    }
+  },
+  "order": [
+    "header",
+    "form",
+    "content"
+  ]
+}

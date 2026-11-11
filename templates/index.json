@@ -1,0 +1,646 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "layout": "full",
+        "height": "screen",
+        "content_position": "bottom-left",
+        "image_position": "right",
+        "overlay": 25,
+        "background": "ink",
+        "header_overlay": true,
+        "show_scroll_cue": true,
+        "eyebrow": "Valoria London",
+        "heading": "The art of",
+        "heading_line_2": "exceptional fragrance.",
+        "heading_tag": "h1",
+        "text": "<p>Discover a curated world of designer fragrance, chosen to leave a lasting impression.</p>",
+        "button_label_1": "Explore the collection",
+        "button_link_1": "shopify://collections/all",
+        "button_label_2": "Discover Valoria",
+        "button_link_2": "shopify://pages/about-us"
+      }
+    },
+    "shop": {
+      "type": "shop-tabs",
+      "blocks": {
+        "cat-1": {
+          "type": "category",
+          "settings": {
+            "collection": "all",
+            "label": "All"
+          }
+        },
+        "cat-2": {
+          "type": "category",
+          "settings": {
+            "collection": "bestsellers",
+            "label": "Bestsellers"
+          }
+        },
+        "cat-3": {
+          "type": "category",
+          "settings": {
+            "collection": "new-arrivals",
+            "label": "New in"
+          }
+        },
+        "cat-4": {
+          "type": "category",
+          "settings": {
+            "collection": "womens-fragrances",
+            "label": "For her"
+          }
+        },
+        "cat-5": {
+          "type": "category",
+          "settings": {
+            "collection": "mens-fragrances",
+            "label": "For him"
+          }
+        },
+        "cat-6": {
+          "type": "category",
+          "settings": {
+            "collection": "unisex-fragrances",
+            "label": "Unisex"
+          }
+        },
+        "cat-7": {
+          "type": "category",
+          "settings": {
+            "collection": "fresh-citrus",
+            "label": "Fresh & Citrus"
+          }
+        },
+        "cat-8": {
+          "type": "category",
+          "settings": {
+            "collection": "floral",
+            "label": "Floral"
+          }
+        },
+        "cat-9": {
+          "type": "category",
+          "settings": {
+            "collection": "woody",
+            "label": "Woody"
+          }
+        },
+        "cat-10": {
+          "type": "category",
+          "settings": {
+            "collection": "amber-spice",
+            "label": "Amber & Spice"
+          }
+        },
+        "cat-11": {
+          "type": "category",
+          "settings": {
+            "collection": "gourmand",
+            "label": "Gourmand"
+          }
+        },
+        "cat-12": {
+          "type": "category",
+          "settings": {
+            "collection": "gifts",
+            "label": "Gifts"
+          }
+        }
+      },
+      "block_order": [
+        "cat-1",
+        "cat-2",
+        "cat-3",
+        "cat-4",
+        "cat-5",
+        "cat-6",
+        "cat-7",
+        "cat-8",
+        "cat-9",
+        "cat-10",
+        "cat-11",
+        "cat-12"
+      ],
+      "settings": {
+        "eyebrow": "Shop",
+        "heading": "Find your fragrance",
+        "show_search": true,
+        "products_per_tab": 8,
+        "background": "white",
+        "padding_top": 4
+      }
+    },
+    "trust": {
+      "type": "trust-strip",
+      "blocks": {
+        "t1": {
+          "type": "item",
+          "settings": {
+            "icon": "sparkle",
+            "title": "Genuine designer fragrances",
+            "text": "From established fragrance houses"
+          }
+        },
+        "t2": {
+          "type": "item",
+          "settings": {
+            "icon": "lock",
+            "title": "Secure checkout",
+            "text": "Powered by Shopify"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2"
+      ],
+      "settings": {
+        "label": "Shopping with Valoria"
+      }
+    },
+    "intro": {
+      "type": "editorial-split",
+      "settings": {
+        "image_ratio": "portrait",
+        "image_position": "right",
+        "proportion": "asymmetric",
+        "background": "white",
+        "padding_top": 7,
+        "padding_bottom": 8,
+        "eyebrow": "Valoria London",
+        "heading": "A signature",
+        "heading_accent": "of elegance.",
+        "text": "<p>Fragrance is more than a scent. It is an expression of character, a reflection of individuality, and a memory that stays long after the moment has passed.</p><p>At Valoria London, we bring together exceptional designer fragrances from established houses, chosen with an eye for character, craft and the finer details.</p>",
+        "button_label": "Our story",
+        "button_link": "shopify://pages/about-us",
+        "button_style": "link",
+        "placeholder_label": "BRAND_INTRODUCTION_IMAGE"
+      }
+    },
+    "collections": {
+      "type": "collection-list",
+      "blocks": {
+        "col-1": {
+          "type": "collection",
+          "settings": {
+            "collection": "womens-fragrances",
+            "title": "For Her",
+            "text": "Luminous florals, soft ambers and modern classics."
+          }
+        },
+        "col-2": {
+          "type": "collection",
+          "settings": {
+            "collection": "mens-fragrances",
+            "title": "For Him",
+            "text": "Woods, spice and fresh aromatics with quiet confidence."
+          }
+        },
+        "col-3": {
+          "type": "collection",
+          "settings": {
+            "collection": "unisex-fragrances",
+            "title": "Unisex",
+            "text": "Fragrances that belong to whoever wears them."
+          }
+        },
+        "col-4": {
+          "type": "collection",
+          "settings": {
+            "collection": "bestsellers",
+            "title": "Bestsellers",
+            "text": "The scents our customers return to."
+          }
+        },
+        "col-5": {
+          "type": "collection",
+          "settings": {
+            "collection": "new-arrivals",
+            "title": "New Arrivals",
+            "text": "The latest additions to the collection."
+          }
+        },
+        "col-6": {
+          "type": "collection",
+          "settings": {
+            "collection": "gifts",
+            "title": "The Gift Edit",
+            "text": "Considered choices for someone special."
+          }
+        }
+      },
+      "block_order": [
+        "col-1",
+        "col-2",
+        "col-3",
+        "col-4",
+        "col-5",
+        "col-6"
+      ],
+      "settings": {
+        "eyebrow": "Collections",
+        "heading": "Explore our world of fragrance",
+        "header_alignment": "split",
+        "layout": "editorial",
+        "image_ratio": "portrait",
+        "link_text": "Explore collection",
+        "link_label": "All collections",
+        "link": "shopify://collections",
+        "background": "ivory",
+        "padding_top": 7,
+        "padding_bottom": 7
+      }
+    },
+    "signature": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "Bestsellers",
+        "heading": "The Signature Edit",
+        "text": "<p>Discover the fragrances that define the Valoria London experience.</p>",
+        "header_alignment": "split",
+        "source": "collection",
+        "collection": "bestsellers",
+        "products_to_show": 8,
+        "badge_label": "Bestseller",
+        "layout": "carousel",
+        "columns": "4",
+        "link_label": "Shop the edit",
+        "background": "white",
+        "padding_top": 7,
+        "padding_bottom": 7
+      }
+    },
+    "campaign": {
+      "type": "hero",
+      "settings": {
+        "layout": "full",
+        "height": "large",
+        "content_position": "middle-left",
+        "image_position": "right",
+        "overlay": 30,
+        "background": "ink",
+        "header_overlay": false,
+        "show_scroll_cue": false,
+        "eyebrow": "The campaign",
+        "heading": "More than a fragrance.",
+        "heading_line_2": "An expression of you.",
+        "heading_tag": "h2",
+        "text": "<p>Every fragrance tells a story. Find the one that becomes part of yours.</p>",
+        "button_label_1": "Discover the collection",
+        "button_link_1": "shopify://collections/all"
+      }
+    },
+    "families": {
+      "type": "scent-families",
+      "blocks": {
+        "family-1": {
+          "type": "family",
+          "settings": {
+            "title": "Fresh & Citrus",
+            "text": "Bright, clean and effortless",
+            "collection": "fresh-citrus",
+            "use_collection_image": true
+          }
+        },
+        "family-2": {
+          "type": "family",
+          "settings": {
+            "title": "Floral",
+            "text": "Petals, powder and softness",
+            "collection": "floral",
+            "use_collection_image": true
+          }
+        },
+        "family-3": {
+          "type": "family",
+          "settings": {
+            "title": "Woody",
+            "text": "Cedar, sandalwood and vetiver",
+            "collection": "woody",
+            "use_collection_image": true
+          }
+        },
+        "family-4": {
+          "type": "family",
+          "settings": {
+            "title": "Amber & Spice",
+            "text": "Warm, resinous and rich",
+            "collection": "amber-spice",
+            "use_collection_image": true
+          }
+        },
+        "family-5": {
+          "type": "family",
+          "settings": {
+            "title": "Gourmand",
+            "text": "Vanilla, tonka and cocoa",
+            "collection": "gourmand",
+            "use_collection_image": true
+          }
+        }
+      },
+      "block_order": [
+        "family-1",
+        "family-2",
+        "family-3",
+        "family-4",
+        "family-5"
+      ],
+      "settings": {
+        "eyebrow": "Fragrance families",
+        "heading": "Shop by fragrance family",
+        "link_label": "All fragrances",
+        "link": "shopify://collections/all",
+        "card_link_label": "Explore",
+        "style": "overlay",
+        "background": "white",
+        "padding_top": 4,
+        "padding_bottom": 7
+      }
+    },
+    "finder": {
+      "type": "scent-finder",
+      "blocks": {
+        "mood-1": {
+          "type": "mood",
+          "settings": {
+            "collection": "fresh-citrus",
+            "title": "Fresh & Citrus",
+            "mood": "Bright, clean and effortless"
+          }
+        },
+        "mood-2": {
+          "type": "mood",
+          "settings": {
+            "collection": "floral",
+            "title": "Floral",
+            "mood": "Petals, powder and softness"
+          }
+        },
+        "mood-3": {
+          "type": "mood",
+          "settings": {
+            "collection": "woody",
+            "title": "Woody",
+            "mood": "Cedar, sandalwood and vetiver"
+          }
+        },
+        "mood-4": {
+          "type": "mood",
+          "settings": {
+            "collection": "amber-spice",
+            "title": "Amber & Spice",
+            "mood": "Warm, resinous and rich"
+          }
+        },
+        "mood-5": {
+          "type": "mood",
+          "settings": {
+            "collection": "gourmand",
+            "title": "Gourmand",
+            "mood": "Vanilla, tonka and cocoa"
+          }
+        }
+      },
+      "block_order": [
+        "mood-1",
+        "mood-2",
+        "mood-3",
+        "mood-4",
+        "mood-5"
+      ],
+      "settings": {
+        "eyebrow": "Scent finder",
+        "heading": "Find your signature",
+        "text": "<p>Two quick questions, and we will show you fragrances from our collection that match your mood.</p>",
+        "button_label": "Reveal my edit",
+        "audience_question": "Who is it for?",
+        "her_label": "For her",
+        "her_collection": "womens-fragrances",
+        "him_label": "For him",
+        "him_collection": "mens-fragrances",
+        "anyone_label": "For anyone",
+        "mood_question": "Which mood draws you in?",
+        "background": "ivory",
+        "padding_top": 7,
+        "padding_bottom": 7
+      }
+    },
+    "philosophy": {
+      "type": "brand-story",
+      "settings": {
+        "eyebrow": "Our philosophy",
+        "heading": "The philosophy of Valoria.",
+        "statement": "Inspired by the timeless elegance of London, Valoria represents a modern approach to personal fragrance.",
+        "text": "<p>We believe the right scent becomes part of your identity, creating impressions that words cannot always express. That is why we curate designer fragrances with care, and present them with the clarity and calm they deserve.</p>",
+        "button_label": "Discover our story",
+        "button_link": "shopify://pages/about-us",
+        "signature": "Valoria London",
+        "decorative_word": "London",
+        "background": "ink",
+        "padding_top": 8,
+        "padding_bottom": 8
+      }
+    },
+    "values": {
+      "type": "values",
+      "blocks": {
+        "value-1": {
+          "type": "value",
+          "settings": {
+            "icon": "sparkle",
+            "title": "Thoughtfully selected fragrances",
+            "text": "<p>A considered edit of designer fragrances, chosen for character rather than volume.</p>"
+          }
+        },
+        "value-2": {
+          "type": "value",
+          "settings": {
+            "icon": "bottle",
+            "title": "Elegance in every detail",
+            "text": "<p>From first browse to checkout, every step is designed to feel calm, clear and unhurried.</p>"
+          }
+        },
+        "value-3": {
+          "type": "value",
+          "settings": {
+            "icon": "gift",
+            "title": "A signature for every occasion",
+            "text": "<p>Fresh daytime scents to rich evening compositions, organised so you can find yours with ease.</p>"
+          }
+        },
+        "value-4": {
+          "type": "value",
+          "settings": {
+            "icon": "shield",
+            "title": "Designed for memorable impressions",
+            "text": "<p>Fragrance is personal. We help you discover scents that become part of your story.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "value-1",
+        "value-2",
+        "value-3",
+        "value-4"
+      ],
+      "settings": {
+        "eyebrow": "Why Valoria London",
+        "heading": "Considered in every detail",
+        "marker": "numbers",
+        "background": "white",
+        "padding_top": 7,
+        "padding_bottom": 7
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "blocks": {
+        "review-1": {
+          "type": "review",
+          "settings": {
+            "genuine": false,
+            "rating": 5,
+            "quote": "Beautifully presented and arrived well protected. The whole experience felt considered from start to finish.",
+            "name": "Sample A.",
+            "detail": "Verified buyer"
+          }
+        },
+        "review-2": {
+          "type": "review",
+          "settings": {
+            "genuine": false,
+            "rating": 5,
+            "quote": "The descriptions of the notes made it easy to choose something I had never smelled before. Exactly as described.",
+            "name": "Sample B.",
+            "detail": "Verified buyer"
+          }
+        },
+        "review-3": {
+          "type": "review",
+          "settings": {
+            "genuine": false,
+            "rating": 5,
+            "quote": "Quick, friendly reply to my question about sizes, and the order came when promised.",
+            "name": "Sample C.",
+            "detail": "Verified buyer"
+          }
+        },
+        "review-4": {
+          "type": "review",
+          "settings": {
+            "genuine": false,
+            "rating": 4,
+            "quote": "A calm, easy site to shop. Found my usual fragrance in seconds and checkout was simple.",
+            "name": "Sample D.",
+            "detail": "Verified buyer"
+          }
+        },
+        "review-5": {
+          "type": "review",
+          "settings": {
+            "genuine": false,
+            "rating": 5,
+            "quote": "Bought a gift and it was wrapped carefully. Would order again.",
+            "name": "Sample E.",
+            "detail": "Verified buyer"
+          }
+        }
+      },
+      "block_order": [
+        "review-1",
+        "review-2",
+        "review-3",
+        "review-4",
+        "review-5"
+      ],
+      "settings": {
+        "eyebrow": "Customer experiences",
+        "heading": "The Valoria experience",
+        "background": "ivory",
+        "padding_top": 7,
+        "padding_bottom": 7
+      }
+    },
+    "social": {
+      "type": "social-gallery",
+      "blocks": {
+        "image-1": {
+          "type": "image",
+          "settings": {}
+        },
+        "image-2": {
+          "type": "image",
+          "settings": {}
+        },
+        "image-3": {
+          "type": "image",
+          "settings": {}
+        },
+        "image-4": {
+          "type": "image",
+          "settings": {}
+        },
+        "image-5": {
+          "type": "image",
+          "settings": {}
+        },
+        "image-6": {
+          "type": "image",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "image-1",
+        "image-2",
+        "image-3",
+        "image-4",
+        "image-5",
+        "image-6"
+      ],
+      "settings": {
+        "eyebrow": "Instagram",
+        "heading": "Follow the world of Valoria",
+        "text": "<p>Discover the details, moments and inspiration behind Valoria London.</p>",
+        "handle": "Follow on Instagram",
+        "shape": "portrait",
+        "background": "white",
+        "padding_top": 7,
+        "padding_bottom": 7
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "eyebrow": "The list",
+        "heading": "An invitation to Valoria",
+        "text": "<p>Be the first to discover new fragrances, exclusive releases and stories from our world.</p>",
+        "button_label": "Join the list",
+        "note": "<p>Unsubscribe at any time.</p>",
+        "show_mark": false,
+        "background": "ivory",
+        "padding_top": 7,
+        "padding_bottom": 7
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "shop",
+    "trust",
+    "intro",
+    "collections",
+    "signature",
+    "campaign",
+    "families",
+    "finder",
+    "philosophy",
+    "values",
+    "testimonials",
+    "social",
+    "newsletter"
+  ]
+}

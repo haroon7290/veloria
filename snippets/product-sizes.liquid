@@ -1,0 +1,25 @@
+{%- comment -%}
+  Prints the values of the product's size option (e.g. "50 ml, 100 ml"), using the option names set in Theme settings › Product cards.
+  Falls back to custom.size metafield. Prints nothing if neither exists.
+{%- endcomment -%}
+{%- liquid
+  assign size_names = settings.size_option_names | downcase | split: ','
+  assign sizes = ''
+  for option in product.options_with_values
+    assign opt_name = option.name | downcase | strip
+    for n in size_names
+      assign n_clean = n | strip
+      if opt_name == n_clean
+        assign sizes = option.values | join: ', '
+        break
+      endif
+    endfor
+    if sizes != ''
+      break
+    endif
+  endfor
+  if sizes == '' and product.metafields.custom.size != blank
+    assign sizes = product.metafields.custom.size.value
+  endif
+-%}
+{{- sizes -}}

@@ -1,0 +1,121 @@
+{%- liquid
+  assign sort_by = collection.sort_by | default: collection.default_sort_by
+  assign banner_image = collection.image
+  if section.settings.banner_image != blank
+    assign banner_image = section.settings.banner_image
+  endif
+  if section.settings.show_banner_image == false
+    assign banner_image = blank
+  endif
+-%}
+{%- liquid
+  assign banner_layout = section.settings.banner_layout
+  if banner_image == blank
+    assign banner_layout = 'text'
+  endif
+-%}
+<div class="collection-hero collection-hero--{{ banner_layout }}">
+  {%- if banner_image != blank -%}
+    <div class="collection-hero__media">
+      {{ banner_image | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 1800, 2400', sizes: '100vw', loading: 'eager', fetchpriority: 'high', alt: '' }}
+    </div>
+  {%- endif -%}
+  <div class="page-width collection-hero__inner">
+    <div class="collection-hero__content">
+      <nav class="breadcrumbs" aria-label="{{ 'general.breadcrumbs' | t }}">
+        <ol role="list"><li><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a></li><li><span aria-current="page">{{ collection.title | escape }}</span></li></ol>
+      </nav>
+      <h1 class="collection-hero__title">{{ collection.title | escape }}</h1>
+      {%- if section.settings.show_description and collection.description != blank -%}
+        <div class="collection-hero__description rte">{{ collection.description }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<div class="page-width" id="CollectionContainer" data-collection-container data-section-id="{{ section.id }}">
+  {%- paginate collection.products by section.settings.products_per_page -%}
+    <div class="collection-layout{% if section.settings.filter_layout == 'sidebar' and collection.filters.size > 0 %} collection-layout--sidebar{% endif %}">
+      {%- if section.settings.enable_filters and collection.filters.size > 0 -%}
+        <aside class="facets__sidebar-wrap" aria-label="{{ 'products.facets.title' | t }}" data-facets-container>
+          {% render 'facets', results: collection, sort_by: sort_by, url_base: collection.url %}
+        </aside>
+      {%- endif -%}
+
+      <div class="collection-results" data-collection-results>
+        <div class="toolbar">
+          <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+            {%- if section.settings.enable_filters and collection.filters.size > 0 -%}
+              <button type="button" class="button button--secondary facets-toggle" data-facets-open aria-controls="FacetsPanel" aria-expanded="false" style="min-height:2.75rem;padding:0 1.25rem">{% render 'icon', name: 'filter', class: 'icon--small' %}{{ 'products.facets.title' | t }}</button>
+            {%- endif -%}
+            <span class="toolbar__count" role="status">{{ 'products.facets.product_count' | t: count: collection.products_count }}</span>
+          </div>
+          <div class="toolbar__right">
+          <div class="grid-toggle" role="group" aria-label="{{ 'products.facets.grid' | t }}" data-grid-toggle>
+            <button type="button" class="grid-toggle__btn grid-toggle__btn--mobile" data-grid-cols="1" aria-pressed="false">{% render 'icon', name: 'grid-1' %}<span class="visually-hidden">{{ 'products.facets.grid_cols' | t: count: 1 }}</span></button>
+            <button type="button" class="grid-toggle__btn grid-toggle__btn--mobile" data-grid-cols="2" aria-pressed="true">{% render 'icon', name: 'grid-2' %}<span class="visually-hidden">{{ 'products.facets.grid_cols' | t: count: 2 }}</span></button>
+            <button type="button" class="grid-toggle__btn grid-toggle__btn--desktop" data-grid-cols="3" aria-pressed="false">{% render 'icon', name: 'grid-3' %}<span class="visually-hidden">{{ 'products.facets.grid_cols' | t: count: 3 }}</span></button>
+            <button type="button" class="grid-toggle__btn grid-toggle__btn--desktop" data-grid-cols="4" aria-pressed="false">{% render 'icon', name: 'grid-4' %}<span class="visually-hidden">{{ 'products.facets.grid_cols' | t: count: 4 }}</span></button>
+          </div>
+          {%- if section.settings.enable_sorting -%}
+            <div class="toolbar__sort">
+              <label for="SortBy">{{ 'products.facets.sort_by' | t }}</label>
+              <select id="SortBy" class="select" data-sort-select>
+                {%- for option in collection.sort_options -%}
+                  <option value="{{ option.value | escape }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name | escape }}</option>
+                {%- endfor -%}
+              </select>
+            </div>
+          {%- endif -%}
+          </div>
+        </div>
+
+        {%- capture clear_url -%}{{ collection.url }}?sort_by={{ sort_by }}{%- endcapture -%}
+        {% render 'active-filters', results: collection, clear_url: clear_url %}
+
+        {%- if collection.products.size > 0 -%}
+          {%- liquid
+            assign cols = section.settings.columns
+            if section.settings.filter_layout == 'sidebar' and collection.filters.size > 0 and cols == '4'
+              assign cols = '3'
+            endif
+          -%}
+          <ul class="product-grid product-grid--{{ cols }}" role="list" data-product-grid data-default-cols="{{ cols }}">
+            {%- for product in collection.products -%}
+              <li>{% render 'product-card', card_product: product, section_id: section.id, index: forloop.index0, eager: true, heading_level: 'h2' %}</li>
+            {%- endfor -%}
+          </ul>
+          {% render 'pagination', paginate: paginate %}
+        {%- else -%}
+          <div class="empty-state">
+            {%- if collection.all_products_count == 0 -%}
+              <p class="h3">{{ 'products.facets.empty_collection' | t }}</p>
+              <a class="button" href="{{ routes.all_products_collection_url }}">{{ 'cart.general.continue_shopping' | t }}</a>
+            {%- else -%}
+              <p class="h3">{{ 'products.facets.no_results' | t }}</p>
+              <a class="button button--secondary" href="{{ collection.url }}" data-facet-link>{{ 'products.facets.clear_all' | t }}</a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endpaginate -%}
+</div>
+
+{% schema %}
+{
+  "name": "Collection products",
+  "settings": [
+    { "type": "range", "id": "products_per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 },
+    { "type": "checkbox", "id": "show_description", "label": "Show collection description", "default": true },
+    { "type": "checkbox", "id": "show_banner_image", "label": "Show collection image in banner", "default": true },
+    { "type": "image_picker", "id": "banner_image", "label": "Banner image override", "info": "COLLECTION_BANNER_IMAGE · 2400 × 900 px. Without an image the banner is a clean text header." },
+    { "type": "select", "id": "banner_layout", "label": "Banner with image", "options": [ { "value": "overlay", "label": "Text over the image" }, { "value": "split", "label": "Text beside the image" } ], "default": "overlay" },
+    { "type": "select", "id": "columns", "label": "Products per row on desktop", "info": "Shoppers can switch between 3 and 4 per row (1 or 2 on mobile).", "options": [ { "value": "3", "label": "3" }, { "value": "4", "label": "4" } ], "default": "4" },
+    { "type": "header", "content": "Filtering and sorting" },
+    { "type": "checkbox", "id": "enable_filters", "label": "Enable filtering", "info": "Choose filters (price, brand/vendor, availability, product type, metafields) in the Shopify Search & Discovery app.", "default": true },
+    { "type": "select", "id": "filter_layout", "label": "Filter layout on desktop", "options": [ { "value": "sidebar", "label": "Sidebar" }, { "value": "drawer", "label": "Drawer" } ], "default": "drawer" },
+    { "type": "checkbox", "id": "enable_sorting", "label": "Enable sorting", "default": true }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,81 @@
+{%- liquid
+  assign skip = section.settings.skip_handles | remove: ' ' | split: ','
+  assign found = false
+  if collection.handle != blank and collection.handle != 'all' and collection.handle != 'frontpage' and collection.products_count > 1
+    unless skip contains collection.handle
+      assign source = collection
+      assign found = true
+    endunless
+  endif
+  unless found
+    for c in product.collections
+      if c.products_count > 1
+        unless skip contains c.handle or c.handle == 'all' or c.handle == 'frontpage'
+          assign source = c
+          assign found = true
+          break
+        endunless
+      endif
+    endfor
+  endunless
+  unless found
+    for c in product.collections
+      if c.products_count > 1
+        unless c.handle == 'all' or c.handle == 'frontpage'
+          assign source = c
+          assign found = true
+          break
+        endunless
+      endif
+    endfor
+  endunless
+  assign heading = ''
+  if found
+    assign heading = 'products.product.more_from' | t: title: source.title
+  else
+    assign source = collections.all
+    assign found = true
+    assign heading = 'products.product.more_fragrances' | t
+  endif
+  assign shown = 0
+  assign eyebrow = section.settings.eyebrow
+  if section.settings.heading != blank
+    assign eyebrow = heading
+  endif
+-%}
+{%- if found and source.products_count > 1 -%}
+  <section class="section section--white related" style="--pt-d: 6rem; --pb-d: 6rem;">
+    <div class="page-width">
+      <div class="section-header section-header--split">
+        <div class="section-header__text">
+          <p class="eyebrow eyebrow--rule">{{ eyebrow | escape }}</p>
+          <h2>{{ section.settings.heading | default: heading | escape }}</h2>
+        </div>
+        <div class="section-header__actions">
+          <a class="link-arrow" href="{{ source.url | default: routes.all_products_collection_url }}"><span>{{ 'sections.shop.view_all' | t: title: source.title | escape }}</span>{% render 'icon', name: 'arrow-right' %}</a>
+        </div>
+      </div>
+      <ul class="product-grid product-grid--4 related__grid" role="list">
+        {%- for item in source.products -%}
+          {%- if item.id != product.id and shown < section.settings.limit -%}
+            {%- assign shown = shown | plus: 1 -%}
+            <li>{% render 'product-card', card_product: item, section_id: section.id, index: shown %}</li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "More from this category",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "info": "When set, the small heading above it names the category, for example More from Woody.", "default": "You may also like" },
+    { "type": "text", "id": "eyebrow", "label": "Small heading (when heading is empty)", "default": "Same category" },
+    { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 12, "step": 1, "default": 4 },
+    { "type": "text", "id": "skip_handles", "label": "Collections to skip", "info": "Comma-separated handles of curated collections that are not a category. Used only if the product is in another collection.", "default": "bestsellers,best-sellers,new-arrivals,new-in,sale,gifts,homepage" },
+    { "type": "paragraph", "content": "Shows products from the collection the shopper came from, or the product's first collection." }
+  ]
+}
+{% endschema %}

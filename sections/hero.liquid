@@ -1,0 +1,149 @@
+{%- liquid
+  assign s = section.settings
+  assign is_first = false
+  if section.index == 1
+    assign is_first = true
+  endif
+  assign img = s.image | default: s.mobile_image
+  assign m_img = s.mobile_image
+  assign img_style = ''
+  if img != blank and img.presentation.focal_point != blank
+    assign img_style = 'object-position: ' | append: img.presentation.focal_point | append: ';'
+  endif
+  assign loading = 'lazy'
+  assign priority = 'auto'
+  if is_first
+    assign loading = 'eager'
+    assign priority = 'high'
+  endif
+  assign heading_tag = s.heading_tag
+  assign slot = 'EDITORIAL_CAMPAIGN_IMAGE'
+  if is_first
+    assign slot = 'HERO_CAMPAIGN_IMAGE'
+  endif
+  assign dark = false
+  if s.layout == 'full' or s.background == 'ink' or s.background == 'charcoal'
+    assign dark = true
+  endif
+-%}
+<section
+  class="hero hero--{{ s.layout }} hero--h-{{ s.height }} hero--pos-{{ s.content_position }}{% if s.layout == 'split' and s.image_position == 'left' %} hero--image-left{% endif %}{% if is_first %} hero--first{% endif %}{% if dark %} hero--dark{% else %} hero--light{% endif %} section--{{ s.background }}"
+  style="--overlay: {{ s.overlay | divided_by: 100.0 }};"
+  {% if is_first and s.header_overlay and s.layout == 'full' %}data-header-overlay{% endif %}
+  data-hero
+>
+  <div class="hero__media{% unless is_first %} reveal reveal--zoom{% endunless %}">
+    {%- if img != blank -%}
+      <picture>
+        {%- if m_img != blank -%}
+          <source
+            media="(max-width: 749px)"
+            srcset="{{ m_img | image_url: width: 750 }} 750w, {{ m_img | image_url: width: 1100 }} 1100w, {{ m_img | image_url: width: 1500 }} 1500w"
+            sizes="100vw"
+          >
+        {%- endif -%}
+        {{ img | image_url: width: 3000 | image_tag:
+          widths: '750, 1100, 1500, 1800, 2200, 2600, 3000',
+          sizes: '(min-width: 990px) 100vw, 100vw',
+          loading: loading,
+          fetchpriority: priority,
+          style: img_style,
+          alt: img.alt | default: ''
+        }}
+      </picture>
+    {%- else -%}
+      {%- liquid
+        assign ph_tone = 'dark'
+        if s.layout == 'split' and dark == false
+          assign ph_tone = 'beige'
+        endif
+      -%}
+      {% render 'media-placeholder', label: slot, size: '2400 × 1350 px (16:9). Mobile: 1080 × 1440 px', tone: ph_tone %}
+    {%- endif -%}
+  </div>
+
+  <div class="hero__inner page-width">
+    <div class="hero__content{% unless is_first %} reveal{% endunless %}">
+      {%- if s.eyebrow != blank -%}
+        <p class="hero__eyebrow eyebrow eyebrow--rule">{{ s.eyebrow | escape }}</p>
+      {%- endif -%}
+      {%- if s.heading != blank or s.heading_line_2 != blank -%}
+        <{{ heading_tag }} class="hero__heading h0">
+          {%- if s.heading != blank -%}<span class="hero__line">{{ s.heading | escape }}</span>{%- endif -%}
+          {%- if s.heading_line_2 != blank -%}<span class="hero__line hero__line--accent">{{ s.heading_line_2 | escape }}</span>{%- endif -%}
+        </{{ heading_tag }}>
+      {%- endif -%}
+      {%- if s.text != blank -%}
+        <div class="hero__text lead rte">{{ s.text }}</div>
+      {%- endif -%}
+      {%- if s.button_label_1 != blank or s.button_label_2 != blank -%}
+        <div class="button-row hero__buttons">
+          {%- if s.button_label_1 != blank -%}
+            <a href="{{ s.button_link_1 | default: routes.all_products_collection_url }}" class="button{% if dark %} button--white{% endif %}">{{ s.button_label_1 | escape }}</a>
+          {%- endif -%}
+          {%- if s.button_label_2 != blank -%}
+            <a href="{{ s.button_link_2 | default: routes.collections_url }}" class="link-arrow{% if dark %} link-arrow--light{% endif %}">
+              <span>{{ s.button_label_2 | escape }}</span>{% render 'icon', name: 'arrow-right' %}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if s.show_scroll_cue and s.layout == 'full' -%}
+    <button type="button" class="hero__scroll" data-scroll-cue>
+      <span>{{ 'sections.hero.scroll' | t }}</span>
+      <span class="hero__scroll-line" aria-hidden="true"></span>
+    </button>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "tag": "div",
+  "class": "section-hero",
+  "settings": [
+    { "type": "header", "content": "Images" },
+    { "type": "image_picker", "id": "image", "label": "Desktop image", "info": "Landscape, at least 2400 × 1350 px. Set a focal point in Shopify so the subject stays in frame." },
+    { "type": "image_picker", "id": "mobile_image", "label": "Mobile image (optional)", "info": "Portrait, about 1080 × 1440 px. Leave empty to crop the desktop image." },
+    { "type": "header", "content": "Layout" },
+    { "type": "select", "id": "layout", "label": "Layout", "options": [ { "value": "full", "label": "Image fills the section" }, { "value": "split", "label": "Text beside image" } ], "default": "full" },
+    { "type": "select", "id": "height", "label": "Height", "options": [ { "value": "screen", "label": "Full screen" }, { "value": "large", "label": "Large" }, { "value": "medium", "label": "Medium" }, { "value": "small", "label": "Small" } ], "default": "screen" },
+    { "type": "select", "id": "content_position", "label": "Text position", "options": [ { "value": "bottom-left", "label": "Bottom left" }, { "value": "middle-left", "label": "Middle left" }, { "value": "middle-center", "label": "Centre" }, { "value": "bottom-center", "label": "Bottom centre" } ], "default": "bottom-left" },
+    { "type": "select", "id": "image_position", "label": "Image side (text beside image)", "options": [ { "value": "right", "label": "Right" }, { "value": "left", "label": "Left" } ], "default": "right" },
+    { "type": "range", "id": "overlay", "label": "Image darkening", "info": "Keeps white text readable over bright photography.", "min": 0, "max": 70, "step": 5, "unit": "%", "default": 25 },
+    { "type": "select", "id": "background", "label": "Background", "options": [ { "value": "ink", "label": "Black" }, { "value": "charcoal", "label": "Charcoal" }, { "value": "ivory", "label": "Ivory" }, { "value": "white", "label": "White" } ], "default": "ink" },
+    { "type": "checkbox", "id": "header_overlay", "label": "Transparent header over this image", "info": "Works when this is the first section on the page and Header › Transparent over the first image is on.", "default": true },
+    { "type": "checkbox", "id": "show_scroll_cue", "label": "Show scroll indicator", "default": true },
+    { "type": "header", "content": "Text" },
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "Valoria London" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "The art of" },
+    { "type": "text", "id": "heading_line_2", "label": "Heading, second line", "info": "Set in italic for an editorial accent.", "default": "exceptional fragrance." },
+    { "type": "select", "id": "heading_tag", "label": "Heading level", "info": "Use H1 for the first section on the homepage.", "options": [ { "value": "h1", "label": "H1" }, { "value": "h2", "label": "H2" } ], "default": "h1" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Discover a curated world of designer fragrance, chosen to leave a lasting impression.</p>" },
+    { "type": "text", "id": "button_label_1", "label": "Button label", "default": "Explore the collection" },
+    { "type": "url", "id": "button_link_1", "label": "Button link" },
+    { "type": "text", "id": "button_label_2", "label": "Text link label", "info": "For example Discover Valoria. Leave empty for none." },
+    { "type": "url", "id": "button_link_2", "label": "Text link" }
+  ],
+  "presets": [
+    { "name": "Hero", "settings": { "button_label_2": "Discover Valoria" } },
+    {
+      "name": "Campaign banner",
+      "settings": {
+        "height": "large",
+        "content_position": "middle-left",
+        "heading_tag": "h2",
+        "show_scroll_cue": false,
+        "eyebrow": "The campaign",
+        "heading": "More than a fragrance.",
+        "heading_line_2": "An expression of you.",
+        "text": "<p>Every fragrance tells a story. Find the one that becomes part of yours.</p>",
+        "button_label_1": "Discover the collection"
+      }
+    }
+  ]
+}
+{% endschema %}

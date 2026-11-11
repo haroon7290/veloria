@@ -1,0 +1,16 @@
+{%- comment -%} Fragrance details table. Params: product, concentration, size_text, current_variant, show_sku {%- endcomment -%}
+{%- assign mf = product.metafields.custom -%}
+<table class="details-table">
+  <tbody>
+    {%- if product.vendor != blank -%}<tr><th scope="row">{{ 'products.product.details.brand' | t }}</th><td>{{ product.vendor | escape }}</td></tr>{%- endif -%}
+    {%- if concentration != blank -%}<tr><th scope="row">{{ 'products.product.details.concentration' | t }}</th><td>{{ concentration | escape }}</td></tr>{%- endif -%}
+    {%- if size_text != blank -%}<tr><th scope="row">{{ 'products.product.details.size' | t }}</th><td>{{ size_text | escape }}</td></tr>{%- endif -%}
+    {%- if mf.fragrance_family != blank -%}<tr><th scope="row">{{ 'products.product.details.family' | t }}</th><td>{% render 'metafield-text', field: mf.fragrance_family %}</td></tr>{%- endif -%}
+    {%- if mf.gender != blank -%}<tr><th scope="row">{{ 'products.product.details.gender' | t }}</th><td>{% render 'metafield-text', field: mf.gender %}</td></tr>{%- endif -%}
+    {%- if mf.occasions != blank -%}<tr><th scope="row">{{ 'products.product.details.occasions' | t }}</th><td>{% render 'metafield-text', field: mf.occasions %}</td></tr>{%- endif -%}
+    {%- if mf.season != blank -%}<tr><th scope="row">{{ 'products.product.details.season' | t }}</th><td>{% render 'metafield-text', field: mf.season %}</td></tr>{%- endif -%}
+    {%- if mf.perfumer != blank -%}<tr><th scope="row">{{ 'products.product.details.perfumer' | t }}</th><td>{% render 'metafield-text', field: mf.perfumer %}</td></tr>{%- endif -%}
+    {%- if mf.launch_year != blank -%}<tr><th scope="row">{{ 'products.product.details.year' | t }}</th><td>{% render 'metafield-text', field: mf.launch_year %}</td></tr>{%- endif -%}
+    {%- if show_sku and current_variant.sku != blank -%}<tr><th scope="row">{{ 'products.product.details.sku' | t }}</th><td data-sku>{{ current_variant.sku | escape }}</td></tr>{%- endif -%}
+  </tbody>
+</table>

@@ -1,0 +1,81 @@
+{%- liquid
+  assign s = section.settings
+  assign dark = false
+  if s.background == 'ink' or s.background == 'charcoal'
+    assign dark = true
+  endif
+  assign ph_tone = 'beige'
+  if dark
+    assign ph_tone = 'dark'
+  endif
+-%}
+<section class="section story section--{{ s.background }}" style="--pt: {{ s.padding_top | times: 0.6 }}rem; --pb: {{ s.padding_bottom | times: 0.6 }}rem; --pt-d: {{ s.padding_top }}rem; --pb-d: {{ s.padding_bottom }}rem;">
+  <div class="page-width">
+    <div class="story__grid story__grid--{{ s.proportion }} story__grid--image-{{ s.image_position }}{% if s.image_2 != blank %} story__grid--detail{% endif %}">
+      <div class="story__media story__media--{{ s.image_ratio }} reveal reveal--zoom">
+        <div class="story__frame">
+          {%- if s.image != blank -%}
+            {{ s.image | image_url: width: 1800 | image_tag: widths: '500, 800, 1100, 1400, 1800', sizes: '(min-width: 990px) 55vw, 100vw', loading: 'lazy', alt: s.image.alt | default: '' }}
+          {%- else -%}
+            {% render 'media-placeholder', label: s.placeholder_label, size: '1600 × 2000 px (4:5)', tone: ph_tone %}
+          {%- endif -%}
+        </div>
+        {%- if s.image_2 != blank -%}
+          <div class="story__detail">
+            {{ s.image_2 | image_url: width: 900 | image_tag: widths: '300, 500, 700, 900', sizes: '(min-width: 990px) 20vw, 40vw', loading: 'lazy', alt: s.image_2.alt | default: '' }}
+          </div>
+        {%- endif -%}
+        {%- if s.caption != blank -%}<p class="story__caption">{{ s.caption | escape }}</p>{%- endif -%}
+      </div>
+
+      <div class="story__content reveal">
+        {%- if s.eyebrow != blank -%}<p class="eyebrow eyebrow--rule">{{ s.eyebrow | escape }}</p>{%- endif -%}
+        {%- if s.heading != blank or s.heading_accent != blank -%}
+          <h2 class="story__heading h1">
+            {%- if s.heading != blank -%}<span class="story__line">{{ s.heading | escape }}</span>{%- endif -%}
+            {%- if s.heading_accent != blank -%}<span class="story__line story__line--accent">{{ s.heading_accent | escape }}</span>{%- endif -%}
+          </h2>
+        {%- endif -%}
+        {%- if s.text != blank -%}<div class="story__text rte">{{ s.text }}</div>{%- endif -%}
+        {%- if s.button_label != blank -%}
+          {%- if s.button_style == 'link' -%}
+            <a href="{{ s.button_link | default: routes.root_url }}" class="link-arrow{% if dark %} link-arrow--light{% endif %}"><span>{{ s.button_label | escape }}</span>{% render 'icon', name: 'arrow-right' %}</a>
+          {%- else -%}
+            <div><a href="{{ s.button_link | default: routes.root_url }}" class="button{% if dark %} button--white{% else %} button--secondary{% endif %}">{{ s.button_label | escape }}</a></div>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Image with text",
+  "class": "section-image-with-text",
+  "settings": [
+    { "type": "header", "content": "Images" },
+    { "type": "image_picker", "id": "image", "label": "Image", "info": "Portrait works best, about 1600 × 2000 px." },
+    { "type": "image_picker", "id": "image_2", "label": "Detail image (optional)", "info": "A smaller close-up that overlaps the main image on desktop." },
+    { "type": "select", "id": "image_ratio", "label": "Image shape", "options": [ { "value": "portrait", "label": "Portrait" }, { "value": "tall", "label": "Tall" }, { "value": "square", "label": "Square" }, { "value": "landscape", "label": "Landscape" } ], "default": "portrait" },
+    { "type": "text", "id": "caption", "label": "Image caption" },
+    { "type": "header", "content": "Layout" },
+    { "type": "select", "id": "image_position", "label": "Image side", "options": [ { "value": "right", "label": "Right" }, { "value": "left", "label": "Left" } ], "default": "right" },
+    { "type": "select", "id": "proportion", "label": "Proportions", "options": [ { "value": "asymmetric", "label": "Asymmetric (larger image)" }, { "value": "balanced", "label": "Balanced" } ], "default": "asymmetric" },
+    { "type": "select", "id": "background", "label": "Background", "options": [ { "value": "white", "label": "White" }, { "value": "ivory", "label": "Ivory" }, { "value": "cloud", "label": "Light grey" }, { "value": "ink", "label": "Black" }, { "value": "charcoal", "label": "Charcoal" } ], "default": "white" },
+    { "type": "range", "id": "padding_top", "label": "Space above", "min": 0, "max": 10, "step": 1, "unit": "rem", "default": 7 },
+    { "type": "range", "id": "padding_bottom", "label": "Space below", "min": 0, "max": 10, "step": 1, "unit": "rem", "default": 7 },
+    { "type": "header", "content": "Text" },
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "Valoria London" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "A signature" },
+    { "type": "text", "id": "heading_accent", "label": "Heading, second line", "info": "Set in italic.", "default": "of elegance." },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Fragrance is more than a scent. It is an expression of character, a reflection of individuality, and a memory that stays long after the moment has passed.</p><p>At Valoria London, we bring together exceptional designer fragrances from established houses, chosen with an eye for character, craft and the finer details.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Our story" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "select", "id": "button_style", "label": "Button style", "options": [ { "value": "link", "label": "Text link" }, { "value": "button", "label": "Button" } ], "default": "link" },
+    { "type": "header", "content": "Theme editor" },
+    { "type": "text", "id": "placeholder_label", "label": "Image slot name", "info": "Shown only in the theme editor when no image is chosen.", "default": "BRAND_INTRODUCTION_IMAGE" }
+  ],
+  "presets": [ { "name": "Image with text" } ]
+}
+{% endschema %}

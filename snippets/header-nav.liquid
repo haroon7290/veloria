@@ -1,0 +1,81 @@
+{%- comment -%}
+  Desktop navigation with full-width dropdown panels.
+  Params: menu (link list), promos (header "Menu image" blocks)
+{%- endcomment -%}
+<nav class="header__nav" aria-label="{{ 'general.menu.main' | t }}">
+  <ul class="nav-menu" role="list">
+    {%- for link in menu.links -%}
+      <li>
+        {%- if link.links != blank -%}
+          {%- liquid
+            assign link_title = link.title | strip | downcase
+            assign promo_count = 0
+            for promo in promos
+              assign promo_target = promo.settings.menu_item | strip | downcase
+              if promo_target == link_title
+                if promo.settings.image != blank or request.design_mode
+                  assign promo_count = promo_count | plus: 1
+                endif
+              endif
+            endfor
+            assign has_grandchildren = false
+            for child in link.links
+              if child.links != blank
+                assign has_grandchildren = true
+              endif
+            endfor
+          -%}
+          <details data-nav-details>
+            <summary class="nav-menu__summary"{% if link.child_active or link.active %} aria-current="page"{% endif %}>
+              <span>{{ link.title | escape }}</span>
+              {% render 'icon', name: 'caret' %}
+            </summary>
+            <div class="mega">
+              <div class="page-width mega__inner{% if promo_count > 0 %} mega__inner--promos{% endif %}">
+                <div class="mega__links">
+                  {%- if has_grandchildren -%}
+                    {%- for child in link.links -%}
+                      <div class="mega__group">
+                        <a href="{{ child.url }}" class="mega__title label">{{ child.title | escape }}</a>
+                        {%- if child.links != blank -%}
+                          <ul class="mega__list" role="list">
+                            {%- for grandchild in child.links -%}
+                              <li><a href="{{ grandchild.url }}"{% if grandchild.current %} aria-current="page"{% endif %}>{{ grandchild.title | escape }}</a></li>
+                            {%- endfor -%}
+                          </ul>
+                        {%- endif -%}
+                      </div>
+                    {%- endfor -%}
+                  {%- else -%}
+                    <div class="mega__group">
+                      <a href="{{ link.url }}" class="mega__title label">{{ 'general.menu.view_all' | t: title: link.title | escape }}</a>
+                      <ul class="mega__list mega__list--large" role="list">
+                        {%- for child in link.links -%}
+                          <li><a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a></li>
+                        {%- endfor -%}
+                      </ul>
+                    </div>
+                  {%- endif -%}
+                </div>
+                {%- if promo_count > 0 -%}
+                  <ul class="mega__promos" role="list">
+                    {%- for promo in promos -%}
+                      {%- assign promo_target = promo.settings.menu_item | strip | downcase -%}
+                      {%- if promo_target == link_title -%}
+                        {%- if promo.settings.image != blank or request.design_mode -%}
+                          <li {{ promo.shopify_attributes }}>{% render 'menu-promo', promo: promo, sizes: '20vw' %}</li>
+                        {%- endif -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </div>
+            </div>
+          </details>
+        {%- else -%}
+          <a href="{{ link.url }}" class="nav-menu__link"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+</nav>

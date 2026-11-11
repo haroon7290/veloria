@@ -1,0 +1,45 @@
+{%- comment -%}
+  Price display. Accepts product or variant via `target`. `show_from`: prefix "From" when prices vary.
+{%- endcomment -%}
+{%- liquid
+  if target.variants
+    assign is_product = true
+    assign variant = target.selected_or_first_available_variant
+    assign price = target.price
+    assign compare = target.compare_at_price
+    assign varies = target.price_varies
+  else
+    assign is_product = false
+    assign variant = target
+    assign price = target.price
+    assign compare = target.compare_at_price
+    assign varies = false
+  endif
+  if use_variant and is_product
+    assign price = variant.price
+    assign compare = variant.compare_at_price
+    assign varies = false
+  endif
+  assign price_money = price | money
+  assign on_sale = false
+  if compare > price
+    assign on_sale = true
+  endif
+-%}
+<div class="price{% if on_sale %} price--on-sale{% endif %}" data-price>
+  {%- if on_sale -%}
+    <span class="visually-hidden">{{ 'products.product.price.sale_price' | t }}</span>
+    <span class="price__current">{% if varies and show_from %}{{ 'products.product.price.from_price_html' | t: price: price_money }}{% else %}{{ price_money }}{% endif %}</span>
+    <span class="visually-hidden">{{ 'products.product.price.regular_price' | t }}</span>
+    <s class="price__compare">{{ compare | money }}</s>
+  {%- else -%}
+    <span class="visually-hidden">{{ 'products.product.price.regular_price' | t }}</span>
+    <span class="price__current">{% if varies and show_from %}{{ 'products.product.price.from_price_html' | t: price: price_money }}{% else %}{{ price_money }}{% endif %}</span>
+  {%- endif -%}
+  {%- if variant.unit_price_measurement and use_variant -%}
+    <span class="price__unit">
+      <span class="visually-hidden">{{ 'products.product.price.unit_price' | t }}</span>
+      {{ variant.unit_price | money }}/{% if variant.unit_price_measurement.reference_value != 1 %}{{ variant.unit_price_measurement.reference_value }}{% endif %}{{ variant.unit_price_measurement.reference_unit }}
+    </span>
+  {%- endif -%}
+</div>

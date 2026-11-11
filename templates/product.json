@@ -1,0 +1,165 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "show_vendor": true,
+            "show_concentration": false,
+            "show_rating": true,
+            "reviews_anchor": "reviews"
+          }
+        },
+        "highlights": {
+          "type": "highlights",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "summary": {
+          "type": "summary",
+          "settings": {
+            "words": 30
+          }
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "style": "pills"
+          }
+        },
+        "stock": {
+          "type": "stock",
+          "settings": {
+            "low_stock": 3
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_quantity": true,
+            "show_dynamic_checkout": true
+          }
+        },
+        "assurance": {
+          "type": "assurance",
+          "settings": {
+            "line_1": "Genuine designer fragrance",
+            "line_2": "Secure checkout"
+          }
+        },
+        "notes": {
+          "type": "notes",
+          "settings": {
+            "heading": "Fragrance notes"
+          }
+        },
+        "accordions": {
+          "type": "accordions",
+          "settings": {
+            "show_description": false,
+            "open_description": false,
+            "show_sku": false
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "highlights",
+        "price",
+        "summary",
+        "variant_picker",
+        "stock",
+        "buy_buttons",
+        "assurance",
+        "notes",
+        "accordions"
+      ],
+      "settings": {
+        "enable_zoom": true,
+        "image_fit": "cover",
+        "sticky_atc": true,
+        "gallery_layout": "thumbnails"
+      }
+    },
+    "about": {
+      "type": "product-about",
+      "settings": {
+        "eyebrow": "About the fragrance",
+        "background": "ivory"
+      }
+    },
+    "related": {
+      "type": "related-products",
+      "settings": {
+        "eyebrow": "Same category",
+        "limit": 4,
+        "heading": "You may also like"
+      }
+    },
+    "recently_viewed": {
+      "type": "recently-viewed",
+      "settings": {
+        "heading": "Recently viewed",
+        "limit": 6
+      }
+    },
+    "similar": {
+      "type": "product-carousel",
+      "settings": {
+        "source": "vendor",
+        "eyebrow": "Same brand",
+        "heading": "More from this brand",
+        "limit": 4,
+        "background": "ivory"
+      }
+    },
+    "trending": {
+      "type": "product-carousel",
+      "settings": {
+        "source": "collection",
+        "collection": "bestsellers",
+        "eyebrow": "Trending",
+        "heading": "Trending now",
+        "limit": 4,
+        "background": "white"
+      }
+    },
+    "reviews": {
+      "type": "apps",
+      "settings": {
+        "eyebrow": "Reviews",
+        "heading": "Customer reviews",
+        "narrow": false,
+        "anchor": "reviews",
+        "background": "white",
+        "padding_top": 5,
+        "padding_bottom": 5
+      }
+    },
+    "complementary": {
+      "type": "product-recommendations",
+      "settings": {
+        "eyebrow": "Pairs well with",
+        "heading": "Complete your collection",
+        "limit": 4,
+        "intent": "complementary",
+        "background": "ivory"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "about",
+    "reviews",
+    "related",
+    "complementary",
+    "similar",
+    "trending",
+    "recently_viewed"
+  ]
+}

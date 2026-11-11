@@ -1,0 +1,4 @@
+{% render 'icon', name: 'bag' %}
+<span class="header__cart-label">{{ 'cart.general.bag' | t }}</span>
+<span class="cart-count" aria-hidden="true">{% if cart.item_count > 0 %}{{ cart.item_count }}{% endif %}</span>
+<span class="visually-hidden">{{ 'cart.general.bag_count' | t: count: cart.item_count }}</span>

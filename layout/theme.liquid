@@ -1,0 +1,109 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="{{ settings.color_ink }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 64, height: 64 }}">
+      <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
+    {%- else -%}
+      <link rel="icon" type="image/svg+xml" href="{{ 'valoria-favicon.svg' | asset_url }}">
+      <link rel="alternate icon" type="image/png" href="{{ 'valoria-favicon.png' | asset_url }}">
+      <link rel="apple-touch-icon" href="{{ 'valoria-favicon.png' | asset_url }}">
+    {%- endif -%}
+
+    {%- liquid
+      assign page_title_text = page_title
+      if current_tags
+        assign tag_list = current_tags | join: ', '
+        assign page_title_text = page_title_text | append: ' – ' | append: tag_list
+      endif
+      if current_page != 1
+        assign page_title_text = page_title_text | append: ' – Page ' | append: current_page
+      endif
+      unless page_title contains shop.name
+        assign page_title_text = page_title_text | append: ' | ' | append: shop.name
+      endunless
+    -%}
+    <title>{{ page_title_text | strip }}</title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {% render 'meta-tags' %}
+
+    {%- if settings.use_house_fonts -%}
+      {{ 'bodoni-moda-400.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+      {{ 'inter-400.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+    {%- else -%}
+      {%- unless settings.type_body_font.system? -%}
+        <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+      {%- endunless -%}
+    {%- endif -%}
+
+    {% render 'theme-styles' %}
+
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+
+    <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+
+    {{ content_for_header }}
+
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+      window.Valoria = {
+        routes: {
+          root: {{ routes.root_url | json }},
+          cart: {{ routes.cart_url | json }},
+          cartAdd: {{ routes.cart_add_url | json }},
+          cartChange: {{ routes.cart_change_url | json }},
+          cartUpdate: {{ routes.cart_update_url | json }},
+          predictiveSearch: {{ routes.predictive_search_url | json }}
+        },
+        cartType: {{ settings.cart_type | json }},
+        strings: {
+          addToCart: {{ 'products.product.add_to_cart' | t | json }},
+          soldOut: {{ 'products.product.sold_out' | t | json }},
+          unavailable: {{ 'products.product.unavailable' | t | json }},
+          adding: {{ 'products.product.adding' | t | json }},
+          added: {{ 'products.product.added' | t | json }},
+          cartError: {{ 'cart.general.error' | t | json }},
+          quantityError: {{ 'cart.general.quantity_error' | t | json }},
+          discountInvalid: {{ 'cart.discount.invalid' | t | json }},
+          discountError: {{ 'cart.discount.error' | t | json }},
+          finderEmpty: {{ 'sections.finder.empty' | t | json }},
+          finderBroadened: {{ 'sections.finder.broadened' | t | json }},
+          finderExplore: {{ 'sections.finder.explore_named' | t: title: '__TITLE__' | json }},
+          emailInvalid: {{ 'newsletter.invalid' | t | json }}
+        }
+      };
+    </script>
+  </head>
+
+  <body class="template-{{ template.name | handle }}{% if template.suffix %} template-{{ template.name | handle }}--{{ template.suffix | handle }}{% endif %}{% if settings.animations %} has-animations reveal-{{ settings.reveal_style }}{% if settings.hero_zoom %} has-hero-zoom{% endif %}{% if settings.hover_zoom %} has-hover-zoom{% endif %}{% endif %}">
+    <a class="skip-link button" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
+
+    {% sections 'header-group' %}
+
+    <main id="MainContent" class="main-content" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    {%- if settings.cart_type == 'drawer' and template.name != 'cart' -%}
+      {% section 'cart-drawer' %}
+    {%- endif -%}
+
+    <div class="overlay" data-overlay hidden></div>
+
+    <div class="visually-hidden" role="status" aria-live="polite" data-live-region></div>
+
+    {% render 'structured-data-organization' %}
+  </body>
+</html>

@@ -1,0 +1,22 @@
+{%- comment -%}
+  Used by the Scent finder through the Section Rendering API:
+  /collections/<handle>?section_id=finder-results
+  Lists the collection's products as cards (in-stock first), tagged with the collections each product belongs to,
+  so the finder can narrow results in the browser.
+{%- endcomment -%}
+<ul data-finder-items>
+  {%- if collection != blank -%}
+    {%- for item in collection.products limit: 48 -%}
+      {%- if item.available -%}
+        {%- assign handles = item.collections | map: 'handle' | join: ' ' -%}
+        <li data-collections=" {{ handles }} ">{% render 'product-card', card_product: item, section_id: 'finder', index: forloop.index0 %}</li>
+      {%- endif -%}
+    {%- endfor -%}
+    {%- for item in collection.products limit: 48 -%}
+      {%- unless item.available -%}
+        {%- assign handles = item.collections | map: 'handle' | join: ' ' -%}
+        <li data-collections=" {{ handles }} ">{% render 'product-card', card_product: item, section_id: 'finder', index: forloop.index0 %}</li>
+      {%- endunless -%}
+    {%- endfor -%}
+  {%- endif -%}
+</ul>

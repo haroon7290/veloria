@@ -1,0 +1,14 @@
+{%- comment -%}
+  Prints a metafield as plain text, whatever its type. Usage: {% render 'metafield-text', field: product.metafields.custom.top_notes %}
+{%- endcomment -%}
+{%- if field != blank -%}
+  {%- if field.type contains 'list.' -%}
+    {{- field.value | join: ', ' | escape -}}
+  {%- elsif field.type == 'rich_text_field' -%}
+    {{- field | metafield_tag -}}
+  {%- elsif field.type == 'multi_line_text_field' -%}
+    {{- field.value | escape | newline_to_br -}}
+  {%- else -%}
+    {{- field.value | escape -}}
+  {%- endif -%}
+{%- endif -%}

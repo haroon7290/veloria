@@ -1,0 +1,53 @@
+<div class="page-width cart-page" data-cart-page data-section-id="{{ section.id }}">
+  <header class="page-header"><div class="page-header__inner"><h1>{{ 'cart.general.title' | t }}</h1></div></header>
+  {%- if cart.item_count > 0 -%}
+    <form action="{{ routes.cart_url }}" method="post" id="CartPageForm" novalidate>
+      <div class="cart-page__layout">
+        <div data-cart-page-items>
+          {% render 'cart-progress' %}
+          {% render 'cart-line-items', show_line_total: true %}
+          <noscript><button type="submit" class="button button--secondary" style="margin-top:1rem">{{ 'cart.general.update' | t }}</button></noscript>
+        </div>
+        <aside class="cart-page__summary" aria-label="{{ 'cart.general.summary' | t }}" data-cart-page-summary>
+          {% render 'cart-discount', id: 'page' %}
+          {%- if cart.cart_level_discount_applications != blank -%}
+            {%- for discount in cart.cart_level_discount_applications -%}
+              <div class="cart-summary__row small"><span>{{ discount.title | escape }}</span><span>−{{ discount.total_allocated_amount | money }}</span></div>
+            {%- endfor -%}
+          {%- endif -%}
+          <div class="cart-summary__row cart-summary__total"><span>{{ 'cart.general.subtotal' | t }}</span><span>{{ cart.total_price | money_with_currency }}</span></div>
+          <p class="cart-summary__note" style="margin:0">{{ 'cart.general.taxes_and_shipping_at_checkout' | t }}</p>
+          {%- if settings.cart_delivery_note != blank -%}<div class="cart-summary__note rte">{{ settings.cart_delivery_note }}</div>{%- endif -%}
+          {%- if settings.cart_notes -%}
+            <div class="field cart-note">
+              <label for="CartNote">{{ 'cart.general.note' | t }}</label>
+              <textarea id="CartNote" name="note" data-cart-note>{{ cart.note }}</textarea>
+            </div>
+          {%- endif -%}
+          <button type="submit" name="checkout" class="button button--full">{% render 'icon', name: 'lock', class: 'icon--small' %}{{ 'cart.general.checkout' | t }}</button>
+          {%- if additional_checkout_buttons and section.settings.show_express -%}
+            <div class="additional-checkout-buttons">{{ content_for_additional_checkout_buttons }}</div>
+          {%- endif -%}
+          <a href="{{ routes.all_products_collection_url }}" class="small" style="text-align:center">{{ 'cart.general.continue_shopping' | t }}</a>
+        </aside>
+      </div>
+    </form>
+  {%- else -%}
+    <div class="cart-empty" style="padding-bottom:6rem">
+      <p class="h3">{{ 'cart.general.empty' | t }}</p>
+      <a href="{{ routes.all_products_collection_url }}" class="button">{{ 'cart.general.continue_shopping' | t }}</a>
+      {%- if shop.customer_accounts_enabled and customer == nil -%}
+        <p class="small text-secondary">{{ 'cart.general.login_html' | t: link: routes.account_login_url }}</p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": [
+    { "type": "checkbox", "id": "show_express", "label": "Show express checkout buttons", "default": true }
+  ]
+}
+{% endschema %}

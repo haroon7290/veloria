@@ -1,0 +1,62 @@
+{%- liquid
+  assign s = section.settings
+  assign dark = false
+  if s.background == 'ink' or s.background == 'charcoal'
+    assign dark = true
+  endif
+  assign ph_tone = 'beige'
+  if dark
+    assign ph_tone = 'dark'
+  endif
+-%}
+<section class="section manifesto section--{{ s.background }}" style="--pt: {{ s.padding_top | times: 0.6 }}rem; --pb: {{ s.padding_bottom | times: 0.6 }}rem; --pt-d: {{ s.padding_top }}rem; --pb-d: {{ s.padding_bottom }}rem;">
+  {%- if s.decorative_word != blank -%}
+    <span class="manifesto__word" aria-hidden="true" data-word="{{ s.decorative_word | escape }}"></span>
+  {%- endif -%}
+  <div class="page-width manifesto__inner">
+    <div class="manifesto__head reveal">
+      {%- if s.eyebrow != blank -%}<p class="eyebrow eyebrow--rule">{{ s.eyebrow | escape }}</p>{%- endif -%}
+      {%- if s.heading != blank -%}<h2 class="manifesto__heading">{{ s.heading | escape }}</h2>{%- endif -%}
+    </div>
+
+    <div class="manifesto__grid">
+      <div class="manifesto__media reveal reveal--zoom">
+        {%- if s.image != blank -%}
+          {{ s.image | image_url: width: 2000 | image_tag: widths: '600, 900, 1200, 1600, 2000', sizes: '(min-width: 990px) 58vw, 100vw', loading: 'lazy', alt: s.image.alt | default: '' }}
+        {%- else -%}
+          {% render 'media-placeholder', label: 'BRAND_STORY_IMAGE', size: '2000 × 1400 px (10:7)', tone: ph_tone %}
+        {%- endif -%}
+      </div>
+      <div class="manifesto__body reveal">
+        {%- if s.statement != blank -%}<p class="manifesto__statement">{{ s.statement | escape }}</p>{%- endif -%}
+        {%- if s.text != blank -%}<div class="manifesto__text rte">{{ s.text }}</div>{%- endif -%}
+        {%- if s.button_label != blank -%}
+          <a href="{{ s.button_link | default: routes.root_url }}" class="link-arrow{% if dark %} link-arrow--light{% endif %}"><span>{{ s.button_label | escape }}</span>{% render 'icon', name: 'arrow-right' %}</a>
+        {%- endif -%}
+        {%- if s.signature != blank -%}<p class="manifesto__signature">{{ s.signature | escape }}</p>{%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Brand story",
+  "class": "section-brand-story",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "Our philosophy" },
+    { "type": "textarea", "id": "heading", "label": "Brand statement", "default": "The philosophy of Valoria." },
+    { "type": "image_picker", "id": "image", "label": "Image", "info": "Landscape, about 2000 × 1400 px." },
+    { "type": "textarea", "id": "statement", "label": "Lead paragraph", "info": "Set in large italic serif.", "default": "Inspired by the timeless elegance of London, Valoria represents a modern approach to personal fragrance." },
+    { "type": "richtext", "id": "text", "label": "Supporting text", "default": "<p>We believe the right scent becomes part of your identity, creating impressions that words cannot always express. That is why we curate designer fragrances with care, and present them with the clarity and calm they deserve.</p>" },
+    { "type": "text", "id": "button_label", "label": "Link label", "default": "Discover our story" },
+    { "type": "url", "id": "button_link", "label": "Link" },
+    { "type": "text", "id": "signature", "label": "Sign-off", "default": "Valoria London" },
+    { "type": "text", "id": "decorative_word", "label": "Decorative background word", "info": "Large, faint lettering behind the section. Leave empty for none.", "default": "London" },
+    { "type": "select", "id": "background", "label": "Background", "options": [ { "value": "ink", "label": "Black" }, { "value": "charcoal", "label": "Charcoal" }, { "value": "ivory", "label": "Ivory" }, { "value": "white", "label": "White" } ], "default": "ink" },
+    { "type": "range", "id": "padding_top", "label": "Space above", "min": 0, "max": 12, "step": 1, "unit": "rem", "default": 8 },
+    { "type": "range", "id": "padding_bottom", "label": "Space below", "min": 0, "max": 12, "step": 1, "unit": "rem", "default": 8 }
+  ],
+  "presets": [ { "name": "Brand story" } ]
+}
+{% endschema %}

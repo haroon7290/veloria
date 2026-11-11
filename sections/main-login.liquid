@@ -1,0 +1,38 @@
+<div class="page-width">
+  <div class="customer">
+    <div data-recover-panel hidden id="RecoverPassword">
+      <h1>{{ 'customer.recover_password.title' | t }}</h1>
+      <p class="text-secondary">{{ 'customer.recover_password.subtext' | t }}</p>
+      {%- form 'recover_customer_password' -%}
+        {%- if form.posted_successfully? -%}<p class="form-message form-message--success" role="status">{{ 'customer.recover_password.success' | t }}</p>{%- endif -%}
+        {%- if form.errors -%}<div class="form-message form-message--error" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+        <div class="field"><label for="RecoverEmail">{{ 'customer.login.email' | t }}</label><input type="email" id="RecoverEmail" name="email" autocomplete="email" required></div>
+        <button type="submit" class="button">{{ 'customer.recover_password.submit' | t }}</button>
+        <div class="customer__links"><a href="#login" data-toggle-recover>{{ 'customer.recover_password.cancel' | t }}</a></div>
+      {%- endform -%}
+    </div>
+    <div data-login-panel id="Login">
+      <h1>{{ 'customer.login.title' | t }}</h1>
+      {%- form 'customer_login', novalidate: 'novalidate' -%}
+        {%- if form.errors -%}<div class="form-message form-message--error" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+        <div class="field"><label for="CustomerEmail">{{ 'customer.login.email' | t }}</label><input type="email" name="customer[email]" id="CustomerEmail" autocomplete="email" autocorrect="off" autocapitalize="off" required></div>
+        {%- if form.password_needed -%}
+          <div class="field"><label for="CustomerPassword">{{ 'customer.login.password' | t }}</label><input type="password" name="customer[password]" id="CustomerPassword" autocomplete="current-password" required></div>
+          <p><a href="#recover" data-toggle-recover>{{ 'customer.login.forgot_password' | t }}</a></p>
+        {%- endif -%}
+        <button type="submit" class="button">{{ 'customer.login.sign_in' | t }}</button>
+      {%- endform -%}
+      <div class="customer__links">
+        <a href="{{ routes.account_register_url }}">{{ 'customer.login.create_account' | t }}</a>
+      </div>
+      {%- if shop.checkout.guest_login -%}
+        <hr style="border:0;border-top:1px solid var(--c-line);margin:2rem 0">
+        <h2 class="h3">{{ 'customer.login.guest_title' | t }}</h2>
+        {%- form 'guest_login' -%}<button type="submit" class="button button--secondary" style="margin-top:1rem">{{ 'customer.login.guest_continue' | t }}</button>{%- endform -%}
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+{% schema %}
+{ "name": "Customer login", "settings": [] }
+{% endschema %}

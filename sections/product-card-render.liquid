@@ -1,0 +1,4 @@
+{%- comment -%} Renders one product card for the recently viewed list (Section Rendering API). {%- endcomment -%}
+{%- if product -%}
+  {% render 'product-card', card_product: product, index: 1, hide_quick_add: true, sizes: '200px' %}
+{%- endif -%}

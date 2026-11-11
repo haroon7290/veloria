@@ -1,0 +1,84 @@
+{%- liquid
+  assign tabs = section.blocks | where: 'type', 'category'
+  assign visible_count = 0
+-%}
+<section class="section shop{% if section.settings.background != 'none' %} section--{{ section.settings.background }}{% endif %}" style="--pt: 2.5rem; --pt-d: {{ section.settings.padding_top }}rem; --pb-d: 5rem;" data-shop-tabs>
+  <div class="page-width">
+    <div class="shop__head">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}<span class="eyebrow">{{ section.settings.eyebrow | escape }}</span>{%- endif -%}
+        <h2>{{ section.settings.heading | escape }}</h2>
+      </div>
+      {%- if section.settings.show_search -%}
+        <form action="{{ routes.search_url }}" method="get" role="search" class="shop__search">
+          <label for="ShopSearch-{{ section.id }}" class="visually-hidden">{{ 'general.search.placeholder' | t }}</label>
+          {% render 'icon', name: 'search' %}
+          <input id="ShopSearch-{{ section.id }}" type="search" name="q" placeholder="{{ 'general.search.placeholder' | t }}" autocomplete="off">
+          <input type="hidden" name="options[prefix]" value="last">
+        </form>
+      {%- endif -%}
+    </div>
+
+    <div class="shop__tabs" role="tablist" aria-label="{{ section.settings.heading | escape }}">
+      {%- for block in tabs -%}
+        {%- assign c = block.settings.collection -%}
+        {%- if c != blank and c.products_count > 0 -%}
+          {%- assign visible_count = visible_count | plus: 1 -%}
+          <button type="button" class="shop__tab" role="tab" id="ShopTab-{{ block.id }}" aria-controls="ShopPanel-{{ block.id }}" aria-selected="{% if visible_count == 1 %}true{% else %}false{% endif %}" tabindex="{% if visible_count == 1 %}0{% else %}-1{% endif %}" {{ block.shopify_attributes }}>
+            {{- block.settings.label | default: c.title | escape -}}
+          </button>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    {%- assign shown = 0 -%}
+    {%- for block in tabs -%}
+      {%- assign c = block.settings.collection -%}
+      {%- if c != blank and c.products_count > 0 -%}
+        {%- assign shown = shown | plus: 1 -%}
+        {%- assign panel_id = section.id | append: '-' | append: block.id -%}
+        <div class="shop__panel" role="tabpanel" id="ShopPanel-{{ block.id }}" aria-labelledby="ShopTab-{{ block.id }}" tabindex="0"{% if shown > 1 %} hidden{% endif %}>
+          <ul class="product-grid product-grid--4" role="list">
+            {%- for product in c.products limit: section.settings.products_per_tab -%}
+              <li>{% render 'product-card', card_product: product, section_id: panel_id, index: forloop.index0 %}</li>
+            {%- endfor -%}
+          </ul>
+          {%- if c.products_count > section.settings.products_per_tab -%}
+            {%- assign tab_title = block.settings.label | default: c.title -%}
+            <div class="shop__more"><a href="{{ c.url }}" class="button button--secondary">{{ 'sections.shop.view_all' | t: title: tab_title | escape }}</a></div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if visible_count == 0 and request.design_mode -%}
+      <p class="text-secondary">{{ 'sections.shop.empty' | t }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Shop by category",
+  "max_blocks": 14,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "Shop" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Find your fragrance" },
+    { "type": "checkbox", "id": "show_search", "label": "Show search bar", "default": true },
+    { "type": "range", "id": "products_per_tab", "label": "Products per category", "min": 4, "max": 24, "step": 4, "default": 8 },
+    { "type": "select", "id": "background", "label": "Background", "options": [ { "value": "none", "label": "Page" }, { "value": "ivory", "label": "Ivory" }, { "value": "white", "label": "White" }, { "value": "cloud", "label": "Light grey" } ], "default": "none" },
+    { "type": "range", "id": "padding_top", "label": "Space above (desktop)", "min": 2, "max": 8, "step": 1, "unit": "rem", "default": 4 }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection", "info": "Categories with no products are hidden automatically." },
+        { "type": "text", "id": "label", "label": "Tab label", "info": "Leave empty to use the collection title." }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Shop by category", "blocks": [ { "type": "category", "settings": { "label": "All" } } ] } ]
+}
+{% endschema %}

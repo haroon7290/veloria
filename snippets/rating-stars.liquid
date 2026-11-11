@@ -1,0 +1,15 @@
+{%- comment -%}
+  Star rating from genuine review data (e.g. Shopify's standard reviews.rating metafield, filled by a reviews app).
+  Params: rating (number), scale (max, default 5), count (number of reviews), size ('small' | 'regular')
+{%- endcomment -%}
+{%- liquid
+  assign max = scale | default: 5 | round
+  assign r = rating | times: 1.0
+  assign pct = r | divided_by: max | times: 100 | round: 1
+  assign shown = r | round: 1
+-%}
+<span class="rating rating--{{ size | default: 'regular' }}">
+  <span class="rating__stars" style="--rating: {{ pct }}%;" aria-hidden="true"></span>
+  <span class="visually-hidden">{{ 'products.product.rating' | t: rating: shown, max: max }}</span>
+  {%- if count > 0 -%}<span class="rating__count">({{ count }})</span>{%- endif -%}
+</span>

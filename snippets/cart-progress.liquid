@@ -1,0 +1,19 @@
+{%- if settings.free_delivery_threshold > 0 and cart.item_count > 0 -%}
+  {%- liquid
+    assign threshold = settings.free_delivery_threshold | times: 100
+    assign remaining = threshold | minus: cart.total_price
+    assign pct = cart.total_price | times: 100 | divided_by: threshold
+    assign remaining_money = remaining | money
+    if pct > 100
+      assign pct = 100
+    endif
+  -%}
+  <div class="cart-progress">
+    {%- if remaining > 0 -%}
+      {{ 'cart.general.free_delivery_remaining_html' | t: amount: remaining_money }}
+    {%- else -%}
+      {{ 'cart.general.free_delivery_reached' | t }}
+    {%- endif -%}
+    <div class="cart-progress__bar" aria-hidden="true"><div class="cart-progress__fill" style="--progress: {{ pct }}%"></div></div>
+  </div>
+{%- endif -%}

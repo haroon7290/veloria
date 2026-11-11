@@ -1,0 +1,101 @@
+{%- liquid
+  assign s = section.settings
+-%}
+{%- if section.blocks.size > 0 -%}
+<section class="section families section--{{ s.background }}" style="--pt: {{ s.padding_top | times: 0.6 }}rem; --pb: {{ s.padding_bottom | times: 0.6 }}rem; --pt-d: {{ s.padding_top }}rem; --pb-d: {{ s.padding_bottom }}rem;">
+  <div class="page-width">
+    <div class="section-header section-header--split reveal">
+      <div class="section-header__text">
+        {%- if s.eyebrow != blank -%}<p class="eyebrow eyebrow--rule">{{ s.eyebrow | escape }}</p>{%- endif -%}
+        {%- if s.heading != blank -%}<h2>{{ s.heading | escape }}</h2>{%- endif -%}
+        {%- if s.text != blank -%}<div class="section-header__lead rte">{{ s.text }}</div>{%- endif -%}
+      </div>
+      {%- if s.link_label != blank -%}
+        <div class="section-header__actions">
+          <a class="link-arrow" href="{{ s.link | default: routes.all_products_collection_url }}"><span>{{ s.link_label | escape }}</span>{% render 'icon', name: 'arrow-right' %}</a>
+        </div>
+      {%- endif -%}
+    </div>
+    <ul class="family-grid family-grid--{{ s.style }}" role="list" style="--cols: {{ section.blocks.size }}">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign url = routes.all_products_collection_url
+          if block.settings.collection != blank
+            assign url = block.settings.collection.url
+          endif
+          assign img = block.settings.image
+          if img == blank and block.settings.use_collection_image and block.settings.collection.image != blank
+            assign img = block.settings.collection.image
+          endif
+          assign tone = 'beige'
+          assign m = forloop.index0 | modulo: 2
+          if m == 1
+            assign tone = 'stone'
+          endif
+        -%}
+        <li class="reveal" style="--reveal-delay: {{ forloop.index0 | times: 70 }}ms" {{ block.shopify_attributes }}>
+          <a href="{{ url }}" class="family-card">
+            <span class="family-card__media">
+              {%- if img != blank -%}
+                {{ img | image_url: width: 900 | image_tag: widths: '300, 450, 600, 900', sizes: '(min-width: 990px) 20vw, 70vw', loading: 'lazy', alt: img.alt | default: '' }}
+              {%- else -%}
+                {% render 'media-placeholder', label: 'FRAGRANCE_FAMILY_IMAGE', size: '900 × 1200 px (3:4)', tone: tone %}
+              {%- endif -%}
+            </span>
+            <span class="family-card__body">
+              <span class="family-card__title">{{ block.settings.title | escape }}</span>
+              {%- if block.settings.text != blank -%}<span class="family-card__text">{{ block.settings.text | escape }}</span>{%- endif -%}
+              <span class="family-card__cta">{{ s.card_link_label | escape }}</span>
+            </span>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Scent families",
+  "class": "section-families",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "Fragrance families" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop by fragrance family" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "All fragrances" },
+    { "type": "url", "id": "link", "label": "Link" },
+    { "type": "text", "id": "card_link_label", "label": "Link text on each card", "default": "Explore" },
+    { "type": "select", "id": "style", "label": "Card style", "options": [ { "value": "overlay", "label": "Text over image" }, { "value": "below", "label": "Text below image" } ], "default": "overlay" },
+    { "type": "select", "id": "background", "label": "Background", "options": [ { "value": "white", "label": "White" }, { "value": "ivory", "label": "Ivory" }, { "value": "cloud", "label": "Light grey" } ], "default": "white" },
+    { "type": "range", "id": "padding_top", "label": "Space above", "min": 0, "max": 10, "step": 1, "unit": "rem", "default": 7 },
+    { "type": "range", "id": "padding_bottom", "label": "Space below", "min": 0, "max": 10, "step": 1, "unit": "rem", "default": 7 }
+  ],
+  "blocks": [
+    {
+      "type": "family",
+      "name": "Scent family",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Scent family" },
+        { "type": "text", "id": "text", "label": "Short description" },
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "image_picker", "id": "image", "label": "Image", "info": "Portrait, about 900 × 1200 px." },
+        { "type": "checkbox", "id": "use_collection_image", "label": "Use the collection image when no image is chosen", "default": true }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scent families",
+      "blocks": [
+        { "type": "family", "settings": { "title": "Fresh & Citrus", "text": "Bright, clean and effortless" } },
+        { "type": "family", "settings": { "title": "Floral", "text": "Petals, powder and softness" } },
+        { "type": "family", "settings": { "title": "Woody", "text": "Cedar, sandalwood and vetiver" } },
+        { "type": "family", "settings": { "title": "Amber & Spice", "text": "Warm, resinous and rich" } },
+        { "type": "family", "settings": { "title": "Gourmand", "text": "Vanilla, tonka and cocoa" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
