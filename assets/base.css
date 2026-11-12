@@ -1507,3 +1507,4 @@ a.trust-point__title:hover { text-decoration: underline; }
 }
 body.has-sticky-atc .footer { padding-bottom: 5rem; }
 @media (max-width: 749px) { .mb-card__label { letter-spacing: 0.06em; font-size: 0.5625rem; } .mb-card__badge { letter-spacing: 0.08em; } }
+.mb-card__label { display: block; line-height: 1.35; }
