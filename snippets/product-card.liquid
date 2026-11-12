@@ -64,8 +64,6 @@
     endcapture
     assign family = family | strip | strip_html
   endif
-  assign rating = card_product.metafields.reviews.rating.value
-  assign rating_count = card_product.metafields.reviews.rating_count.value | default: 0
 -%}
 <div class="product-card" style="--card-bg: {{ bg }}; --card-ratio: {{ ratio }};">
   <div class="product-card__media{% if settings.card_image_ratio == 'natural' %} product-card__media--natural{% endif %}">
@@ -108,7 +106,7 @@
       <span class="product-card__vendor">{{ card_product.vendor | escape }}</span>
     {%- endif -%}
     <{{ tag }} class="product-card__title">
-      <a href="{{ card_product.url }}" class="product-card__link">{{ card_product.title | escape }}</a>
+      <a href="{{ card_product.url | within: collection }}" class="product-card__link">{{ card_product.title | escape }}</a>
     </{{ tag }}>
     {%- liquid
       assign concentration_safe = concentration | escape
@@ -133,8 +131,8 @@
     {%- if meta_parts != blank -%}
       <span class="product-card__meta">{{ meta_parts }}</span>
     {%- endif -%}
-    {%- if settings.card_show_rating and rating != blank and rating.rating > 0 -%}
-      {% render 'rating-stars', rating: rating.rating, scale: rating.scale_max, count: rating_count, size: 'small' %}
+    {%- if settings.card_show_rating -%}
+      {% render 'review-summary', product_obj: card_product, size: 'small' %}
     {%- endif -%}
     {% render 'price', target: card_product, show_from: true %}
   </div>
@@ -170,7 +168,7 @@
           <p class="product-form__error small" role="alert" data-form-error hidden style="grid-column: 1 / -1"></p>
         {%- endform -%}
       {%- else -%}
-        <a href="{{ card_product.url }}" class="button button--secondary card-buy__button">{{ 'products.product.choose_options' | t }}</a>
+        <a href="{{ card_product.url | within: collection }}" class="button button--secondary card-buy__button">{{ 'products.product.choose_options' | t }}</a>
       {%- endif -%}
     </div>
   {%- endif -%}

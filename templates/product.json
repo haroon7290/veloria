@@ -18,7 +18,9 @@
         },
         "price": {
           "type": "price",
-          "settings": {}
+          "settings": {
+            "show_savings": true
+          }
         },
         "summary": {
           "type": "summary",
@@ -63,34 +65,71 @@
           "settings": {
             "show_description": false,
             "open_description": false,
-            "show_sku": false
+            "show_sku": false,
+            "show_notes": false,
+            "show_delivery": true,
+            "show_returns": true
+          }
+        },
+        "popularity": {
+          "type": "popularity",
+          "settings": {
+            "text": "A Valoria bestseller",
+            "tag": "bestseller",
+            "collection": "bestsellers",
+            "icon": "sparkle"
+          }
+        },
+        "trust": {
+          "type": "trust",
+          "settings": {
+            "points": "1,2,3",
+            "layout": "row"
+          }
+        },
+        "multibuy": {
+          "type": "multibuy",
+          "settings": {}
+        },
+        "help": {
+          "type": "help",
+          "settings": {
+            "text": "Need advice choosing?",
+            "contact_page": "contact"
           }
         }
       },
       "block_order": [
         "heading",
-        "highlights",
         "price",
-        "summary",
+        "popularity",
+        "highlights",
         "variant_picker",
         "stock",
         "buy_buttons",
-        "assurance",
-        "notes",
-        "accordions"
+        "trust",
+        "multibuy",
+        "summary",
+        "accordions",
+        "help"
       ],
       "settings": {
         "enable_zoom": true,
         "image_fit": "cover",
         "sticky_atc": true,
-        "gallery_layout": "thumbnails"
+        "gallery_layout": "thumbnails",
+        "image_ratio": "portrait",
+        "info_position": "right",
+        "sticky_desktop": true
       }
     },
     "about": {
       "type": "product-about",
       "settings": {
         "eyebrow": "About the fragrance",
-        "background": "ivory"
+        "background": "ivory",
+        "collapse": true,
+        "show_notes": false
       }
     },
     "related": {
@@ -98,7 +137,7 @@
       "settings": {
         "eyebrow": "Same category",
         "limit": 4,
-        "heading": "You may also like"
+        "heading": "You may also love"
       }
     },
     "recently_viewed": {
@@ -118,48 +157,73 @@
         "background": "ivory"
       }
     },
-    "trending": {
-      "type": "product-carousel",
+    "notes": {
+      "type": "product-notes",
       "settings": {
-        "source": "collection",
-        "collection": "bestsellers",
-        "eyebrow": "Trending",
-        "heading": "Trending now",
-        "limit": 4,
-        "background": "white"
+        "eyebrow": "The composition",
+        "heading": "Fragrance notes",
+        "top_hint": "The opening impression",
+        "heart_hint": "The character of the fragrance",
+        "base_hint": "The lasting foundation",
+        "background": "white",
+        "padding_top": 6,
+        "padding_bottom": 6
       }
     },
-    "reviews": {
-      "type": "apps",
+    "fbt": {
+      "type": "product-fbt",
+      "settings": {
+        "eyebrow": "Complete the ritual",
+        "heading": "Frequently bought together",
+        "limit": 2,
+        "use_complementary": true,
+        "prefer_multibuy": true,
+        "background": "white",
+        "padding_top": 6,
+        "padding_bottom": 6
+      }
+    },
+    "product_reviews": {
+      "type": "product-reviews",
       "settings": {
         "eyebrow": "Reviews",
         "heading": "Customer reviews",
-        "narrow": false,
+        "per_page": 6,
+        "share_label": "Share your experience",
+        "share_page": "contact",
+        "show_empty": true,
+        "empty_heading": "No reviews yet",
+        "empty_text": "Tried this fragrance? We'd love to hear what you think.",
         "anchor": "reviews",
-        "background": "white",
-        "padding_top": 5,
-        "padding_bottom": 5
+        "background": "ivory",
+        "padding_top": 6,
+        "padding_bottom": 6
       }
     },
-    "complementary": {
-      "type": "product-recommendations",
+    "delivery": {
+      "type": "product-delivery",
       "settings": {
-        "eyebrow": "Pairs well with",
-        "heading": "Complete your collection",
-        "limit": 4,
-        "intent": "complementary",
-        "background": "ivory"
+        "eyebrow": "Good to know",
+        "heading": "Delivery, returns and peace of mind",
+        "link_label": "Delivery and returns",
+        "contact_page": "contact",
+        "show_points": false,
+        "points": "3,5,6",
+        "background": "white",
+        "padding_top": 6,
+        "padding_bottom": 6
       }
     }
   },
   "order": [
     "main",
+    "notes",
     "about",
-    "reviews",
+    "fbt",
+    "product_reviews",
+    "delivery",
     "related",
-    "complementary",
     "similar",
-    "trending",
     "recently_viewed"
   ]
 }

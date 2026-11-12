@@ -1,0 +1,52 @@
+{%- comment -%}
+  One row in Frequently bought together.
+  Params: item (product), is_main (bool), uid (unique id string)
+{%- endcomment -%}
+{%- liquid
+  assign v = item.selected_or_first_available_variant
+  assign eligible = false
+  if settings.multibuy_enabled and settings.multibuy_collection != blank
+    for c in item.collections
+      if c.id == settings.multibuy_collection.id
+        assign eligible = true
+        break
+      endif
+    endfor
+  endif
+  capture conc
+    render 'product-concentration', product: item
+  endcapture
+  assign conc = conc | strip
+-%}
+<li class="fbt-item{% if is_main %} fbt-item--main{% endif %}" data-fbt-item data-product-id="{{ item.id }}" data-eligible="{{ eligible }}">
+  <span class="fbt-item__check">
+    <input type="checkbox" id="Fbt-{{ uid }}" checked data-fbt-check{% if is_main %} data-fbt-main{% endif %}>
+    <label for="Fbt-{{ uid }}" class="visually-hidden">{{ 'products.fbt.include' | t: title: item.title | escape }}</label>
+  </span>
+  <a href="{{ item.url }}" class="fbt-item__media" tabindex="-1" aria-hidden="true">
+    {%- if item.featured_media -%}
+      {{ item.featured_media.preview_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: '', widths: '100, 200', sizes: '72px' }}
+    {%- endif -%}
+  </a>
+  <span class="fbt-item__info">
+    {%- if item.vendor != blank -%}<span class="fbt-item__vendor">{{ item.vendor | escape }}</span>{%- endif -%}
+    <span class="fbt-item__title">
+      {%- if is_main -%}<span class="fbt-item__this">{{ 'products.fbt.this_item' | t }}</span> {% endif -%}
+      <a href="{{ item.url }}">{{ item.title | escape }}</a>
+    </span>
+    {%- if conc != blank -%}<span class="fbt-item__meta">{{ conc | escape }}</span>{%- endif -%}
+    {%- if item.has_only_default_variant -%}
+      <input type="hidden" value="{{ v.id }}" data-fbt-variant data-price="{{ v.price }}">
+    {%- else -%}
+      <label for="FbtVariant-{{ uid }}" class="visually-hidden">{{ 'products.fbt.size_for' | t: title: item.title | escape }}</label>
+      <select id="FbtVariant-{{ uid }}" class="select select--small" data-fbt-variant>
+        {%- for variant in item.variants -%}
+          {%- if variant.available -%}
+            <option value="{{ variant.id }}" data-price="{{ variant.price }}"{% if variant.id == v.id %} selected{% endif %}>{{ variant.title | escape }} · {{ variant.price | money }}</option>
+          {%- endif -%}
+        {%- endfor -%}
+      </select>
+    {%- endif -%}
+  </span>
+  <span class="fbt-item__price" data-fbt-price>{{ v.price | money }}</span>
+</li>

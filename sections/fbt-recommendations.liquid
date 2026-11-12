@@ -1,0 +1,14 @@
+{%- comment -%}
+  Complementary products for Frequently bought together, loaded through the Section Rendering API:
+  /recommendations/products?section_id=fbt-recommendations&product_id=…&intent=complementary
+  Complementary products are set per product in the Shopify Search & Discovery app.
+{%- endcomment -%}
+<ul data-fbt-recs>
+  {%- if recommendations.performed? and recommendations.products_count > 0 -%}
+    {%- for rec in recommendations.products -%}
+      {%- if rec.available -%}
+        {% render 'fbt-item', item: rec, is_main: false, uid: rec.id %}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+</ul>

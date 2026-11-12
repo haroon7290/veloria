@@ -66,6 +66,7 @@
           predictiveSearch: {{ routes.predictive_search_url | json }}
         },
         cartType: {{ settings.cart_type | json }},
+        moneyFormat: {{ shop.money_format | json }},
         strings: {
           addToCart: {{ 'products.product.add_to_cart' | t | json }},
           soldOut: {{ 'products.product.sold_out' | t | json }},
@@ -79,7 +80,16 @@
           finderEmpty: {{ 'sections.finder.empty' | t | json }},
           finderBroadened: {{ 'sections.finder.broadened' | t | json }},
           finderExplore: {{ 'sections.finder.explore_named' | t: title: '__TITLE__' | json }},
-          emailInvalid: {{ 'newsletter.invalid' | t | json }}
+          emailInvalid: {{ 'newsletter.invalid' | t | json }},
+          mbSameAgain: {{ 'products.multibuy.same_again' | t | json }},
+          mbYouSave: {{ 'products.multibuy.you_save' | t: amount: '__AMOUNT__' | json }},
+          mbSaving: {{ 'products.multibuy.saving_pct' | t: percent: '__PCT__' | json }},
+          mbAdd: {{ 'products.multibuy.add_js' | t: count: '__COUNT__' | json }},
+          mbChoose: {{ 'products.multibuy.choose_more' | t | json }},
+          fbtAdd1: {{ 'products.fbt.add' | t | json }},
+          fbtAddN: {{ 'products.fbt.add_n' | t: count: '__COUNT__' | json }},
+          reviewsAll: {{ 'products.reviews.showing_js' | t: count: '__COUNT__' | json }},
+          reviewsFiltered: {{ 'products.reviews.filtered_js' | t: count: '__COUNT__', stars: '__STARS__' | json }}
         }
       };
     </script>

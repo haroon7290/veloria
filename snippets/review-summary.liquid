@@ -1,0 +1,46 @@
+{%- comment -%}
+  Star summary from genuine reviews.
+  Source 1: reviews you add yourself (product metafield custom.reviews, a list of "Product review" metaobject entries).
+  Source 2: Shopify's standard reviews.rating metafields (filled by review apps).
+  Renders nothing when there are no reviews.
+  Params: product_obj, size ('small' | 'regular'), href (optional link target)
+{%- endcomment -%}
+{%- liquid
+  assign r_total = 0
+  assign r_count = 0
+  assign r_scale = 5
+  assign entries = product_obj.metafields.custom.reviews.value
+  for entry in entries
+    assign rv = entry.rating.value
+    if rv.rating != blank
+      assign rv = rv.rating
+    endif
+    assign rv = rv | plus: 0
+    if rv > 0
+      assign r_total = r_total | plus: rv
+      assign r_count = r_count | plus: 1
+    endif
+  endfor
+  assign r_avg = 0
+  if r_count > 0
+    assign r_avg = r_total | times: 1.0 | divided_by: r_count
+  else
+    assign std = product_obj.metafields.reviews.rating.value
+    if std != blank and std.rating > 0
+      assign r_avg = std.rating
+      assign r_scale = std.scale_max | default: 5
+      assign r_count = product_obj.metafields.reviews.rating_count.value | default: 0
+    endif
+  endif
+-%}
+{%- if r_avg > 0 -%}
+  {%- if href != blank -%}<a href="{{ href }}" class="review-summary">{%- else -%}<span class="review-summary">{%- endif -%}
+    {% render 'rating-stars', rating: r_avg, scale: r_scale, count: 0, size: size %}
+    <span class="review-summary__text">
+      {%- assign avg_text = r_avg | round: 1 | append: '' -%}
+      {%- unless avg_text contains '.' -%}{%- assign avg_text = avg_text | append: '.0' -%}{%- endunless -%}
+      <span class="review-summary__avg">{{ avg_text }}</span>
+      {%- if r_count > 0 -%}<span class="review-summary__count">{{ 'products.reviews.count' | t: count: r_count }}</span>{%- endif -%}
+    </span>
+  {%- if href != blank -%}</a>{%- else -%}</span>{%- endif -%}
+{%- endif -%}

@@ -1,0 +1,74 @@
+{%- liquid
+  assign mf = product.metafields.custom
+  assign heart = mf.heart_notes | default: mf.middle_notes
+  assign tiers = 0
+  if mf.top_notes != blank
+    assign tiers = tiers | plus: 1
+  endif
+  if heart != blank
+    assign tiers = tiers | plus: 1
+  endif
+  if mf.base_notes != blank
+    assign tiers = tiers | plus: 1
+  endif
+  assign s = section.settings
+-%}
+{%- if tiers > 0 -%}
+<section id="FragranceNotes" class="section notes-section section--{{ s.background }}" style="--pt: {{ s.padding_top | times: 0.6 }}rem; --pb: {{ s.padding_bottom | times: 0.6 }}rem; --pt-d: {{ s.padding_top }}rem; --pb-d: {{ s.padding_bottom }}rem;">
+  <div class="page-width">
+    <div class="section-header section-header--center reveal">
+      <div class="section-header__text">
+        {%- if s.eyebrow != blank -%}<p class="eyebrow eyebrow--rule">{{ s.eyebrow | escape }}</p>{%- endif -%}
+        <h2>{{ s.heading | escape }}</h2>
+      </div>
+    </div>
+    <ol class="notes-tiers" role="list" style="--tiers: {{ tiers }};">
+      {%- if mf.top_notes != blank -%}
+        <li class="notes-tier reveal">
+          <span class="notes-tier__num" aria-hidden="true">I</span>
+          <h3 class="notes-tier__label">{{ 'products.notes_section.top' | t }}</h3>
+          <p class="notes-tier__hint">{{ s.top_hint | escape }}</p>
+          <p class="notes-tier__notes">{% render 'metafield-text', field: mf.top_notes %}</p>
+        </li>
+      {%- endif -%}
+      {%- if heart != blank -%}
+        <li class="notes-tier reveal" style="--reveal-delay: 100ms">
+          <span class="notes-tier__num" aria-hidden="true">II</span>
+          <h3 class="notes-tier__label">{{ 'products.notes_section.heart' | t }}</h3>
+          <p class="notes-tier__hint">{{ s.heart_hint | escape }}</p>
+          <p class="notes-tier__notes">{% render 'metafield-text', field: heart %}</p>
+        </li>
+      {%- endif -%}
+      {%- if mf.base_notes != blank -%}
+        <li class="notes-tier reveal" style="--reveal-delay: 200ms">
+          <span class="notes-tier__num" aria-hidden="true">III</span>
+          <h3 class="notes-tier__label">{{ 'products.notes_section.base' | t }}</h3>
+          <p class="notes-tier__hint">{{ s.base_hint | escape }}</p>
+          <p class="notes-tier__notes">{% render 'metafield-text', field: mf.base_notes %}</p>
+        </li>
+      {%- endif -%}
+    </ol>
+  </div>
+</section>
+{%- elsif request.design_mode -%}
+  <div class="page-width"><p class="editor-note">{{ 'products.notes_section.editor' | t }}</p></div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Fragrance notes",
+  "class": "section-product-notes",
+  "settings": [
+    { "type": "paragraph", "content": "Reads product metafields custom.top_notes, custom.heart_notes (or custom.middle_notes) and custom.base_notes. Hidden on products without notes." },
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "The composition" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Fragrance notes" },
+    { "type": "text", "id": "top_hint", "label": "Top notes description", "default": "The opening impression" },
+    { "type": "text", "id": "heart_hint", "label": "Heart notes description", "default": "The character of the fragrance" },
+    { "type": "text", "id": "base_hint", "label": "Base notes description", "default": "The lasting foundation" },
+    { "type": "select", "id": "background", "label": "Background", "options": [ { "value": "white", "label": "White" }, { "value": "ivory", "label": "Ivory" }, { "value": "ink", "label": "Black" } ], "default": "white" },
+    { "type": "range", "id": "padding_top", "label": "Space above", "min": 0, "max": 10, "step": 1, "unit": "rem", "default": 6 },
+    { "type": "range", "id": "padding_bottom", "label": "Space below", "min": 0, "max": 10, "step": 1, "unit": "rem", "default": 6 }
+  ],
+  "presets": [ { "name": "Fragrance notes" } ]
+}
+{% endschema %}

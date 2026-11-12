@@ -10,8 +10,10 @@
   endcapture
   assign size_text = size_text | strip
   assign has_notes = false
-  if mf.top_notes != blank or heart != blank or mf.base_notes != blank
-    assign has_notes = true
+  if section.settings.show_notes
+    if mf.top_notes != blank or heart != blank or mf.base_notes != blank
+      assign has_notes = true
+    endif
   endif
 -%}
 {%- if product.description != blank or has_notes -%}
@@ -22,8 +24,28 @@
         <p class="eyebrow eyebrow--rule">{{ section.settings.eyebrow | escape }}</p>
         <h2 class="h2">{{ product.title | escape }}</h2>
         {%- if product.vendor != blank -%}<p class="product-about__by">{{ 'products.product.by_vendor' | t: vendor: product.vendor | escape }}</p>{%- endif -%}
+        {%- if mf.character != blank -%}
+          <p class="product-about__character">{% render 'metafield-text', field: mf.character %}</p>
+        {%- endif -%}
         {%- if product.description != blank -%}
-          <div class="rte product-about__text">{{ product.description }}</div>
+          <div class="rte product-about__text{% if section.settings.collapse %} is-collapsible{% endif %}" data-read-more>{{ product.description }}</div>
+          {%- if section.settings.collapse -%}
+            <button type="button" class="link-underline product-about__more" data-read-more-toggle aria-expanded="false" hidden>
+              <span data-label-more>{{ 'products.product.read_more' | t }}</span><span data-label-less hidden>{{ 'products.product.read_less' | t }}</span>
+            </button>
+          {%- endif -%}
+        {%- endif -%}
+        {%- if mf.scent_profile != blank -%}
+          <div class="product-about__block">
+            <h3 class="label">{{ 'products.product.scent_profile' | t }}</h3>
+            <div class="rte">{% render 'metafield-text', field: mf.scent_profile %}</div>
+          </div>
+        {%- endif -%}
+        {%- if mf.manufacturer_info != blank -%}
+          <div class="product-about__block">
+            <h3 class="label">{{ 'products.product.manufacturer' | t }}</h3>
+            <div class="rte small">{% render 'metafield-text', field: mf.manufacturer_info %}</div>
+          </div>
         {%- endif -%}
       </div>
       <div class="product-about__side">
@@ -51,7 +73,10 @@
 {
   "name": "About the fragrance",
   "settings": [
+    { "type": "paragraph", "content": "Shows the product description plus optional metafields: custom.character (a one-line character statement), custom.scent_profile, custom.manufacturer_info, and the details table (concentration, family, sizes, occasions and more)." },
     { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "About the fragrance" },
+    { "type": "checkbox", "id": "collapse", "label": "Shorten long descriptions with Read more", "default": true },
+    { "type": "checkbox", "id": "show_notes", "label": "Show fragrance notes here", "info": "Turn off when the Fragrance notes section is on the page.", "default": false },
     { "type": "select", "id": "background", "label": "Background", "options": [ { "value": "white", "label": "White" }, { "value": "ivory", "label": "Ivory" }, { "value": "cloud", "label": "Light grey" } ], "default": "ivory" }
   ]
 }

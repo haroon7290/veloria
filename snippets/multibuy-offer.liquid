@@ -1,0 +1,142 @@
+{%- comment -%}
+  Multi-buy offer: Buy 1 / Buy 2 / Buy 3 cards with a picker for the extra fragrances.
+  The saving is given by Shopify automatic discounts (created in Shopify › Discounts); this snippet only displays
+  the offer and adds the chosen products to the bag. Shown only when the offer is switched on in
+  Theme settings › Multi-buy offer and the product belongs to the eligible collection.
+  Params: product, current_variant, section_id
+{%- endcomment -%}
+{%- liquid
+  assign mb_collection = settings.multibuy_collection
+  assign mb_on = false
+  if settings.multibuy_enabled and mb_collection != blank and product.available
+    for c in product.collections
+      if c.id == mb_collection.id
+        assign mb_on = true
+        break
+      endif
+    endfor
+  endif
+  assign t2 = settings.multibuy_tier2
+  assign t3 = settings.multibuy_tier3
+-%}
+{%- if mb_on -%}
+  {%- liquid
+    assign price = current_variant.price
+    assign img = current_variant.featured_media | default: product.featured_media
+  -%}
+  <div class="multibuy" data-multibuy data-tier2="{{ t2 }}" data-tier3="{{ t3 }}" data-product-id="{{ product.id }}" data-section-id="{{ section_id }}">
+    <fieldset class="multibuy__options">
+      <legend class="multibuy__heading">{{ settings.multibuy_heading | escape }}</legend>
+      <div class="multibuy__cards">
+        {%- for n in (1..3) -%}
+          {%- liquid
+            assign base = price | times: n
+            assign pct = 0
+            if n == 2
+              assign pct = t2
+            elsif n == 3
+              assign pct = t3
+            endif
+            assign off = base | times: pct | divided_by: 100
+            assign total = base | minus: off
+          -%}
+          <label class="mb-card{% if n == 2 %} mb-card--featured{% endif %}">
+            <input type="radio" name="multibuy-{{ section_id }}" value="{{ n }}"{% if n == 1 %} checked{% endif %} data-multibuy-tier>
+            <span class="mb-card__top">
+              {%- case n -%}
+                {%- when 1 -%}<span class="mb-card__label">{{ settings.multibuy_label_1 | escape }}</span>
+                {%- when 2 -%}{%- if settings.multibuy_label_2 != blank -%}<span class="mb-card__badge">{{ settings.multibuy_label_2 | escape }}</span>{%- endif -%}
+                {%- when 3 -%}{%- if settings.multibuy_label_3 != blank -%}<span class="mb-card__badge mb-card__badge--gold">{{ settings.multibuy_label_3 | escape }}</span>{%- endif -%}
+              {%- endcase -%}
+            </span>
+            <span class="mb-card__thumbs" aria-hidden="true" style="--n: {{ n }};">
+              {%- for i in (1..n) -%}
+                <span class="mb-card__thumb">
+                  {%- if img != blank -%}{{ img.preview_image | image_url: width: 120 | image_tag: loading: 'lazy', alt: '', widths: '60, 120', sizes: '48px' }}{%- endif -%}
+                </span>
+              {%- endfor -%}
+            </span>
+            <span class="mb-card__qty">{{ 'products.multibuy.buy_n' | t: count: n }}</span>
+            <span class="mb-card__title">
+              {%- if n == 1 -%}{{ settings.multibuy_title_1 | escape }}{%- else -%}{{ 'products.multibuy.save_pct' | t: percent: pct }}{%- endif -%}
+            </span>
+            <span class="mb-card__prices">
+              <span class="mb-card__price" data-mb-price="{{ n }}">{{ total | money }}</span>
+              {%- if n > 1 -%}<s class="mb-card__compare" data-mb-compare="{{ n }}">{{ base | money }}</s>{%- endif -%}
+            </span>
+            {%- if n > 1 -%}
+              {%- assign off_money = off | money -%}
+              <span class="mb-card__save" data-mb-save="{{ n }}">{{ 'products.multibuy.you_save' | t: amount: off_money }}</span>
+              <span class="mb-card__hint">{{ 'products.multibuy.example' | t: count: n }}</span>
+            {%- endif -%}
+          </label>
+        {%- endfor -%}
+      </div>
+    </fieldset>
+
+    <div class="multibuy__picker" data-multibuy-picker hidden>
+      <p class="multibuy__picker-title">{{ 'products.multibuy.choose' | t }}</p>
+      <ol class="mb-slots" role="list">
+        <li class="mb-slot mb-slot--fixed">
+          <span class="mb-slot__media">{%- if img != blank -%}{{ img.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '', widths: '80, 160', sizes: '64px' }}{%- endif -%}</span>
+          <span class="mb-slot__info">
+            <span class="mb-slot__vendor">{{ product.vendor | escape }}</span>
+            <span class="mb-slot__title">{{ product.title | escape }}</span>
+            <span class="mb-slot__meta"><span data-mb-main-variant>{% unless product.has_only_default_variant %}{{ current_variant.title | escape }} · {% endunless %}</span><span data-mb-main-price>{{ price | money }}</span></span>
+          </span>
+        </li>
+        {%- for n in (2..3) -%}
+          <li class="mb-slot" data-mb-slot="{{ n }}"{% if n == 3 %} hidden{% endif %}>
+            <span class="mb-slot__media" data-mb-slot-media></span>
+            <span class="mb-slot__fields">
+              <label class="visually-hidden" for="MbProduct-{{ section_id }}-{{ n }}">{{ 'products.multibuy.fragrance_n' | t: number: n }}</label>
+              <select id="MbProduct-{{ section_id }}-{{ n }}" class="select" data-mb-product>
+                <option value="">{{ 'products.multibuy.choose_placeholder' | t }}</option>
+              </select>
+              <label class="visually-hidden" for="MbVariant-{{ section_id }}-{{ n }}">{{ 'products.multibuy.size_n' | t: number: n }}</label>
+              <select id="MbVariant-{{ section_id }}-{{ n }}" class="select" data-mb-variant hidden></select>
+            </span>
+          </li>
+        {%- endfor -%}
+      </ol>
+      <dl class="mb-summary">
+        <div><dt>{{ 'products.multibuy.subtotal' | t }}</dt><dd data-mb-subtotal></dd></div>
+        <div class="mb-summary__saving"><dt data-mb-saving-label>{{ 'products.multibuy.saving' | t }}</dt><dd data-mb-saving></dd></div>
+        <div class="mb-summary__total"><dt>{{ 'products.multibuy.total' | t }}</dt><dd data-mb-total></dd></div>
+      </dl>
+      <p class="product-form__error" role="alert" data-mb-error hidden></p>
+      <button type="button" class="button button--full" data-mb-add>{{ 'products.multibuy.add' | t: count: 2 }}</button>
+    </div>
+
+    {%- if settings.multibuy_note != blank -%}<p class="multibuy__note">{% render 'icon', name: 'tag', class: 'icon--small' %}{{ settings.multibuy_note | escape }}</p>{%- endif -%}
+
+    <script type="application/json" data-mb-data>
+      {
+        "moneyFormat": {{ shop.money_format | json }},
+        "currentVariant": {{ current_variant.id | json }},
+        "products": [
+          {%- for item in mb_collection.products limit: 60 -%}
+            {%- if item.available -%}
+              {%- assign item_img = item.featured_media.preview_image -%}
+              {
+                "id": {{ item.id | json }},
+                "title": {{ item.title | json }},
+                "vendor": {{ item.vendor | json }},
+                "image": {% if item_img %}{{ item_img | image_url: width: 160 | json }}{% else %}null{% endif %},
+                "single": {{ item.has_only_default_variant | json }},
+                "variants": [
+                  {%- for v in item.variants -%}
+                    { "id": {{ v.id | json }}, "title": {{ v.title | json }}, "price": {{ v.price | json }}, "available": {{ v.available | json }} }{% unless forloop.last %},{% endunless %}
+                  {%- endfor -%}
+                ]
+              },
+            {%- endif -%}
+          {%- endfor -%}
+          null
+        ]
+      }
+    </script>
+  </div>
+{%- elsif request.design_mode -%}
+  <p class="editor-note editor-note--small">{{ 'products.multibuy.editor' | t }}</p>
+{%- endif -%}

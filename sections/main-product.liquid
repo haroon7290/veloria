@@ -25,9 +25,12 @@
       {%- endif -%}
       <li><span aria-current="page">{{ product.title | escape }}</span></li>
     </ol>
+    {%- if collection -%}
+      <a href="{{ collection.url }}" class="breadcrumbs__back">{% render 'icon', name: 'chevron-left', class: 'icon--small' %}{{ 'products.product.back_to' | t: title: collection.title | escape }}</a>
+    {%- endif -%}
   </nav>
 
-  <div class="product" data-product data-section-id="{{ section.id }}" data-product-url="{{ product.url }}" data-product-handle="{{ product.handle }}">
+  <div class="product product--info-{{ section.settings.info_position }} product--ratio-{{ section.settings.image_ratio }}" data-product data-section-id="{{ section.id }}" data-product-url="{{ product.url }}" data-product-handle="{{ product.handle }}">
     {%- comment -%} Gallery {%- endcomment -%}
     <div class="gallery gallery--{{ section.settings.gallery_layout }}{% if media_count <= 1 %} gallery--single{% endif %}" data-gallery>
       {%- if media_count > 0 -%}
@@ -108,18 +111,27 @@
                   <a href="{{ vendor_url }}" class="product__vendor">{{ product.vendor | escape }}</a>
                 {%- endif -%}
                 <h1 class="product__title">{{ product.title | escape }}</h1>
-                {%- assign p_rating = product.metafields.reviews.rating.value -%}
-                {%- if block.settings.show_rating and p_rating != blank and p_rating.rating > 0 -%}
-                  <a href="#{{ block.settings.reviews_anchor | default: 'reviews' }}" class="product__rating">{% render 'rating-stars', rating: p_rating.rating, scale: p_rating.scale_max, count: product.metafields.reviews.rating_count.value %}</a>
-                {%- endif -%}
                 {%- if block.settings.show_concentration and concentration != blank -%}
-                  <p class="product__concentration" style="margin-bottom:0">{{ concentration | escape }}</p>
+                  <p class="product__concentration">{{ concentration | escape }}</p>
+                {%- endif -%}
+                {%- if block.settings.show_rating -%}
+                  {%- assign reviews_anchor = block.settings.reviews_anchor | default: 'reviews' -%}
+                  {%- assign reviews_href = '#' | append: reviews_anchor -%}
+                  <div class="product__rating">{% render 'review-summary', product_obj: product, size: 'regular', href: reviews_href %}</div>
                 {%- endif -%}
               </div>
 
             {%- when 'price' -%}
               <div class="product__price" id="Price-{{ section.id }}" data-update="price" {{ block.shopify_attributes }}>
                 {% render 'price', target: product, use_variant: true %}
+                {%- if block.settings.show_savings and current_variant.compare_at_price > current_variant.price -%}
+                  {%- liquid
+                    assign saving = current_variant.compare_at_price | minus: current_variant.price
+                    assign saving_pct = saving | times: 100.0 | divided_by: current_variant.compare_at_price | round
+                    assign saving_money = saving | money
+                  -%}
+                  <p class="product__saving">{{ 'products.product.price.save_html' | t: amount: saving_money, percent: saving_pct }}</p>
+                {%- endif -%}
                 <p class="product__tax" style="margin-bottom:0">
                   {%- if cart.taxes_included -%}{{ 'products.product.taxes_included' | t }}{%- else -%}{{ 'products.product.taxes_excluded' | t }}{%- endif -%}
                   {% if shop.shipping_policy.body != blank %} {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}{% endif %}
@@ -271,11 +283,28 @@
               {%- endif -%}
 
             {%- when 'accordions' -%}
-              <div class="accordion" {{ block.shopify_attributes }}>
+              <div class="accordion" data-accordion {{ block.shopify_attributes }}>
                 {%- if product.description != blank and block.settings.show_description -%}
                   <details{% if block.settings.open_description %} open{% endif %}>
                     <summary>{{ 'products.product.tabs.description' | t }} {% render 'icon', name: 'plus' %}</summary>
                     <div class="accordion__content rte">{{ product.description }}</div>
+                  </details>
+                {%- endif -%}
+
+                {%- liquid
+                  assign acc_mf = product.metafields.custom
+                  assign acc_heart = acc_mf.heart_notes | default: acc_mf.middle_notes
+                -%}
+                {%- if block.settings.show_notes and acc_mf.top_notes != blank or block.settings.show_notes and acc_heart != blank or block.settings.show_notes and acc_mf.base_notes != blank -%}
+                  <details>
+                    <summary>{{ 'products.product.tabs.notes' | t }} {% render 'icon', name: 'plus' %}</summary>
+                    <div class="accordion__content">
+                      <dl class="notes-list">
+                        {%- if acc_mf.top_notes != blank -%}<div><dt>{{ 'products.product.notes.top' | t }}</dt><dd>{% render 'metafield-text', field: acc_mf.top_notes %}</dd></div>{%- endif -%}
+                        {%- if acc_heart != blank -%}<div><dt>{{ 'products.product.notes.heart' | t }}</dt><dd>{% render 'metafield-text', field: acc_heart %}</dd></div>{%- endif -%}
+                        {%- if acc_mf.base_notes != blank -%}<div><dt>{{ 'products.product.notes.base' | t }}</dt><dd>{% render 'metafield-text', field: acc_mf.base_notes %}</dd></div>{%- endif -%}
+                      </dl>
+                    </div>
                   </details>
                 {%- endif -%}
 
@@ -314,27 +343,50 @@
                 {%- endif -%}
 
                 {%- liquid
-                  assign has_delivery = false
-                  if block.settings.delivery_content != blank or settings.delivery_summary != blank or settings.returns_summary != blank or settings.delivery_page != blank or shop.shipping_policy.body != blank or shop.refund_policy.body != blank
-                    assign has_delivery = true
+                  assign delivery_html = block.settings.delivery_content
+                  if delivery_html == blank
+                    assign delivery_html = settings.delivery_options | append: settings.delivery_dispatch
                   endif
                 -%}
-                {%- if has_delivery -%}
+                {%- if block.settings.show_delivery and delivery_html != blank -%}
                   <details>
                     <summary>{{ 'products.product.tabs.delivery' | t }} {% render 'icon', name: 'plus' %}</summary>
                     <div class="accordion__content rte">
-                      {%- if block.settings.delivery_content != blank -%}
-                        {{ block.settings.delivery_content }}
-                      {%- else -%}
-                        {%- if settings.delivery_summary != blank -%}<p>{{ settings.delivery_summary | escape }}</p>{%- endif -%}
-                        {%- if settings.returns_summary != blank -%}<p>{{ settings.returns_summary | escape }}</p>{%- endif -%}
-                      {%- endif -%}
+                      {{ delivery_html }}
                       <ul class="accordion__links" role="list">
                         {%- if settings.delivery_page != blank -%}<li><a href="{{ settings.delivery_page.url }}">{{ 'products.product.delivery_link' | t }}</a></li>{%- endif -%}
-                        {%- if shop.shipping_policy.body != blank -%}<li><a href="{{ shop.shipping_policy.url }}">{{ shop.shipping_policy.title | default: 'Shipping policy' | escape }}</a></li>{%- endif -%}
-                        {%- if shop.refund_policy.body != blank -%}<li><a href="{{ shop.refund_policy.url }}">{{ shop.refund_policy.title | default: 'Refund policy' | escape }}</a></li>{%- endif -%}
+                        {%- if shop.shipping_policy.body != blank -%}<li><a href="{{ shop.shipping_policy.url }}">{%- assign sp_fallback = 'products.delivery.shipping_policy' | t -%}{{ shop.shipping_policy.title | default: sp_fallback | escape }}</a></li>{%- endif -%}
                       </ul>
                     </div>
+                  </details>
+                {%- endif -%}
+
+                {%- if block.settings.show_returns and settings.returns_details != blank -%}
+                  <details>
+                    <summary>{{ 'products.product.tabs.returns' | t }} {% render 'icon', name: 'plus' %}</summary>
+                    <div class="accordion__content rte">
+                      {{ settings.returns_details }}
+                      {%- if shop.refund_policy.body != blank -%}
+                        <ul class="accordion__links" role="list"><li><a href="{{ shop.refund_policy.url }}">{%- assign rp_fallback = 'products.delivery.refund_policy' | t -%}{{ shop.refund_policy.title | default: rp_fallback | escape }}</a></li></ul>
+                      {%- endif -%}
+                    </div>
+                  </details>
+                {%- endif -%}
+
+                {%- liquid
+                  assign faq_html = ''
+                  if product.metafields.custom.faqs != blank
+                    capture faq_html
+                      render 'metafield-text', field: product.metafields.custom.faqs
+                    endcapture
+                  elsif block.settings.faq_content != blank
+                    assign faq_html = block.settings.faq_content
+                  endif
+                -%}
+                {%- if faq_html != blank -%}
+                  <details>
+                    <summary>{{ 'products.product.tabs.faqs' | t }} {% render 'icon', name: 'plus' %}</summary>
+                    <div class="accordion__content rte">{{ faq_html }}</div>
                   </details>
                 {%- endif -%}
               </div>
@@ -369,6 +421,69 @@
                 {%- if settings.returns_summary != blank -%}<li>{% render 'icon', name: 'return' %}<span>{{ settings.returns_summary | escape }}</span></li>{%- endif -%}
               </ul>
 
+            {%- when 'popularity' -%}
+              {%- liquid
+                assign pop_text = ''
+                if product.metafields.custom.popularity_note != blank
+                  assign pop_text = product.metafields.custom.popularity_note.value
+                else
+                  assign pop_tag = block.settings.tag | strip | downcase
+                  assign is_pop = false
+                  if pop_tag != blank
+                    for t in product.tags
+                      assign t_lower = t | downcase
+                      if t_lower == pop_tag
+                        assign is_pop = true
+                      endif
+                    endfor
+                  endif
+                  if block.settings.collection != blank
+                    for c in product.collections
+                      if c.id == block.settings.collection.id
+                        assign is_pop = true
+                      endif
+                    endfor
+                  endif
+                  if is_pop
+                    assign pop_text = block.settings.text
+                  endif
+                endif
+              -%}
+              {%- if pop_text != blank -%}
+                <p class="popularity" {{ block.shopify_attributes }}>{% render 'icon', name: block.settings.icon %}<span>{{ pop_text | escape }}</span></p>
+              {%- endif -%}
+
+            {%- when 'trust' -%}
+              {%- liquid
+                assign trust_list = block.settings.points | remove: ' ' | split: ','
+              -%}
+              <div {{ block.shopify_attributes }}>
+                {% render 'trust-points', points: trust_list, layout: block.settings.layout %}
+              </div>
+
+            {%- when 'multibuy' -%}
+              <div {{ block.shopify_attributes }}>
+                {% render 'multibuy-offer', product: product, current_variant: current_variant, section_id: section.id %}
+              </div>
+
+            {%- when 'help' -%}
+              {%- liquid
+                assign wa = settings.whatsapp_number | remove: '+' | remove: ' ' | strip
+                assign help_url = ''
+                if wa != blank
+                  assign wa_msg = settings.whatsapp_message | append: ' ' | append: product.title | url_encode | replace: '+', '%20'
+                  assign help_url = 'https://wa.me/' | append: wa | append: '?text=' | append: wa_msg
+                elsif block.settings.contact_page != blank
+                  assign help_url = block.settings.contact_page.url
+                endif
+              -%}
+              {%- if help_url != blank -%}
+                <p class="product-help" {{ block.shopify_attributes }}>
+                  {% render 'icon', name: 'chat' %}
+                  <span>{{ block.settings.text | escape }} <a href="{{ help_url }}"{% if wa != blank %} target="_blank" rel="noopener"{% endif %}>{% if wa != blank %}{{ 'products.product.help_whatsapp' | t }}{% else %}{{ 'products.product.help_contact' | t }}{% endif %}</a></span>
+                </p>
+              {%- endif -%}
+
             {%- when 'text' -%}
               <div class="rte small text-secondary" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
 
@@ -382,12 +497,18 @@
 </div>
 
 {%- if section.settings.sticky_atc and product.available -%}
-  <div class="sticky-atc" data-sticky-atc aria-hidden="true">
-    <div style="min-width:0">
-      <span class="sticky-atc__title">{{ product.title | escape }}</span>
-      <span data-sticky-price>{{ current_variant.price | money }}</span>
+  {%- assign sticky_img = current_variant.featured_media | default: product.featured_media -%}
+  <div class="sticky-atc{% if section.settings.sticky_desktop %} sticky-atc--desktop{% endif %}" data-sticky-atc aria-hidden="true">
+    <div class="page-width sticky-atc__inner">
+      <span class="sticky-atc__media">
+        {%- if sticky_img != blank -%}{{ sticky_img.preview_image | image_url: width: 120 | image_tag: loading: 'lazy', alt: '', widths: '60, 120', sizes: '48px' }}{%- endif -%}
+      </span>
+      <span class="sticky-atc__info">
+        <span class="sticky-atc__title">{{ product.title | escape }}</span>
+        <span class="sticky-atc__meta"><span data-sticky-variant>{% unless product.has_only_default_variant %}{{ current_variant.title | escape }} · {% endunless %}</span><span data-sticky-price>{{ current_variant.price | money }}</span></span>
+      </span>
+      <button type="submit" form="{{ form_id }}" class="button" tabindex="-1" data-sticky-button>{{ 'products.product.add_to_cart' | t }}</button>
     </div>
-    <button type="submit" form="{{ form_id }}" class="button" tabindex="-1" data-sticky-button>{{ 'products.product.add_to_cart' | t }}</button>
   </div>
 {%- endif -%}
 
@@ -414,53 +535,490 @@
   "tag": "section",
   "class": "section-main-product",
   "settings": [
-    { "type": "select", "id": "gallery_layout", "label": "Desktop gallery", "options": [ { "value": "thumbnails", "label": "Slideshow with thumbnails" }, { "value": "grid", "label": "Stacked grid" } ], "default": "thumbnails" },
-    { "type": "checkbox", "id": "enable_zoom", "label": "Enable image zoom", "default": true },
-    { "type": "select", "id": "image_fit", "label": "Image fit", "options": [ { "value": "cover", "label": "Fill frame" }, { "value": "contain", "label": "Show whole image" } ], "default": "cover" },
-    { "type": "checkbox", "id": "sticky_atc", "label": "Show sticky add-to-bag bar on mobile", "default": true }
+    {
+      "type": "select",
+      "id": "gallery_layout",
+      "label": "Desktop gallery",
+      "options": [
+        {
+          "value": "thumbnails",
+          "label": "Slideshow with thumbnails"
+        },
+        {
+          "value": "grid",
+          "label": "Stacked grid"
+        }
+      ],
+      "default": "thumbnails"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image shape",
+      "options": [
+        {
+          "value": "portrait",
+          "label": "Portrait (4:5)"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "tall",
+          "label": "Tall (3:4)"
+        }
+      ],
+      "default": "portrait"
+    },
+    {
+      "type": "select",
+      "id": "info_position",
+      "label": "Product information on desktop",
+      "options": [
+        {
+          "value": "right",
+          "label": "Right of the images"
+        },
+        {
+          "value": "left",
+          "label": "Left of the images"
+        }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_zoom",
+      "label": "Enable image zoom",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image fit",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Fill frame"
+        },
+        {
+          "value": "contain",
+          "label": "Show whole image"
+        }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky_atc",
+      "label": "Show sticky add-to-bag bar",
+      "default": true,
+      "info": "Appears at the bottom of the screen once the main Add to bag button scrolls out of view, on mobile and desktop."
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky_desktop",
+      "label": "Also show the sticky bar on desktop",
+      "default": true
+    }
   ],
   "blocks": [
-    { "type": "@app" },
-    { "type": "heading", "name": "Brand and title", "limit": 1, "settings": [
-      { "type": "checkbox", "id": "show_vendor", "label": "Show brand (vendor)", "default": true },
-      { "type": "checkbox", "id": "show_concentration", "label": "Show concentration", "info": "From the custom.concentration metafield, or detected in the product title, type or tags.", "default": true },
-      { "type": "checkbox", "id": "show_rating", "label": "Show star rating", "info": "Appears when a reviews app fills Shopify's standard product rating metafield.", "default": true },
-      { "type": "text", "id": "reviews_anchor", "label": "Rating links to", "info": "ID of the reviews area on the page.", "default": "reviews" }
-    ] },
-    { "type": "price", "name": "Price", "limit": 1 },
-    { "type": "variant_picker", "name": "Variant picker", "limit": 1, "settings": [
-      { "type": "select", "id": "style", "label": "Style", "options": [ { "value": "pills", "label": "Buttons" }, { "value": "dropdown", "label": "Dropdown" } ], "default": "pills" }
-    ] },
-    { "type": "stock", "name": "Stock availability", "limit": 1, "settings": [
-      { "type": "range", "id": "low_stock", "label": "Show \"only X left\" at or below", "min": 0, "max": 10, "step": 1, "default": 3, "info": "Only for products where Shopify tracks inventory." }
-    ] },
-    { "type": "buy_buttons", "name": "Quantity and add to bag", "limit": 1, "settings": [
-      { "type": "checkbox", "id": "show_quantity", "label": "Show quantity selector", "default": true },
-      { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show dynamic checkout buttons", "info": "Express payment buttons such as Shop Pay, Apple Pay or PayPal, if enabled in your payment settings.", "default": false }
-    ] },
-    { "type": "delivery", "name": "Delivery and returns", "limit": 1, "settings": [
-      { "type": "text", "id": "delivery_text", "label": "Delivery line", "info": "Leave empty to use Theme settings › Delivery and returns." },
-      { "type": "text", "id": "returns_text", "label": "Returns line" }
-    ] },
-    { "type": "notes", "name": "Fragrance notes", "limit": 1, "settings": [
-      { "type": "text", "id": "heading", "label": "Heading", "default": "Fragrance notes" },
-      { "type": "paragraph", "content": "Shows product metafields custom.top_notes, custom.heart_notes (or custom.middle_notes) and custom.base_notes. Hidden when none are filled in." }
-    ] },
-    { "type": "accordions", "name": "Information accordions", "limit": 1, "settings": [
-      { "type": "checkbox", "id": "show_description", "label": "Show description accordion", "info": "Turn off when the About the fragrance section is on the page.", "default": false },
-      { "type": "checkbox", "id": "open_description", "label": "Open description by default", "default": false },
-      { "type": "checkbox", "id": "show_sku", "label": "Show SKU in fragrance details", "default": false },
-      { "type": "richtext", "id": "how_to_wear", "label": "How to wear (default)", "info": "Used when a product has no custom.how_to_wear metafield.", "default": "<p>Apply to pulse points, such as the inner wrists, the base of the throat and behind the ears, where warmth helps a fragrance develop. Spray from about 15 cm and let it settle without rubbing.</p>" },
-      { "type": "richtext", "id": "delivery_content", "label": "Delivery and returns text", "info": "Use your published policy wording only." }
-    ] },
-    { "type": "highlights", "name": "Highlights", "limit": 1, "settings": [ { "type": "paragraph", "content": "Concentration, fragrance family, style and sizes as small labels. Each appears only if the product has it." } ] },
-    { "type": "summary", "name": "Short description", "limit": 1, "settings": [ { "type": "range", "id": "words", "label": "Words to show", "min": 15, "max": 60, "step": 5, "default": 30 } ] },
-    { "type": "assurance", "name": "Assurance", "limit": 1, "settings": [
-      { "type": "text", "id": "line_1", "label": "Line 1", "default": "Genuine designer fragrance" },
-      { "type": "text", "id": "line_2", "label": "Line 2", "default": "Secure checkout" },
-      { "type": "paragraph", "content": "Delivery and returns lines are added from Theme settings › Delivery and returns." }
-    ] },
-    { "type": "text", "name": "Text", "settings": [ { "type": "richtext", "id": "text", "label": "Text" } ] }
+    {
+      "type": "@app"
+    },
+    {
+      "type": "heading",
+      "name": "Brand and title",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_vendor",
+          "label": "Show brand (vendor)",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_concentration",
+          "label": "Show concentration",
+          "info": "From the custom.concentration metafield, or detected in the product title, type or tags.",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_rating",
+          "label": "Show star rating",
+          "info": "Average and count from the reviews you add (custom.reviews) or a reviews app. Hidden when there are no reviews.",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "reviews_anchor",
+          "label": "Rating links to",
+          "info": "ID of the reviews area on the page.",
+          "default": "reviews"
+        }
+      ]
+    },
+    {
+      "type": "price",
+      "name": "Price",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_savings",
+          "label": "Show saving on sale prices",
+          "info": "For example Save £20.00 (20%), from the compare-at price.",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "variant_picker",
+      "name": "Variant picker",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "style",
+          "label": "Style",
+          "options": [
+            {
+              "value": "pills",
+              "label": "Buttons"
+            },
+            {
+              "value": "dropdown",
+              "label": "Dropdown"
+            }
+          ],
+          "default": "pills"
+        }
+      ]
+    },
+    {
+      "type": "stock",
+      "name": "Stock availability",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "range",
+          "id": "low_stock",
+          "label": "Show \"only X left\" at or below",
+          "min": 0,
+          "max": 10,
+          "step": 1,
+          "default": 3,
+          "info": "Only for products where Shopify tracks inventory."
+        }
+      ]
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Quantity and add to bag",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_quantity",
+          "label": "Show quantity selector",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_dynamic_checkout",
+          "label": "Show dynamic checkout buttons",
+          "info": "Express payment buttons such as Shop Pay, Apple Pay or PayPal, if enabled in your payment settings.",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "delivery",
+      "name": "Delivery and returns",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "delivery_text",
+          "label": "Delivery line",
+          "info": "Leave empty to use Theme settings › Delivery and returns."
+        },
+        {
+          "type": "text",
+          "id": "returns_text",
+          "label": "Returns line"
+        }
+      ]
+    },
+    {
+      "type": "notes",
+      "name": "Fragrance notes",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Fragrance notes"
+        },
+        {
+          "type": "paragraph",
+          "content": "Shows product metafields custom.top_notes, custom.heart_notes (or custom.middle_notes) and custom.base_notes. Hidden when none are filled in."
+        }
+      ]
+    },
+    {
+      "type": "accordions",
+      "name": "Information accordions",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_description",
+          "label": "Show description accordion",
+          "info": "Turn off when the About the fragrance section is on the page.",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "open_description",
+          "label": "Open description by default",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "show_notes",
+          "label": "Show fragrance notes accordion",
+          "info": "Turn off when the Fragrance notes section is on the page.",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "show_sku",
+          "label": "Show SKU in fragrance details",
+          "default": false
+        },
+        {
+          "type": "richtext",
+          "id": "how_to_wear",
+          "label": "How to wear (default)",
+          "info": "Used when a product has no custom.how_to_wear metafield.",
+          "default": "<p>Apply to pulse points, such as the inner wrists, the base of the throat and behind the ears, where warmth helps a fragrance develop. Spray from about 15 cm and let it settle without rubbing.</p>"
+        },
+        {
+          "type": "richtext",
+          "id": "delivery_content",
+          "label": "Delivery and returns text",
+          "info": "Use your published policy wording only."
+        },
+        {
+          "type": "checkbox",
+          "id": "show_delivery",
+          "label": "Show delivery information",
+          "info": "From Theme settings › Trust and delivery, unless text is added below.",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_returns",
+          "label": "Show returns and refunds",
+          "info": "From Theme settings › Trust and delivery.",
+          "default": true
+        },
+        {
+          "type": "richtext",
+          "id": "faq_content",
+          "label": "FAQs (default)",
+          "info": "Shown on every product unless it has a custom.faqs metafield.",
+          "default": "<p><strong>Are your fragrances genuine?</strong><br>Yes. Every fragrance we sell is a genuine designer product.</p><p><strong>How should I store my fragrance?</strong><br>Keep it in its box, away from direct sunlight and heat, to help preserve the scent.</p>"
+        }
+      ]
+    },
+    {
+      "type": "highlights",
+      "name": "Highlights",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Concentration, fragrance family, style and sizes as small labels. Each appears only if the product has it."
+        }
+      ]
+    },
+    {
+      "type": "summary",
+      "name": "Short description",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "range",
+          "id": "words",
+          "label": "Words to show",
+          "min": 15,
+          "max": 60,
+          "step": 5,
+          "default": 30
+        }
+      ]
+    },
+    {
+      "type": "assurance",
+      "name": "Assurance",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "line_1",
+          "label": "Line 1",
+          "default": "Genuine designer fragrance"
+        },
+        {
+          "type": "text",
+          "id": "line_2",
+          "label": "Line 2",
+          "default": "Secure checkout"
+        },
+        {
+          "type": "paragraph",
+          "content": "Delivery and returns lines are added from Theme settings › Delivery and returns."
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    },
+    {
+      "type": "popularity",
+      "name": "Popularity note",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "An honest popularity line. Shows only on products with the tag below, in the chosen collection, or with a custom.popularity_note metafield. No visitor counts or countdowns."
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "A Valoria bestseller"
+        },
+        {
+          "type": "text",
+          "id": "tag",
+          "label": "Product tag",
+          "default": "bestseller"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Or products in collection",
+          "info": "For example your Bestsellers collection."
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "sparkle",
+              "label": "Sparkle"
+            },
+            {
+              "value": "flame",
+              "label": "Flame"
+            },
+            {
+              "value": "star",
+              "label": "Star"
+            },
+            {
+              "value": "badge-check",
+              "label": "Badge"
+            }
+          ],
+          "default": "sparkle"
+        }
+      ]
+    },
+    {
+      "type": "trust",
+      "name": "Trust icons",
+      "limit": 2,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Points are edited in Theme settings › Trust and delivery."
+        },
+        {
+          "type": "text",
+          "id": "points",
+          "label": "Points to show",
+          "info": "Numbers from 1 to 6, separated by commas.",
+          "default": "1,2,3"
+        },
+        {
+          "type": "select",
+          "id": "layout",
+          "label": "Layout",
+          "options": [
+            {
+              "value": "row",
+              "label": "Icon row"
+            },
+            {
+              "value": "cards",
+              "label": "Cards"
+            },
+            {
+              "value": "list",
+              "label": "List"
+            }
+          ],
+          "default": "row"
+        }
+      ]
+    },
+    {
+      "type": "multibuy",
+      "name": "Multi-buy offer",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Set up and switch on in Theme settings › Multi-buy offer. Shows only on products in the eligible collection."
+        }
+      ]
+    },
+    {
+      "type": "help",
+      "name": "Help line",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Need advice choosing?"
+        },
+        {
+          "type": "page",
+          "id": "contact_page",
+          "label": "Contact page",
+          "info": "Used when no WhatsApp number is set in Theme settings › Social media."
+        }
+      ]
+    }
   ]
 }
 {% endschema %}

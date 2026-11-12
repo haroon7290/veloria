@@ -1,0 +1,41 @@
+{%- comment -%}
+  Reassurance points from Theme settings › Trust and delivery.
+  Params: points (array of point numbers as strings, e.g. ['1','2','3']), layout ('row' | 'cards' | 'list')
+{%- endcomment -%}
+{%- liquid
+  assign shown = 0
+  for n in points
+    assign key_title = 'trust_' | append: n | append: '_title'
+    if settings[key_title] != blank
+      assign shown = shown | plus: 1
+    endif
+  endfor
+-%}
+{%- if shown > 0 -%}
+  <ul class="trust-points trust-points--{{ layout | default: 'row' }}" role="list" style="--count: {{ shown }};">
+    {%- for n in points -%}
+      {%- liquid
+        assign key_title = 'trust_' | append: n | append: '_title'
+        assign key_text = 'trust_' | append: n | append: '_text'
+        assign key_icon = 'trust_' | append: n | append: '_icon'
+        assign key_link = 'trust_' | append: n | append: '_link'
+      -%}
+      {%- if settings[key_title] != blank -%}
+        <li class="trust-point">
+          <span class="trust-point__icon">{% render 'icon', name: settings[key_icon] %}</span>
+          <span class="trust-point__body">
+            {%- if settings[key_link] != blank -%}
+              <a href="{{ settings[key_link] }}" class="trust-point__title">{{ settings[key_title] | escape }}</a>
+            {%- else -%}
+              <span class="trust-point__title">{{ settings[key_title] | escape }}</span>
+            {%- endif -%}
+            {%- if settings[key_text] != blank -%}<span class="trust-point__text">{{ settings[key_text] | escape }}</span>{%- endif -%}
+          </span>
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+  {%- if request.design_mode and settings.trust_confirmed == false -%}
+    <p class="editor-note editor-note--small">{{ 'products.trust.editor_reminder' | t }}</p>
+  {%- endif -%}
+{%- endif -%}

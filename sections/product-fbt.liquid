@@ -1,0 +1,99 @@
+{%- liquid
+  assign s = section.settings
+  assign limit = s.limit
+  assign has_source = false
+  assign mb_eligible = false
+  if settings.multibuy_enabled and settings.multibuy_collection != blank
+    for c in product.collections
+      if c.id == settings.multibuy_collection.id
+        assign mb_eligible = true
+        break
+      endif
+    endfor
+  endif
+  if s.collection != blank and s.collection.products_count > 1
+    assign source = s.collection
+    assign has_source = true
+  elsif s.prefer_multibuy and mb_eligible
+    assign source = settings.multibuy_collection
+    assign has_source = true
+  else
+    assign skip = 'bestsellers,best-sellers,new-arrivals,new-in,sale,gifts,homepage,frontpage,all' | split: ','
+    for c in product.collections
+      if c.products_count > 1
+        unless skip contains c.handle
+          assign source = c
+          assign has_source = true
+          break
+        endunless
+      endif
+    endfor
+  endif
+  unless has_source
+    assign source = collections.all
+  endunless
+  assign extras = 0
+  for item in source.products limit: 40
+    if item.id != product.id and item.available
+      assign extras = extras | plus: 1
+    endif
+  endfor
+-%}
+{%- if product.available and extras > 0 -%}
+<section class="section fbt section--{{ s.background }}" style="--pt: {{ s.padding_top | times: 0.6 }}rem; --pb: {{ s.padding_bottom | times: 0.6 }}rem; --pt-d: {{ s.padding_top }}rem; --pb-d: {{ s.padding_bottom }}rem;"
+  data-fbt data-limit="{{ limit }}" data-tier2="{{ settings.multibuy_tier2 }}" data-tier3="{{ settings.multibuy_tier3 }}" data-multibuy-on="{{ settings.multibuy_enabled }}"
+  {% if s.use_complementary %}data-recs-url="{{ routes.product_recommendations_url }}?section_id=fbt-recommendations&product_id={{ product.id }}&limit={{ limit | plus: 2 }}&intent=complementary"{% endif %}>
+  <div class="page-width">
+    <div class="section-header section-header--split reveal">
+      <div class="section-header__text">
+        {%- if s.eyebrow != blank -%}<p class="eyebrow eyebrow--rule">{{ s.eyebrow | escape }}</p>{%- endif -%}
+        <h2>{{ s.heading | escape }}</h2>
+      </div>
+    </div>
+    <div class="fbt__layout">
+      <div class="fbt__visual" aria-hidden="true" data-fbt-visual></div>
+      <div class="fbt__panel">
+        <ul class="fbt__list" role="list" data-fbt-list>
+          {% render 'fbt-item', item: product, is_main: true, uid: 'main' %}
+          {%- assign shown = 0 -%}
+          {%- for item in source.products limit: 40 -%}
+            {%- if item.id != product.id and item.available and shown < limit -%}
+              {% render 'fbt-item', item: item, is_main: false, uid: item.id %}
+              {%- assign shown = shown | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+        <dl class="mb-summary fbt__summary">
+          <div><dt>{{ 'products.fbt.subtotal' | t }}</dt><dd data-fbt-subtotal></dd></div>
+          <div class="mb-summary__saving" data-fbt-saving-row hidden><dt data-fbt-saving-label>{{ 'products.multibuy.saving' | t }}</dt><dd data-fbt-saving></dd></div>
+          <div class="mb-summary__total"><dt>{{ 'products.fbt.total' | t }}</dt><dd data-fbt-total></dd></div>
+        </dl>
+        {%- if settings.multibuy_enabled and settings.multibuy_note != blank -%}<p class="multibuy__note" data-fbt-note hidden>{% render 'icon', name: 'tag', class: 'icon--small' %}{{ settings.multibuy_note | escape }}</p>{%- endif -%}
+        <p class="product-form__error" role="alert" data-fbt-error hidden></p>
+        <button type="button" class="button button--full" data-fbt-add>{{ 'products.fbt.add' | t }}</button>
+      </div>
+    </div>
+  </div>
+  <script type="application/json" data-fbt-money>{{ shop.money_format | json }}</script>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Bought together",
+  "class": "section-fbt",
+  "settings": [
+    { "type": "paragraph", "content": "The current product plus complementary fragrances, each with its own size choice. When the multi-buy offer is on, eligible products earn the same Buy 2 / Buy 3 saving at checkout." },
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "Complete the ritual" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Frequently bought together" },
+    { "type": "range", "id": "limit", "label": "Extra products", "min": 1, "max": 3, "step": 1, "default": 2 },
+    { "type": "checkbox", "id": "use_complementary", "label": "Use complementary products from Search & Discovery when set", "default": true },
+    { "type": "checkbox", "id": "prefer_multibuy", "label": "Otherwise suggest products from the multi-buy collection", "info": "So the multi-buy saving applies to the whole set.", "default": true },
+    { "type": "collection", "id": "collection", "label": "Or always suggest from this collection" },
+    { "type": "select", "id": "background", "label": "Background", "options": [ { "value": "white", "label": "White" }, { "value": "ivory", "label": "Ivory" } ], "default": "ivory" },
+    { "type": "range", "id": "padding_top", "label": "Space above", "min": 0, "max": 10, "step": 1, "unit": "rem", "default": 6 },
+    { "type": "range", "id": "padding_bottom", "label": "Space below", "min": 0, "max": 10, "step": 1, "unit": "rem", "default": 6 }
+  ],
+  "presets": [ { "name": "Bought together" } ]
+}
+{% endschema %}

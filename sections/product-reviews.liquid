@@ -1,0 +1,215 @@
+{%- liquid
+  assign s = section.settings
+  assign entries = product.metafields.custom.reviews.value
+  assign count = 0
+  assign total = 0
+  assign c5 = 0
+  assign c4 = 0
+  assign c3 = 0
+  assign c2 = 0
+  assign c1 = 0
+  for entry in entries
+    assign rv = entry.rating.value
+    if rv.rating != blank
+      assign rv = rv.rating
+    endif
+    assign rv = rv | plus: 0 | round
+    if rv > 0
+      assign count = count | plus: 1
+      assign total = total | plus: rv
+      case rv
+        when 5
+          assign c5 = c5 | plus: 1
+        when 4
+          assign c4 = c4 | plus: 1
+        when 3
+          assign c3 = c3 | plus: 1
+        when 2
+          assign c2 = c2 | plus: 1
+        else
+          assign c1 = c1 | plus: 1
+      endcase
+    endif
+  endfor
+  assign avg = 0
+  if count > 0
+    assign avg = total | times: 1.0 | divided_by: count
+  endif
+
+  assign wa = settings.whatsapp_number | remove: '+' | remove: ' ' | strip
+  assign share_url = ''
+  if wa != blank
+    assign share_msg = 'products.reviews.share_message' | t: title: product.title
+    assign share_msg = share_msg | url_encode | replace: '+', '%20'
+    assign share_url = 'https://wa.me/' | append: wa | append: '?text=' | append: share_msg
+  elsif s.share_page != blank
+    assign share_url = s.share_page.url
+  endif
+-%}
+{%- if count > 0 or s.show_empty or request.design_mode -%}
+<section id="{{ s.anchor | default: 'reviews' | handleize }}" class="section reviews-section section--{{ s.background }}" style="--pt: {{ s.padding_top | times: 0.6 }}rem; --pb: {{ s.padding_bottom | times: 0.6 }}rem; --pt-d: {{ s.padding_top }}rem; --pb-d: {{ s.padding_bottom }}rem;" data-reviews data-per-page="{{ s.per_page }}">
+  <div class="page-width">
+    <div class="section-header section-header--split">
+      <div class="section-header__text">
+        {%- if s.eyebrow != blank -%}<p class="eyebrow eyebrow--rule">{{ s.eyebrow | escape }}</p>{%- endif -%}
+        <h2>{{ s.heading | escape }}</h2>
+      </div>
+      {%- if share_url != blank and count > 0 -%}
+        <div class="section-header__actions">
+          <a href="{{ share_url }}" class="button button--secondary"{% if wa != blank %} target="_blank" rel="noopener"{% endif %}>{{ s.share_label | escape }}</a>
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if count > 0 -%}
+      <div class="reviews__layout">
+        <aside class="reviews__summary" aria-label="{{ 'products.reviews.summary' | t }}">
+          {%- assign avg_text = avg | round: 1 | append: '' -%}
+          {%- unless avg_text contains '.' -%}{%- assign avg_text = avg_text | append: '.0' -%}{%- endunless -%}
+          <p class="reviews__avg">{{ avg_text }}<span class="visually-hidden"> {{ 'products.reviews.out_of' | t }}</span></p>
+          {% render 'rating-stars', rating: avg, scale: 5, count: 0, size: 'regular' %}
+          <p class="reviews__based">{{ 'products.reviews.based_on' | t: count: count }}</p>
+          <ul class="reviews__bars" role="list">
+            {%- for star in (1..5) reversed -%}
+              {%- liquid
+                case star
+                  when 5
+                    assign n = c5
+                  when 4
+                    assign n = c4
+                  when 3
+                    assign n = c3
+                  when 2
+                    assign n = c2
+                  else
+                    assign n = c1
+                endcase
+                assign pct = n | times: 100.0 | divided_by: count | round
+              -%}
+              <li>
+                <button type="button" class="reviews__bar" data-review-filter="{{ star }}" aria-pressed="false"{% if n == 0 %} disabled{% endif %}>
+                  <span class="reviews__bar-label">{{ 'products.reviews.stars' | t: count: star }}</span>
+                  <span class="reviews__bar-track" aria-hidden="true"><span style="width: {{ pct }}%"></span></span>
+                  <span class="reviews__bar-count">{{ n }}</span>
+                </button>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </aside>
+
+        <div class="reviews__main">
+          <div class="reviews__toolbar">
+            <p class="reviews__showing" aria-live="polite" data-reviews-status>{{ 'products.reviews.showing_all' | t: count: count }}</p>
+            <button type="button" class="link-underline reviews__clear" data-review-clear hidden>{{ 'products.reviews.clear' | t }}</button>
+            <label class="visually-hidden" for="ReviewSort-{{ section.id }}">{{ 'products.reviews.sort' | t }}</label>
+            <select id="ReviewSort-{{ section.id }}" class="select select--small reviews__sort" data-review-sort>
+              <option value="recent">{{ 'products.reviews.sort_recent' | t }}</option>
+              <option value="high">{{ 'products.reviews.sort_high' | t }}</option>
+              <option value="low">{{ 'products.reviews.sort_low' | t }}</option>
+            </select>
+          </div>
+
+          <ul class="reviews__list" role="list" data-review-list>
+            {%- for entry in entries -%}
+              {%- liquid
+                assign rv = entry.rating.value
+                if rv.rating != blank
+                  assign rv = rv.rating
+                endif
+                assign rv = rv | plus: 0 | round
+                if rv < 1
+                  continue
+                endif
+                assign anon = 'products.reviews.anonymous' | t
+                assign r_name = entry.name.value | default: anon
+                assign initials = ''
+                assign parts = r_name | split: ' '
+                for part in parts limit: 2
+                  assign first_letter = part | slice: 0
+                  assign initials = initials | append: first_letter
+                endfor
+                assign r_date = ''
+                assign r_iso = ''
+                if entry.date.value != blank
+                  assign r_date = entry.date.value | date: '%-d %B %Y'
+                  assign r_iso = entry.date.value | date: '%Y-%m-%d'
+                endif
+              -%}
+              <li class="review-card" data-review data-rating="{{ rv }}" data-date="{{ r_iso }}" data-order="{{ forloop.index0 }}">
+                <div class="review-card__head">
+                  <span class="review-card__avatar" aria-hidden="true">{{ initials | upcase | default: '·' }}</span>
+                  <span class="review-card__who">
+                    <span class="review-card__name">{{ r_name | escape }}</span>
+                    <span class="review-card__meta">
+                      {%- if entry.location.value != blank -%}{{ entry.location.value | escape }}{%- endif -%}
+                      {%- if entry.location.value != blank and r_date != blank %} · {% endif -%}
+                      {%- if r_date != blank -%}<time datetime="{{ r_iso }}">{{ r_date }}</time>{%- endif -%}
+                    </span>
+                  </span>
+                  {%- if entry.verified.value -%}
+                    <span class="review-card__verified">{% render 'icon', name: 'badge-check', class: 'icon--small' %}{{ 'products.reviews.verified' | t }}</span>
+                  {%- endif -%}
+                </div>
+                {% render 'rating-stars', rating: rv, scale: 5, count: 0, size: 'small' %}
+                {%- if entry.title.value != blank -%}<h3 class="review-card__title">{{ entry.title.value | escape }}</h3>{%- endif -%}
+                {%- if entry.body.value != blank -%}<div class="review-card__body">{{ entry.body.value | escape | newline_to_br }}</div>{%- endif -%}
+                {%- if entry.photo.value != blank or entry.photos.value != blank -%}
+                  <ul class="review-card__photos" role="list">
+                    {%- if entry.photo.value != blank -%}
+                      <li><button type="button" class="review-card__photo" data-review-photo="{{ entry.photo.value | image_url: width: 1600 }}" aria-label="{{ 'products.reviews.open_photo' | t: name: r_name | escape }}">{{ entry.photo.value | image_url: width: 240 | image_tag: loading: 'lazy', alt: '', widths: '120, 240', sizes: '96px' }}</button></li>
+                    {%- endif -%}
+                    {%- for photo in entry.photos.value limit: 4 -%}
+                      <li><button type="button" class="review-card__photo" data-review-photo="{{ photo | image_url: width: 1600 }}" aria-label="{{ 'products.reviews.open_photo' | t: name: r_name | escape }}">{{ photo | image_url: width: 240 | image_tag: loading: 'lazy', alt: '', widths: '120, 240', sizes: '96px' }}</button></li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+                {%- if entry.source.value != blank -%}<p class="review-card__source">{{ 'products.reviews.source' | t: source: entry.source.value | escape }}</p>{%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+          <div class="reviews__more">
+            <button type="button" class="button button--secondary" data-review-more hidden>{{ 'products.reviews.show_more' | t }}</button>
+          </div>
+        </div>
+      </div>
+      <dialog class="review-dialog" data-review-dialog aria-label="{{ 'products.reviews.photo_dialog' | t }}">
+        <button type="button" class="icon-button review-dialog__close" data-review-dialog-close>{% render 'icon', name: 'close' %}<span class="visually-hidden">{{ 'general.close' | t }}</span></button>
+        <img src="" alt="{{ 'products.reviews.customer_photo' | t }}" data-review-dialog-img>
+      </dialog>
+    {%- else -%}
+      <div class="reviews__empty">
+        <p class="reviews__empty-title">{{ s.empty_heading | escape }}</p>
+        <p class="reviews__empty-text">{{ s.empty_text | escape }}</p>
+        {%- if share_url != blank -%}
+          <a href="{{ share_url }}" class="button button--secondary"{% if wa != blank %} target="_blank" rel="noopener"{% endif %}>{{ s.share_label | escape }}</a>
+        {%- endif -%}
+        {%- if request.design_mode -%}<p class="editor-note editor-note--small">{{ 'products.reviews.editor' | t }}</p>{%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product reviews",
+  "class": "section-product-reviews",
+  "settings": [
+    { "type": "paragraph", "content": "Shows the reviews linked to each product in its custom.reviews metafield (a list of Product review entries you create in Shopify › Content › Metaobjects). See the setup guide." },
+    { "type": "paragraph", "content": "UK law (DMCC Act 2024): publish only genuine feedback, include critical reviews too, don't change their meaning, mark Verified buyer only when you have matched the review to an order, and get permission before using a customer's name or photo." },
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "Reviews" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Customer reviews" },
+    { "type": "range", "id": "per_page", "label": "Reviews shown before Show more", "min": 3, "max": 12, "step": 1, "default": 6 },
+    { "type": "text", "id": "share_label", "label": "Share button label", "default": "Share your experience" },
+    { "type": "page", "id": "share_page", "label": "Share button page", "info": "Used when no WhatsApp number is set in Theme settings › Social media." },
+    { "type": "checkbox", "id": "show_empty", "label": "Show a message on products without reviews", "default": true },
+    { "type": "text", "id": "empty_heading", "label": "No reviews heading", "default": "No reviews yet" },
+    { "type": "text", "id": "empty_text", "label": "No reviews text", "default": "Tried this fragrance? We'd love to hear what you think." },
+    { "type": "text", "id": "anchor", "label": "Anchor ID", "info": "The star rating under the product title links here.", "default": "reviews" },
+    { "type": "select", "id": "background", "label": "Background", "options": [ { "value": "white", "label": "White" }, { "value": "ivory", "label": "Ivory" } ], "default": "white" },
+    { "type": "range", "id": "padding_top", "label": "Space above", "min": 0, "max": 10, "step": 1, "unit": "rem", "default": 6 },
+    { "type": "range", "id": "padding_bottom", "label": "Space below", "min": 0, "max": 10, "step": 1, "unit": "rem", "default": 6 }
+  ],
+  "presets": [ { "name": "Product reviews" } ]
+}
+{% endschema %}

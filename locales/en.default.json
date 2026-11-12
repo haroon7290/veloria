@@ -267,7 +267,8 @@
         "from_price_html": "From {{ price }}",
         "regular_price": "Regular price",
         "sale_price": "Sale price",
-        "unit_price": "Unit price"
+        "unit_price": "Unit price",
+        "save_html": "Save {{ amount }} ({{ percent }}%)"
       },
       "quantity": {
         "decrease": "Decrease quantity for {{ product }}",
@@ -285,11 +286,14 @@
         "sold_out": "Sold out"
       },
       "tabs": {
-        "delivery": "Delivery & returns",
+        "delivery": "Delivery information",
         "description": "Description",
         "details": "Fragrance details",
         "how_to_wear": "How to wear",
-        "ingredients": "Ingredients"
+        "ingredients": "Ingredients",
+        "returns": "Returns and refunds",
+        "faqs": "Frequently asked questions",
+        "notes": "Fragrance notes"
       },
       "taxes_excluded": "Tax excluded.",
       "taxes_included": "Tax included.",
@@ -302,7 +306,102 @@
       "by_vendor": "By {{ vendor }}",
       "more_from": "More from {{ title }}",
       "more_fragrances": "More fragrances",
-      "rating": "Rated {{ rating }} out of {{ max }}"
+      "rating": "Rated {{ rating }} out of {{ max }}",
+      "back_to": "Back to {{ title }}",
+      "help_whatsapp": "Ask us on WhatsApp",
+      "help_contact": "Contact us",
+      "read_less": "Read less",
+      "scent_profile": "Scent profile",
+      "manufacturer": "Manufacturer information"
+    },
+    "reviews": {
+      "count": {
+        "one": "{{ count }} review",
+        "other": "{{ count }} reviews"
+      },
+      "summary": "Rating summary",
+      "out_of": "out of 5",
+      "based_on": {
+        "one": "Based on {{ count }} review",
+        "other": "Based on {{ count }} reviews"
+      },
+      "stars": {
+        "one": "{{ count }} star",
+        "other": "{{ count }} stars"
+      },
+      "showing_all": {
+        "one": "Showing {{ count }} review",
+        "other": "Showing {{ count }} reviews"
+      },
+      "showing_js": "Showing {{ count }} reviews",
+      "filtered_js": "Showing {{ count }} reviews with {{ stars }} stars",
+      "clear": "Show all",
+      "sort": "Sort reviews",
+      "sort_recent": "Most recent",
+      "sort_high": "Highest rated",
+      "sort_low": "Lowest rated",
+      "anonymous": "Valoria customer",
+      "verified": "Verified buyer",
+      "open_photo": "Open photo shared by {{ name }}",
+      "source": "Shared with us via {{ source }}",
+      "show_more": "Show more reviews",
+      "photo_dialog": "Customer photo",
+      "customer_photo": "Photo shared by a customer",
+      "editor": "Add reviews in Shopify › Content › Metaobjects › Product review, then link them to this product in its Reviews metafield. See the setup guide.",
+      "share_message": "Hello Valoria London, I'd like to share my experience of {{ title }}."
+    },
+    "trust": {
+      "editor_reminder": "The delivery details are examples. Check them in Theme settings › Trust and delivery, then tick “I've checked these details”. Only visible in the theme editor."
+    },
+    "multibuy": {
+      "buy_n": {
+        "one": "Buy {{ count }}",
+        "other": "Buy {{ count }}"
+      },
+      "save_pct": "Save an extra {{ percent }}%",
+      "you_save": "You save {{ amount }}",
+      "example": {
+        "one": "For {{ count }} of this fragrance",
+        "other": "For {{ count }} of this fragrance"
+      },
+      "choose": "Choose your fragrances",
+      "fragrance_n": "Fragrance {{ number }}",
+      "size_n": "Size for fragrance {{ number }}",
+      "choose_placeholder": "Choose a fragrance",
+      "subtotal": "Subtotal",
+      "saving": "Multi-buy saving",
+      "saving_pct": "Multi-buy saving ({{ percent }}%)",
+      "total": "Estimated total",
+      "add": {
+        "one": "Add {{ count }} to bag",
+        "other": "Add {{ count }} to bag"
+      },
+      "add_js": "Add {{ count }} to bag",
+      "same_again": "Another of this fragrance",
+      "choose_more": "Choose a fragrance for each slot to continue.",
+      "editor": "Multi-buy offer: switched off, or this product isn't in the eligible collection. Set it up in Theme settings › Multi-buy offer. Only visible in the theme editor."
+    },
+    "fbt": {
+      "include": "Include {{ title }}",
+      "this_item": "This item:",
+      "size_for": "Size for {{ title }}",
+      "subtotal": "Subtotal",
+      "total": "Total",
+      "add": "Add to bag",
+      "add_n": "Add {{ count }} to bag"
+    },
+    "notes_section": {
+      "editor": "This product has no fragrance notes yet, so visitors won't see this section. Add them in the custom.top_notes, custom.heart_notes and custom.base_notes metafields. Only visible in the theme editor.",
+      "top": "Top notes",
+      "heart": "Heart notes",
+      "base": "Base notes"
+    },
+    "delivery": {
+      "title": "Delivery",
+      "returns": "Returns and refunds",
+      "protection": "Shopping with confidence",
+      "shipping_policy": "Shipping policy",
+      "refund_policy": "Refund policy"
     }
   },
   "sections": {

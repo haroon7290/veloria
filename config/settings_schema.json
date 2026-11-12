@@ -2,7 +2,7 @@
   {
     "name": "theme_info",
     "theme_name": "Valoria London",
-    "theme_version": "4.0.0",
+    "theme_version": "4.1.0",
     "theme_author": "Valoria London",
     "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
     "theme_support_url": "https://help.shopify.com/manual/online-store/themes"
@@ -441,6 +441,615 @@
     ]
   },
   {
+    "name": "Trust and delivery",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Short reassurance lines used under Add to bag and in the Delivery and returns section. The delivery times and prices are examples: replace them with your real arrangements. Only promise what you actually offer."
+      },
+      {
+        "type": "checkbox",
+        "id": "trust_confirmed",
+        "label": "I've checked these details are accurate",
+        "info": "Hides the reminder shown in the theme editor.",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Point 1"
+      },
+      {
+        "type": "select",
+        "id": "trust_1_icon",
+        "label": "Icon",
+        "options": [
+          {
+            "value": "truck",
+            "label": "Delivery van"
+          },
+          {
+            "value": "package",
+            "label": "Parcel"
+          },
+          {
+            "value": "lock",
+            "label": "Padlock"
+          },
+          {
+            "value": "return",
+            "label": "Return arrow"
+          },
+          {
+            "value": "headset",
+            "label": "Headset"
+          },
+          {
+            "value": "badge-check",
+            "label": "Badge"
+          },
+          {
+            "value": "shield",
+            "label": "Shield"
+          },
+          {
+            "value": "gift",
+            "label": "Gift"
+          },
+          {
+            "value": "clock",
+            "label": "Clock"
+          },
+          {
+            "value": "card",
+            "label": "Card"
+          },
+          {
+            "value": "chat",
+            "label": "Chat"
+          },
+          {
+            "value": "sparkle",
+            "label": "Sparkle"
+          },
+          {
+            "value": "map-pin",
+            "label": "Location pin"
+          }
+        ],
+        "default": "truck"
+      },
+      {
+        "type": "text",
+        "id": "trust_1_title",
+        "label": "Title",
+        "default": "UK delivery"
+      },
+      {
+        "type": "text",
+        "id": "trust_1_text",
+        "label": "Text",
+        "default": "Dispatched within 1–2 working days, delivered in 2–4 working days."
+      },
+      {
+        "type": "url",
+        "id": "trust_1_link",
+        "label": "Link (optional)"
+      },
+      {
+        "type": "header",
+        "content": "Point 2"
+      },
+      {
+        "type": "select",
+        "id": "trust_2_icon",
+        "label": "Icon",
+        "options": [
+          {
+            "value": "truck",
+            "label": "Delivery van"
+          },
+          {
+            "value": "package",
+            "label": "Parcel"
+          },
+          {
+            "value": "lock",
+            "label": "Padlock"
+          },
+          {
+            "value": "return",
+            "label": "Return arrow"
+          },
+          {
+            "value": "headset",
+            "label": "Headset"
+          },
+          {
+            "value": "badge-check",
+            "label": "Badge"
+          },
+          {
+            "value": "shield",
+            "label": "Shield"
+          },
+          {
+            "value": "gift",
+            "label": "Gift"
+          },
+          {
+            "value": "clock",
+            "label": "Clock"
+          },
+          {
+            "value": "card",
+            "label": "Card"
+          },
+          {
+            "value": "chat",
+            "label": "Chat"
+          },
+          {
+            "value": "sparkle",
+            "label": "Sparkle"
+          },
+          {
+            "value": "map-pin",
+            "label": "Location pin"
+          }
+        ],
+        "default": "package"
+      },
+      {
+        "type": "text",
+        "id": "trust_2_title",
+        "label": "Title",
+        "default": "Carefully packaged"
+      },
+      {
+        "type": "text",
+        "id": "trust_2_text",
+        "label": "Text",
+        "default": "Packed securely for its journey to you."
+      },
+      {
+        "type": "url",
+        "id": "trust_2_link",
+        "label": "Link (optional)"
+      },
+      {
+        "type": "header",
+        "content": "Point 3"
+      },
+      {
+        "type": "select",
+        "id": "trust_3_icon",
+        "label": "Icon",
+        "options": [
+          {
+            "value": "truck",
+            "label": "Delivery van"
+          },
+          {
+            "value": "package",
+            "label": "Parcel"
+          },
+          {
+            "value": "lock",
+            "label": "Padlock"
+          },
+          {
+            "value": "return",
+            "label": "Return arrow"
+          },
+          {
+            "value": "headset",
+            "label": "Headset"
+          },
+          {
+            "value": "badge-check",
+            "label": "Badge"
+          },
+          {
+            "value": "shield",
+            "label": "Shield"
+          },
+          {
+            "value": "gift",
+            "label": "Gift"
+          },
+          {
+            "value": "clock",
+            "label": "Clock"
+          },
+          {
+            "value": "card",
+            "label": "Card"
+          },
+          {
+            "value": "chat",
+            "label": "Chat"
+          },
+          {
+            "value": "sparkle",
+            "label": "Sparkle"
+          },
+          {
+            "value": "map-pin",
+            "label": "Location pin"
+          }
+        ],
+        "default": "lock"
+      },
+      {
+        "type": "text",
+        "id": "trust_3_title",
+        "label": "Title",
+        "default": "Secure checkout"
+      },
+      {
+        "type": "text",
+        "id": "trust_3_text",
+        "label": "Text",
+        "default": "Payments are processed securely by Shopify."
+      },
+      {
+        "type": "url",
+        "id": "trust_3_link",
+        "label": "Link (optional)"
+      },
+      {
+        "type": "header",
+        "content": "Point 4"
+      },
+      {
+        "type": "select",
+        "id": "trust_4_icon",
+        "label": "Icon",
+        "options": [
+          {
+            "value": "truck",
+            "label": "Delivery van"
+          },
+          {
+            "value": "package",
+            "label": "Parcel"
+          },
+          {
+            "value": "lock",
+            "label": "Padlock"
+          },
+          {
+            "value": "return",
+            "label": "Return arrow"
+          },
+          {
+            "value": "headset",
+            "label": "Headset"
+          },
+          {
+            "value": "badge-check",
+            "label": "Badge"
+          },
+          {
+            "value": "shield",
+            "label": "Shield"
+          },
+          {
+            "value": "gift",
+            "label": "Gift"
+          },
+          {
+            "value": "clock",
+            "label": "Clock"
+          },
+          {
+            "value": "card",
+            "label": "Card"
+          },
+          {
+            "value": "chat",
+            "label": "Chat"
+          },
+          {
+            "value": "sparkle",
+            "label": "Sparkle"
+          },
+          {
+            "value": "map-pin",
+            "label": "Location pin"
+          }
+        ],
+        "default": "return"
+      },
+      {
+        "type": "text",
+        "id": "trust_4_title",
+        "label": "Title",
+        "default": "14-day returns"
+      },
+      {
+        "type": "text",
+        "id": "trust_4_text",
+        "label": "Text",
+        "default": "Return unopened items within 14 days of delivery."
+      },
+      {
+        "type": "url",
+        "id": "trust_4_link",
+        "label": "Link (optional)"
+      },
+      {
+        "type": "header",
+        "content": "Point 5"
+      },
+      {
+        "type": "select",
+        "id": "trust_5_icon",
+        "label": "Icon",
+        "options": [
+          {
+            "value": "truck",
+            "label": "Delivery van"
+          },
+          {
+            "value": "package",
+            "label": "Parcel"
+          },
+          {
+            "value": "lock",
+            "label": "Padlock"
+          },
+          {
+            "value": "return",
+            "label": "Return arrow"
+          },
+          {
+            "value": "headset",
+            "label": "Headset"
+          },
+          {
+            "value": "badge-check",
+            "label": "Badge"
+          },
+          {
+            "value": "shield",
+            "label": "Shield"
+          },
+          {
+            "value": "gift",
+            "label": "Gift"
+          },
+          {
+            "value": "clock",
+            "label": "Clock"
+          },
+          {
+            "value": "card",
+            "label": "Card"
+          },
+          {
+            "value": "chat",
+            "label": "Chat"
+          },
+          {
+            "value": "sparkle",
+            "label": "Sparkle"
+          },
+          {
+            "value": "map-pin",
+            "label": "Location pin"
+          }
+        ],
+        "default": "headset"
+      },
+      {
+        "type": "text",
+        "id": "trust_5_title",
+        "label": "Title",
+        "default": "Customer support"
+      },
+      {
+        "type": "text",
+        "id": "trust_5_text",
+        "label": "Text",
+        "default": "Questions before you buy? We're here to help."
+      },
+      {
+        "type": "url",
+        "id": "trust_5_link",
+        "label": "Link (optional)"
+      },
+      {
+        "type": "header",
+        "content": "Point 6"
+      },
+      {
+        "type": "select",
+        "id": "trust_6_icon",
+        "label": "Icon",
+        "options": [
+          {
+            "value": "truck",
+            "label": "Delivery van"
+          },
+          {
+            "value": "package",
+            "label": "Parcel"
+          },
+          {
+            "value": "lock",
+            "label": "Padlock"
+          },
+          {
+            "value": "return",
+            "label": "Return arrow"
+          },
+          {
+            "value": "headset",
+            "label": "Headset"
+          },
+          {
+            "value": "badge-check",
+            "label": "Badge"
+          },
+          {
+            "value": "shield",
+            "label": "Shield"
+          },
+          {
+            "value": "gift",
+            "label": "Gift"
+          },
+          {
+            "value": "clock",
+            "label": "Clock"
+          },
+          {
+            "value": "card",
+            "label": "Card"
+          },
+          {
+            "value": "chat",
+            "label": "Chat"
+          },
+          {
+            "value": "sparkle",
+            "label": "Sparkle"
+          },
+          {
+            "value": "map-pin",
+            "label": "Location pin"
+          }
+        ],
+        "default": "badge-check"
+      },
+      {
+        "type": "text",
+        "id": "trust_6_title",
+        "label": "Title",
+        "default": "Genuine designer fragrances"
+      },
+      {
+        "type": "text",
+        "id": "trust_6_text",
+        "label": "Text",
+        "default": "Every fragrance we sell is a genuine designer product."
+      },
+      {
+        "type": "url",
+        "id": "trust_6_link",
+        "label": "Link (optional)"
+      },
+      {
+        "type": "header",
+        "content": "Delivery and returns details"
+      },
+      {
+        "type": "richtext",
+        "id": "delivery_options",
+        "label": "UK delivery options",
+        "info": "Delivery methods, prices and times. Example text: replace before publishing.",
+        "default": "<p><strong>Standard UK delivery</strong>: 2–4 working days, £3.95</p><p><strong>Express UK delivery</strong>: 1–2 working days, £5.95</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "delivery_dispatch",
+        "label": "Dispatch and tracking",
+        "default": "<p>Orders placed before 2pm on working days are dispatched the same day. You'll receive an email when your order is on its way.</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "returns_details",
+        "label": "Returns and refunds",
+        "default": "<p>You can return unopened items within 14 days of delivery. Once we receive your return, your refund is made to your original payment method within 14 days.</p>"
+      },
+      {
+        "type": "richtext",
+        "id": "protection_details",
+        "label": "Shopping with confidence",
+        "default": "<p>Every fragrance we sell is a genuine designer product. Checkout is secured by Shopify, and our team is here to help before and after you buy.</p>"
+      }
+    ]
+  },
+  {
+    "name": "Multi-buy offer",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Shows Buy 1 / Buy 2 / Buy 3 cards on product pages in the eligible collection. The saving itself is given by Shopify automatic discounts that you create in Shopify › Discounts with the same percentages (see the setup guide). The theme only displays the offer."
+      },
+      {
+        "type": "checkbox",
+        "id": "multibuy_enabled",
+        "label": "Show the multi-buy offer",
+        "info": "Turn on only after the matching automatic discounts are active, so the page never shows a saving that checkout doesn't give.",
+        "default": false
+      },
+      {
+        "type": "collection",
+        "id": "multibuy_collection",
+        "label": "Eligible collection",
+        "info": "Must be the same collection your automatic discounts apply to."
+      },
+      {
+        "type": "range",
+        "id": "multibuy_tier2",
+        "label": "Buy 2 saving",
+        "min": 1,
+        "max": 50,
+        "step": 1,
+        "unit": "%",
+        "default": 10
+      },
+      {
+        "type": "range",
+        "id": "multibuy_tier3",
+        "label": "Buy 3 saving",
+        "min": 1,
+        "max": 50,
+        "step": 1,
+        "unit": "%",
+        "default": 20
+      },
+      {
+        "type": "text",
+        "id": "multibuy_heading",
+        "label": "Heading",
+        "default": "Save when you choose more"
+      },
+      {
+        "type": "text",
+        "id": "multibuy_title_1",
+        "label": "Buy 1 title",
+        "default": "Single fragrance"
+      },
+      {
+        "type": "text",
+        "id": "multibuy_label_1",
+        "label": "Buy 1 label",
+        "default": "Choose your fragrance"
+      },
+      {
+        "type": "text",
+        "id": "multibuy_label_2",
+        "label": "Buy 2 label",
+        "default": "Most popular"
+      },
+      {
+        "type": "text",
+        "id": "multibuy_label_3",
+        "label": "Buy 3 label",
+        "default": "Best value"
+      },
+      {
+        "type": "text",
+        "id": "multibuy_note",
+        "label": "Note under the cards",
+        "default": "Your saving is applied automatically in your bag and at checkout."
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.delivery.name",
     "settings": [
       {
@@ -509,6 +1118,18 @@
         "id": "contact_email",
         "label": "Customer email address",
         "info": "Shown in the footer Connect column. Leave empty to hide."
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_number",
+        "label": "WhatsApp number",
+        "info": "International format, digits only, for example 447700900123. Adds 'Ask us on WhatsApp' and 'Share your experience' links. Leave empty to hide."
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_message",
+        "label": "WhatsApp starter message",
+        "default": "Hello Valoria London, I have a question about"
       }
     ]
   },
