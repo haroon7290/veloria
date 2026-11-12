@@ -144,10 +144,31 @@
                     {{ form | payment_terms }}
                   {%- endform -%}
                 {%- endif -%}
-                <p class="product__tax" style="margin-bottom:0">
-                  {%- if cart.taxes_included -%}{{ 'products.product.taxes_included' | t }}{%- else -%}{{ 'products.product.taxes_excluded' | t }}{%- endif -%}
-                  {% if shop.shipping_policy.body != blank %} {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}{% endif %}
-                </p>
+                {%- liquid
+                  assign store_rating = block.settings.store_rating | strip
+                  assign store_rating_value = store_rating | plus: 0
+                  if store_rating_value > 5
+                    assign store_rating_value = 5
+                  endif
+                  assign store_rating_pct = store_rating_value | times: 20.0 | round: 1
+                -%}
+                {%- if store_rating_value > 0 -%}
+                  {%- if block.settings.store_rating_link != blank -%}<a href="{{ block.settings.store_rating_link }}" class="store-rating">{%- else -%}<p class="store-rating">{%- endif -%}
+                    <span class="rating__stars" style="--rating: {{ store_rating_pct }}%;" aria-hidden="true"></span>
+                    <span class="store-rating__value" aria-hidden="true">{{ store_rating | escape }}</span>
+                    <span class="visually-hidden">{{ 'products.product.rating' | t: rating: store_rating, max: 5 }}.</span>
+                    {%- if block.settings.store_rating_text != blank -%}
+                      <span class="store-rating__sep" aria-hidden="true"></span>
+                      <span class="store-rating__text">{{ block.settings.store_rating_text | escape }}</span>
+                    {%- endif -%}
+                  {%- if block.settings.store_rating_link != blank -%}</a>{%- else -%}</p>{%- endif -%}
+                {%- endif -%}
+                {%- if block.settings.show_tax -%}
+                  <p class="product__tax" style="margin-bottom:0">
+                    {%- if cart.taxes_included -%}{{ 'products.product.taxes_included' | t }}{%- else -%}{{ 'products.product.taxes_excluded' | t }}{%- endif -%}
+                    {% if shop.shipping_policy.body != blank %} {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}{% endif %}
+                  </p>
+                {%- endif -%}
               </div>
 
             {%- when 'variant_picker' -%}
@@ -710,6 +731,35 @@
           "label": "Show Shop Pay Installments message",
           "info": "Appears only where Shopify offers Shop Pay Installments for your store and currency.",
           "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_tax",
+          "label": "Show tax and delivery note",
+          "info": "\"Tax included. Delivery calculated at checkout.\"",
+          "default": false
+        },
+        {
+          "type": "header",
+          "content": "Store rating"
+        },
+        {
+          "type": "text",
+          "id": "store_rating",
+          "label": "Rating out of 5",
+          "info": "Your overall store rating, for example 4.89. Use your real figure (from your review or marketplace history). Leave empty to hide the line."
+        },
+        {
+          "type": "text",
+          "id": "store_rating_text",
+          "label": "Text after the rating",
+          "info": "For example 1,000+ happy customers. Use a real number."
+        },
+        {
+          "type": "url",
+          "id": "store_rating_link",
+          "label": "Link (optional)",
+          "info": "For example the page where these ratings can be seen."
         }
       ]
     },

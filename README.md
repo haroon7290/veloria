@@ -1,12 +1,12 @@
 # Valoria London: Shopify theme
 
 A custom Shopify Online Store 2.0 theme for **Valoria London**, a UK retailer of genuine designer fragrances.
-Version **4.2.0**. Tested with Shopify Theme Check (no issues), 161 automated interaction checks and an axe accessibility audit (WCAG 2.1 AA, no violations) on desktop and mobile.
+Version **4.2.1**. Tested with Shopify Theme Check (no issues), 161 automated interaction checks and an axe accessibility audit (WCAG 2.1 AA, no violations) on desktop and mobile.
 
 ## Install
 
 **Option A: upload the ZIP**
-1. Use `valoria-london-theme-v4.2.0.zip` (shared alongside this repository). Theme folders must sit at the root of the ZIP.
+1. Use `valoria-london-theme-v4.2.1.zip` (shared alongside this repository). Theme folders must sit at the root of the ZIP.
 2. Shopify admin › Online Store › Themes › Add theme › Upload zip file.
 3. Click **Customize** to preview, then **Publish** when you are happy with it.
 
