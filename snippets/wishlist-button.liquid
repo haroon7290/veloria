@@ -1,0 +1,4 @@
+{%- comment -%} Heart button that saves a product to the wishlist (kept in the shopper's browser). Params: product {%- endcomment -%}
+<button type="button" class="wishlist-btn" data-wishlist-toggle data-handle="{{ product.handle }}" aria-pressed="false" aria-label="{{ 'products.wishlist.add' | t: title: product.title | escape }}" data-label-add="{{ 'products.wishlist.add' | t: title: product.title | escape }}" data-label-remove="{{ 'products.wishlist.remove' | t: title: product.title | escape }}">
+  {% render 'icon', name: 'heart' %}
+</button>

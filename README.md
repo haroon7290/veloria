@@ -1,12 +1,12 @@
 # Valoria London: Shopify theme
 
 A custom Shopify Online Store 2.0 theme for **Valoria London**, a UK retailer of genuine designer fragrances.
-Version **4.1.0**. Tested with Shopify Theme Check (no issues), 141 automated interaction checks and an axe accessibility audit (WCAG 2.1 AA, no violations) on desktop and mobile.
+Version **4.2.0**. Tested with Shopify Theme Check (no issues), 161 automated interaction checks and an axe accessibility audit (WCAG 2.1 AA, no violations) on desktop and mobile.
 
 ## Install
 
 **Option A: upload the ZIP**
-1. Use `valoria-london-theme-v4.1.0.zip` (shared alongside this repository). Theme folders must sit at the root of the ZIP.
+1. Use `valoria-london-theme-v4.2.0.zip` (shared alongside this repository). Theme folders must sit at the root of the ZIP.
 2. Shopify admin › Online Store › Themes › Add theme › Upload zip file.
 3. Click **Customize** to preview, then **Publish** when you are happy with it.
 
@@ -74,9 +74,9 @@ Shown only when filled in. Nothing is invented.
 | `occasions` | List of single line text | Fragrance details |
 | `season` | List of single line text | Fragrance details |
 | `gender` | Single line text | Highlights |
-| `how_to_wear`, `ingredients`, `fragrance_details`, `faqs` | Multi-line or rich text | Accordions |
-| `character` | Single line text | One-line character statement in About the fragrance |
-| `scent_profile`, `manufacturer_info` | Multi-line text | About the fragrance |
+| `how_to_wear`, `ingredients`, `faqs` | Multi-line or rich text | Product tabs (How to wear, Details, FAQs). Empty ones fall back to the text in the Product tabs section |
+| `character` | Single line text | One-line character statement at the top of the Description tab |
+| `scent_profile`, `manufacturer_info` | Multi-line text | Description tab, Details tab |
 | `popularity_note` | Single line text | Overrides the bestseller line for one product |
 | `reviews` | List of metaobject references (Product review) | Customer reviews |
 | `perfumer`, `launch_year` | Text / number | Fragrance details |
@@ -85,9 +85,15 @@ Star ratings appear automatically when a reviews app fills Shopify's standard `r
 
 ## Product page
 
-Purchase column: brand, name, concentration, star rating from your own reviews, price with saving, an honest bestseller line, sizes, stock, quantity, Add to bag, Buy it now, trust icons, the multi-buy offer, short description, accordions (details, ingredients, how to wear, delivery, returns, FAQs) and a WhatsApp help link.
+Gallery: main image with thumbnails underneath (or a vertical strip, or a grid: Product information › Gallery layout).
 
-Below: Fragrance notes (top, heart, base), About the fragrance, Frequently bought together, Customer reviews, Delivery and returns, You may also love, More from this brand and Recently viewed. A sticky purchase bar appears on mobile and desktop once Add to bag scrolls away.
+Purchase column: brand, large name with a wishlist heart, concentration, star rating from your own reviews, price with saving, Shop Pay instalments (where Shopify offers them), an honest bestseller line, highlights, sizes, stock, the **multi-buy rows** (Buy 1 / Buy 2 / Buy 3 with prices, struck-through totals and Save 10% / Save 20% pills), quantity, Add to bag, Buy it now, the **delivery timeline** (Ordered → Dispatched → Delivered with estimated dates), three trust points and a WhatsApp help link.
+
+Choosing a multi-buy row sets the quantity, and typing a quantity picks the matching row. With Buy 2 or Buy 3 a mix-and-match panel opens: every bottle starts as this fragrance, and the shopper can swap any of them for another eligible fragrance and size. Add to bag then adds the whole set.
+
+Below: **Product tabs** (Description, Fragrance notes, Details, How to wear, Shipping & returns, FAQs), Frequently bought together, Customer reviews, You might also like, More from this brand and Recently viewed. A sticky bar with image, name, price, quantity and Add to bag appears once Add to bag scrolls away (quantity hidden on small phones).
+
+The Fragrance notes, About the fragrance and Delivery sections from v4.1 are still available under Add section if you prefer them to tabs. There is no "people are viewing" counter, countdown or stock alarm: those would be made up.
 
 ### 1. Customer reviews (no app needed)
 
@@ -134,7 +140,29 @@ Frequently bought together uses the same discount: when two or three eligible fr
 
 Theme settings › **Trust and delivery** holds six reassurance points and the delivery, dispatch, returns and "shopping with confidence" text. The delivery times and prices are examples: replace them, then tick "I've checked these details are accurate". Add your WhatsApp number in Theme settings › Social media.
 
-### 4. Complementary products (optional)
+### 4. Delivery timeline
+
+Theme settings › **Trust and delivery** › Delivery timeline. The dates are worked out in the shopper's browser from:
+
+- **Same-day dispatch cut-off** (hour, UK time, default 14): orders after this, at weekends or on closed days dispatch on the next working day.
+- **Dispatch** in 0–1 working days and **delivery** in 2–4 working days after dispatch (examples: set your own).
+- **Days you don't dispatch or deliver**: dates in `YYYY-MM-DD` form, separated by commas. England and Wales bank holidays to the end of 2027 are filled in; add your own closures and keep the list up to date.
+- Step labels (Ordered, Dispatched, Delivered).
+
+The timeline always says the dates are estimates. Turn it off with **Show delivery timeline**, or remove the block from the product page.
+
+### 5. Wishlist
+
+1. Online Store › Pages › Add page. Title: **Wishlist**. Template: **page.wishlist**. Save.
+2. Theme settings › Products › **Wishlist page**: choose that page.
+
+A heart then appears in the header (with a count) and next to each product name. Saved fragrances are kept in the shopper's browser, so no account or app is needed; they don't move between devices.
+
+### 6. Sale badges
+
+Theme settings › Products › **Sale badge on product cards**: show the percentage off (for example −25%), worked out from the compare-at price, or the word Sale.
+
+### 7. Complementary products (optional)
 
 Install Shopify's free **Search & Discovery** app, open a product › Complementary products, and pick 2–3 fragrances. Frequently bought together uses them; otherwise it suggests products from the multi-buy collection.
 
@@ -146,7 +174,8 @@ Drawer or page. Discount codes (validated by Shopify), recommendations in the dr
 
 - Valoria London is presented as a retailer of genuine designer fragrances. It does not claim to make fragrances, own brands or be an authorised retailer.
 - Sample reviews never appear on the live store (UK DMCC Act 2024). Tick "This is a genuine customer review" only for real, permitted feedback.
-- No delivery promises are hard-coded. Delivery and returns text comes from your settings and policies.
+- No delivery promises are hard-coded. Delivery and returns text and the timeline numbers come from your settings and policies, and the timeline is labelled as an estimate.
+- No made-up live visitor counts, countdowns or low-stock alarms.
 
 ## Development
 

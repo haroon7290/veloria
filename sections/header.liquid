@@ -67,6 +67,13 @@
           <span class="visually-hidden">{% if customer %}{{ 'customer.account.title' | t }}{% else %}{{ 'customer.log_in' | t }}{% endif %}</span>
         </a>
       {%- endif -%}
+      {%- if settings.wishlist_page != blank -%}
+        <a href="{{ settings.wishlist_page.url }}" class="icon-button header__icon header__icon--wishlist">
+          {% render 'icon', name: 'heart' %}
+          <span class="visually-hidden">{{ 'products.wishlist.title' | t }}</span>
+          <span class="cart-count" data-wishlist-count aria-hidden="true"></span>
+        </a>
+      {%- endif -%}
       <a href="{{ routes.cart_url }}" class="icon-button header__icon header__icon--cart" id="cart-icon-bubble" {% if settings.cart_type == 'drawer' %}data-cart-open aria-haspopup="dialog"{% endif %}>
         {% render 'cart-icon-bubble' %}
       </a>

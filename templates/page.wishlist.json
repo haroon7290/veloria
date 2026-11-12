@@ -1,0 +1,18 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-wishlist",
+      "settings": {
+        "eyebrow": "Saved for later",
+        "heading": "Your wishlist",
+        "empty_heading": "Your wishlist is empty",
+        "empty_text": "Tap the heart on any fragrance to save it here.",
+        "button_label": "Discover fragrances",
+        "background": "white"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

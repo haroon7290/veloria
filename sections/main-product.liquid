@@ -72,7 +72,7 @@
         {%- if section.settings.enable_zoom -%}
           <button type="button" class="gallery__zoom" data-zoom-open="0">{% render 'icon', name: 'zoom', class: 'icon--small' %}{{ 'products.product.media.zoom_label' | t }}</button>
         {%- endif -%}
-        {%- if media_count > 1 and section.settings.gallery_layout == 'thumbnails' -%}
+        {%- if media_count > 1 and section.settings.gallery_layout != 'grid' -%}
           <div class="gallery__arrows">
             <button type="button" class="carousel-nav__btn" data-gallery-prev aria-label="{{ 'general.carousel.previous' | t }}">{% render 'icon', name: 'chevron-left', class: 'icon--small' %}</button>
             <button type="button" class="carousel-nav__btn" data-gallery-next aria-label="{{ 'general.carousel.next' | t }}">{% render 'icon', name: 'chevron-right', class: 'icon--small' %}</button>
@@ -110,7 +110,12 @@
                   {%- assign vendor_url = product.vendor | url_for_vendor -%}
                   <a href="{{ vendor_url }}" class="product__vendor">{{ product.vendor | escape }}</a>
                 {%- endif -%}
-                <h1 class="product__title">{{ product.title | escape }}</h1>
+                <div class="product__title-row">
+                  <h1 class="product__title">{{ product.title | escape }}</h1>
+                  {%- if block.settings.show_wishlist and settings.wishlist_page != blank -%}
+                    {% render 'wishlist-button', product: product %}
+                  {%- endif -%}
+                </div>
                 {%- if block.settings.show_concentration and concentration != blank -%}
                   <p class="product__concentration">{{ concentration | escape }}</p>
                 {%- endif -%}
@@ -131,6 +136,13 @@
                     assign saving_money = saving | money
                   -%}
                   <p class="product__saving">{{ 'products.product.price.save_html' | t: amount: saving_money, percent: saving_pct }}</p>
+                {%- endif -%}
+                {%- if block.settings.show_installments -%}
+                  {%- assign installment_form = 'Installments-' | append: section.id -%}
+                  {%- form 'product', product, id: installment_form, class: 'product__installments' -%}
+                    <input type="hidden" name="id" value="{{ current_variant.id }}">
+                    {{ form | payment_terms }}
+                  {%- endform -%}
                 {%- endif -%}
                 <p class="product__tax" style="margin-bottom:0">
                   {%- if cart.taxes_included -%}{{ 'products.product.taxes_included' | t }}{%- else -%}{{ 'products.product.taxes_excluded' | t }}{%- endif -%}
@@ -453,6 +465,9 @@
                 <p class="popularity" {{ block.shopify_attributes }}>{% render 'icon', name: block.settings.icon %}<span>{{ pop_text | escape }}</span></p>
               {%- endif -%}
 
+            {%- when 'timeline' -%}
+              <div {{ block.shopify_attributes }}>{% render 'delivery-timeline' %}</div>
+
             {%- when 'trust' -%}
               {%- liquid
                 assign trust_list = block.settings.points | remove: ' ' | split: ','
@@ -507,6 +522,11 @@
         <span class="sticky-atc__title">{{ product.title | escape }}</span>
         <span class="sticky-atc__meta"><span data-sticky-variant>{% unless product.has_only_default_variant %}{{ current_variant.title | escape }} · {% endunless %}</span><span data-sticky-price>{{ current_variant.price | money }}</span></span>
       </span>
+      <div class="quantity quantity--small sticky-atc__qty" data-quantity data-sticky-quantity>
+        <button type="button" data-qty-change="-1" tabindex="-1" aria-label="{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}">−</button>
+        <input type="number" value="1" min="1" tabindex="-1" aria-label="{{ 'products.product.quantity.label' | t }}" data-sticky-qty>
+        <button type="button" data-qty-change="1" tabindex="-1" aria-label="{{ 'products.product.quantity.increase' | t: product: product.title | escape }}">+</button>
+      </div>
       <button type="submit" form="{{ form_id }}" class="button" tabindex="-1" data-sticky-button>{{ 'products.product.add_to_cart' | t }}</button>
     </div>
   </div>
@@ -541,15 +561,19 @@
       "label": "Desktop gallery",
       "options": [
         {
+          "value": "below",
+          "label": "Slideshow, thumbnails underneath"
+        },
+        {
           "value": "thumbnails",
-          "label": "Slideshow with thumbnails"
+          "label": "Slideshow, thumbnails at the side"
         },
         {
           "value": "grid",
           "label": "Stacked grid"
         }
       ],
-      "default": "thumbnails"
+      "default": "below"
     },
     {
       "type": "select",
@@ -658,6 +682,13 @@
           "label": "Rating links to",
           "info": "ID of the reviews area on the page.",
           "default": "reviews"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_wishlist",
+          "label": "Show wishlist heart",
+          "info": "Needs a wishlist page chosen in Header settings.",
+          "default": true
         }
       ]
     },
@@ -671,6 +702,13 @@
           "id": "show_savings",
           "label": "Show saving on sale prices",
           "info": "For example Save £20.00 (20%), from the compare-at price.",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_installments",
+          "label": "Show Shop Pay Installments message",
+          "info": "Appears only where Shopify offers Shop Pay Installments for your store and currency.",
           "default": true
         }
       ]
@@ -1016,6 +1054,17 @@
           "id": "contact_page",
           "label": "Contact page",
           "info": "Used when no WhatsApp number is set in Theme settings › Social media."
+        }
+      ]
+    },
+    {
+      "type": "timeline",
+      "name": "Delivery timeline",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Ordered → Dispatched → Delivered with estimated dates. Set the timings in Theme settings › Trust and delivery."
         }
       ]
     }

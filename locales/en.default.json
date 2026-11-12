@@ -312,7 +312,8 @@
       "help_contact": "Contact us",
       "read_less": "Read less",
       "scent_profile": "Scent profile",
-      "manufacturer": "Manufacturer information"
+      "manufacturer": "Manufacturer information",
+      "save_percent": "Save {{ percent }}%"
     },
     "reviews": {
       "count": {
@@ -379,7 +380,10 @@
       "add_js": "Add {{ count }} to bag",
       "same_again": "Another of this fragrance",
       "choose_more": "Choose a fragrance for each slot to continue.",
-      "editor": "Multi-buy offer: switched off, or this product isn't in the eligible collection. Set it up in Theme settings › Multi-buy offer. Only visible in the theme editor."
+      "editor": "Multi-buy offer: switched off, or this product isn't in the eligible collection. Set it up in Theme settings › Multi-buy offer. Only visible in the theme editor.",
+      "save_pill": "Save {{ percent }}%",
+      "mix_intro": "Mix and match: keep this fragrance for every bottle or swap any of them for another one from the offer.",
+      "this_fragrance": "This fragrance"
     },
     "fbt": {
       "include": "Include {{ title }}",
@@ -402,6 +406,28 @@
       "protection": "Shopping with confidence",
       "shipping_policy": "Shipping policy",
       "refund_policy": "Refund policy"
+    },
+    "timeline": {
+      "label": "Estimated delivery",
+      "note": "Estimated dates based on UK working days. Not a guarantee.",
+      "summary": "Estimated dispatch {{ dispatch }}, estimated delivery {{ delivery }}."
+    },
+    "tabs": {
+      "label": "Product information",
+      "description": "Description",
+      "notes": "Fragrance notes",
+      "details": "Details",
+      "how_to_wear": "How to wear",
+      "delivery": "Shipping & returns",
+      "faqs": "FAQs"
+    },
+    "wishlist": {
+      "title": "Wishlist",
+      "add": "Save {{ title }} to your wishlist",
+      "remove": "Remove {{ title }} from your wishlist",
+      "added": "Saved to your wishlist",
+      "removed": "Removed from your wishlist",
+      "no_js": "Turn on JavaScript to see your saved fragrances."
     }
   },
   "sections": {

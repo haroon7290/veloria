@@ -1,0 +1,38 @@
+{%- comment -%}
+  Ordered → Dispatched → Delivered with estimated dates (filled in by theme.js from Theme settings › Trust and delivery).
+{%- endcomment -%}
+{%- if settings.timeline_enabled -%}
+  {%- liquid
+    assign d_min = settings.timeline_dispatch_min
+    assign d_max = settings.timeline_dispatch_max
+    if d_max < d_min
+      assign d_max = d_min
+    endif
+    assign t_min = settings.timeline_transit_min
+    assign t_max = settings.timeline_transit_max
+    if t_max < t_min
+      assign t_max = t_min
+    endif
+  -%}
+  <div class="timeline" data-delivery-timeline data-cutoff="{{ settings.timeline_cutoff }}" data-dispatch-min="{{ d_min }}" data-dispatch-max="{{ d_max }}" data-transit-min="{{ t_min }}" data-transit-max="{{ t_max }}" data-closed="{{ settings.timeline_closed | strip_newlines | escape }}" hidden>
+    <p class="visually-hidden" data-timeline-summary></p>
+    <ol class="timeline__steps" role="list" aria-hidden="true">
+      <li class="timeline__step">
+        <span class="timeline__icon">{% render 'icon', name: 'bag' %}</span>
+        <span class="timeline__label">{{ settings.timeline_label_1 | escape }}</span>
+        <span class="timeline__date" data-timeline-ordered></span>
+      </li>
+      <li class="timeline__step">
+        <span class="timeline__icon">{% render 'icon', name: 'package' %}</span>
+        <span class="timeline__label">{{ settings.timeline_label_2 | escape }}</span>
+        <span class="timeline__date" data-timeline-dispatch></span>
+      </li>
+      <li class="timeline__step">
+        <span class="timeline__icon">{% render 'icon', name: 'map-pin' %}</span>
+        <span class="timeline__label">{{ settings.timeline_label_3 | escape }}</span>
+        <span class="timeline__date" data-timeline-delivery></span>
+      </li>
+    </ol>
+    <p class="timeline__note">{{ 'products.timeline.note' | t }}</p>
+  </div>
+{%- endif -%}

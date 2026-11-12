@@ -1,0 +1,185 @@
+{%- liquid
+  assign s = section.settings
+  assign mf = product.metafields.custom
+  assign heart = mf.heart_notes | default: mf.middle_notes
+  assign has_notes = false
+  if mf.top_notes != blank or heart != blank or mf.base_notes != blank
+    assign has_notes = true
+  endif
+  capture concentration
+    render 'product-concentration', product: product
+  endcapture
+  assign concentration = concentration | strip
+  capture size_text
+    render 'product-sizes', product: product
+  endcapture
+  assign size_text = size_text | strip
+
+  assign how_to = ''
+  if mf.how_to_wear != blank
+    capture how_to
+      render 'metafield-text', field: mf.how_to_wear
+    endcapture
+  elsif s.how_to_wear != blank
+    assign how_to = s.how_to_wear
+  endif
+  assign faq_html = ''
+  if mf.faqs != blank
+    capture faq_html
+      render 'metafield-text', field: mf.faqs
+    endcapture
+  elsif s.faq_content != blank
+    assign faq_html = s.faq_content
+  endif
+  assign delivery_html = settings.delivery_options | append: settings.delivery_dispatch
+  assign sp_fallback = 'products.delivery.shipping_policy' | t
+  assign rp_fallback = 'products.delivery.refund_policy' | t
+  assign uid = section.id
+-%}
+<section id="ProductDetails" class="section ptabs section--{{ s.background }}" style="--pt: {{ s.padding_top | times: 0.6 }}rem; --pb: {{ s.padding_bottom | times: 0.6 }}rem; --pt-d: {{ s.padding_top }}rem; --pb-d: {{ s.padding_bottom }}rem;">
+  <div class="page-width">
+    <div class="ptabs__wrap" data-shop-tabs>
+      <div class="ptabs__bar" role="tablist" aria-label="{{ 'products.tabs.label' | t }}">
+        {%- assign first = true -%}
+        {%- if s.show_description and product.description != blank -%}
+          <button type="button" role="tab" id="Tab-{{ uid }}-desc" aria-controls="Panel-{{ uid }}-desc" aria-selected="{{ first }}" tabindex="{% if first %}0{% else %}-1{% endif %}" class="ptabs__tab">{{ 'products.tabs.description' | t }}</button>
+          {%- assign first = false -%}
+        {%- endif -%}
+        {%- if s.show_notes and has_notes -%}
+          <button type="button" role="tab" id="Tab-{{ uid }}-notes" aria-controls="Panel-{{ uid }}-notes" aria-selected="{{ first }}" tabindex="{% if first %}0{% else %}-1{% endif %}" class="ptabs__tab">{{ 'products.tabs.notes' | t }}</button>
+          {%- assign first = false -%}
+        {%- endif -%}
+        {%- if s.show_details -%}
+          <button type="button" role="tab" id="Tab-{{ uid }}-details" aria-controls="Panel-{{ uid }}-details" aria-selected="{{ first }}" tabindex="{% if first %}0{% else %}-1{% endif %}" class="ptabs__tab">{{ 'products.tabs.details' | t }}</button>
+          {%- assign first = false -%}
+        {%- endif -%}
+        {%- if s.show_how and how_to != blank -%}
+          <button type="button" role="tab" id="Tab-{{ uid }}-how" aria-controls="Panel-{{ uid }}-how" aria-selected="{{ first }}" tabindex="{% if first %}0{% else %}-1{% endif %}" class="ptabs__tab">{{ 'products.tabs.how_to_wear' | t }}</button>
+          {%- assign first = false -%}
+        {%- endif -%}
+        {%- if s.show_delivery and delivery_html != blank or s.show_delivery and settings.returns_details != blank -%}
+          <button type="button" role="tab" id="Tab-{{ uid }}-delivery" aria-controls="Panel-{{ uid }}-delivery" aria-selected="{{ first }}" tabindex="{% if first %}0{% else %}-1{% endif %}" class="ptabs__tab">{{ 'products.tabs.delivery' | t }}</button>
+          {%- assign first = false -%}
+        {%- endif -%}
+        {%- if s.show_faqs and faq_html != blank -%}
+          <button type="button" role="tab" id="Tab-{{ uid }}-faqs" aria-controls="Panel-{{ uid }}-faqs" aria-selected="{{ first }}" tabindex="{% if first %}0{% else %}-1{% endif %}" class="ptabs__tab">{{ 'products.tabs.faqs' | t }}</button>
+          {%- assign first = false -%}
+        {%- endif -%}
+      </div>
+
+      {%- assign first = true -%}
+      {%- if s.show_description and product.description != blank -%}
+        <div role="tabpanel" id="Panel-{{ uid }}-desc" aria-labelledby="Tab-{{ uid }}-desc" class="ptabs__panel" tabindex="0"{% unless first %} hidden{% endunless %}>
+          <div class="ptabs__desc">
+            {%- if mf.character != blank -%}<p class="ptabs__character">{% render 'metafield-text', field: mf.character %}</p>{%- endif -%}
+            <div class="rte ptabs__text">{{ product.description }}</div>
+            {%- if mf.scent_profile != blank -%}
+              <div class="ptabs__block"><h3 class="label">{{ 'products.product.scent_profile' | t }}</h3><div class="rte">{% render 'metafield-text', field: mf.scent_profile %}</div></div>
+            {%- endif -%}
+          </div>
+        </div>
+        {%- assign first = false -%}
+      {%- endif -%}
+
+      {%- if s.show_notes and has_notes -%}
+        <div role="tabpanel" id="Panel-{{ uid }}-notes" aria-labelledby="Tab-{{ uid }}-notes" class="ptabs__panel" tabindex="0"{% unless first %} hidden{% endunless %}>
+          <ol class="notes-tiers notes-tiers--tab" role="list">
+            {%- if mf.top_notes != blank -%}
+              <li class="notes-tier"><span class="notes-tier__num" aria-hidden="true">I</span><h3 class="notes-tier__label">{{ 'products.notes_section.top' | t }}</h3><p class="notes-tier__hint">{{ s.top_hint | escape }}</p><p class="notes-tier__notes">{% render 'metafield-text', field: mf.top_notes %}</p></li>
+            {%- endif -%}
+            {%- if heart != blank -%}
+              <li class="notes-tier"><span class="notes-tier__num" aria-hidden="true">II</span><h3 class="notes-tier__label">{{ 'products.notes_section.heart' | t }}</h3><p class="notes-tier__hint">{{ s.heart_hint | escape }}</p><p class="notes-tier__notes">{% render 'metafield-text', field: heart %}</p></li>
+            {%- endif -%}
+            {%- if mf.base_notes != blank -%}
+              <li class="notes-tier"><span class="notes-tier__num" aria-hidden="true">III</span><h3 class="notes-tier__label">{{ 'products.notes_section.base' | t }}</h3><p class="notes-tier__hint">{{ s.base_hint | escape }}</p><p class="notes-tier__notes">{% render 'metafield-text', field: mf.base_notes %}</p></li>
+            {%- endif -%}
+          </ol>
+        </div>
+        {%- assign first = false -%}
+      {%- endif -%}
+
+      {%- if s.show_details -%}
+        <div role="tabpanel" id="Panel-{{ uid }}-details" aria-labelledby="Tab-{{ uid }}-details" class="ptabs__panel" tabindex="0"{% unless first %} hidden{% endunless %}>
+          <div class="ptabs__split">
+            <div>{% render 'product-details-table', product: product, concentration: concentration, size_text: size_text, current_variant: product.selected_or_first_available_variant, show_sku: false %}</div>
+            <div>
+              {%- if mf.manufacturer_info != blank -%}<div class="ptabs__block"><h3 class="label">{{ 'products.product.manufacturer' | t }}</h3><div class="rte">{% render 'metafield-text', field: mf.manufacturer_info %}</div></div>{%- endif -%}
+              {%- if mf.ingredients != blank -%}<div class="ptabs__block"><h3 class="label">{{ 'products.product.tabs.ingredients' | t }}</h3><div class="rte small">{% render 'metafield-text', field: mf.ingredients %}</div></div>{%- endif -%}
+            </div>
+          </div>
+        </div>
+        {%- assign first = false -%}
+      {%- endif -%}
+
+      {%- if s.show_how and how_to != blank -%}
+        <div role="tabpanel" id="Panel-{{ uid }}-how" aria-labelledby="Tab-{{ uid }}-how" class="ptabs__panel" tabindex="0"{% unless first %} hidden{% endunless %}>
+          <div class="rte ptabs__text">{{ how_to }}</div>
+        </div>
+        {%- assign first = false -%}
+      {%- endif -%}
+
+      {%- if s.show_delivery and delivery_html != blank or s.show_delivery and settings.returns_details != blank -%}
+        <div role="tabpanel" id="Panel-{{ uid }}-delivery" aria-labelledby="Tab-{{ uid }}-delivery" class="ptabs__panel" tabindex="0"{% unless first %} hidden{% endunless %}>
+          <div class="ptabs__cols">
+            {%- if delivery_html != blank -%}
+              <div class="ptabs__col">
+                <span class="delivery-info__icon">{% render 'icon', name: 'truck' %}</span>
+                <h3 class="ptabs__col-title">{{ 'products.delivery.title' | t }}</h3>
+                <div class="rte">{{ delivery_html }}</div>
+                {%- if shop.shipping_policy.body != blank -%}<a href="{{ shop.shipping_policy.url }}" class="link-underline small">{{ shop.shipping_policy.title | default: sp_fallback | escape }}</a>{%- endif -%}
+              </div>
+            {%- endif -%}
+            {%- if settings.returns_details != blank -%}
+              <div class="ptabs__col">
+                <span class="delivery-info__icon">{% render 'icon', name: 'return' %}</span>
+                <h3 class="ptabs__col-title">{{ 'products.delivery.returns' | t }}</h3>
+                <div class="rte">{{ settings.returns_details }}</div>
+                {%- if shop.refund_policy.body != blank -%}<a href="{{ shop.refund_policy.url }}" class="link-underline small">{{ shop.refund_policy.title | default: rp_fallback | escape }}</a>{%- endif -%}
+              </div>
+            {%- endif -%}
+            {%- if settings.protection_details != blank -%}
+              <div class="ptabs__col">
+                <span class="delivery-info__icon">{% render 'icon', name: 'shield' %}</span>
+                <h3 class="ptabs__col-title">{{ 'products.delivery.protection' | t }}</h3>
+                <div class="rte">{{ settings.protection_details }}</div>
+              </div>
+            {%- endif -%}
+          </div>
+          {%- if settings.delivery_page != blank -%}<p class="ptabs__more"><a href="{{ settings.delivery_page.url }}" class="link-arrow"><span>{{ 'products.product.delivery_link' | t }}</span>{% render 'icon', name: 'arrow-right' %}</a></p>{%- endif -%}
+        </div>
+        {%- assign first = false -%}
+      {%- endif -%}
+
+      {%- if s.show_faqs and faq_html != blank -%}
+        <div role="tabpanel" id="Panel-{{ uid }}-faqs" aria-labelledby="Tab-{{ uid }}-faqs" class="ptabs__panel" tabindex="0"{% unless first %} hidden{% endunless %}>
+          <div class="rte ptabs__text ptabs__faqs">{{ faq_html }}</div>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product tabs",
+  "class": "section-product-tabs",
+  "settings": [
+    { "type": "paragraph", "content": "Tabs appear only when they have content. Product-specific text comes from the product description and custom metafields; delivery and returns from Theme settings › Trust and delivery." },
+    { "type": "checkbox", "id": "show_description", "label": "Description", "default": true },
+    { "type": "checkbox", "id": "show_notes", "label": "Fragrance notes", "default": true },
+    { "type": "text", "id": "top_hint", "label": "Top notes description", "default": "The opening impression" },
+    { "type": "text", "id": "heart_hint", "label": "Heart notes description", "default": "The character of the fragrance" },
+    { "type": "text", "id": "base_hint", "label": "Base notes description", "default": "The lasting foundation" },
+    { "type": "checkbox", "id": "show_details", "label": "Fragrance details", "default": true },
+    { "type": "checkbox", "id": "show_how", "label": "How to wear", "default": true },
+    { "type": "richtext", "id": "how_to_wear", "label": "How to wear (default)", "info": "Used when a product has no custom.how_to_wear metafield.", "default": "<p>Apply to pulse points, such as the inner wrists, the base of the throat and behind the ears, where warmth helps a fragrance develop. Spray from about 15 cm and let it settle without rubbing.</p>" },
+    { "type": "checkbox", "id": "show_delivery", "label": "Delivery and returns", "default": true },
+    { "type": "checkbox", "id": "show_faqs", "label": "FAQs", "default": true },
+    { "type": "richtext", "id": "faq_content", "label": "FAQs (default)", "info": "Shown unless a product has a custom.faqs metafield.", "default": "<p><strong>Are your fragrances genuine?</strong><br>Yes. Every fragrance we sell is a genuine designer product.</p><p><strong>How should I store my fragrance?</strong><br>Keep it in its box, away from direct sunlight and heat, to help preserve the scent.</p>" },
+    { "type": "select", "id": "background", "label": "Background", "options": [ { "value": "white", "label": "White" }, { "value": "ivory", "label": "Ivory" } ], "default": "white" },
+    { "type": "range", "id": "padding_top", "label": "Space above", "min": 0, "max": 10, "step": 1, "unit": "rem", "default": 3 },
+    { "type": "range", "id": "padding_bottom", "label": "Space below", "min": 0, "max": 10, "step": 1, "unit": "rem", "default": 6 }
+  ],
+  "presets": [ { "name": "Product tabs" } ]
+}
+{% endschema %}

@@ -2,7 +2,7 @@
   {
     "name": "theme_info",
     "theme_name": "Valoria London",
-    "theme_version": "4.1.0",
+    "theme_version": "4.2.0",
     "theme_author": "Valoria London",
     "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
     "theme_support_url": "https://help.shopify.com/manual/online-store/themes"
@@ -373,6 +373,32 @@
         "id": "card_badge_label",
         "label": "Label badge text",
         "default": "Bestseller"
+      },
+      {
+        "type": "select",
+        "id": "card_sale_badge",
+        "label": "Sale badge on product cards",
+        "options": [
+          {
+            "value": "percent",
+            "label": "Percentage, for example −30%"
+          },
+          {
+            "value": "text",
+            "label": "The word Sale"
+          }
+        ],
+        "default": "percent"
+      },
+      {
+        "type": "header",
+        "content": "Wishlist"
+      },
+      {
+        "type": "page",
+        "id": "wishlist_page",
+        "label": "Wishlist page",
+        "info": "Create a page called Wishlist using the 'wishlist' template, then choose it here. Adds a heart to the header and product pages. Saved items stay in the shopper's browser."
       }
     ]
   },
@@ -968,6 +994,92 @@
         "id": "protection_details",
         "label": "Shopping with confidence",
         "default": "<p>Every fragrance we sell is a genuine designer product. Checkout is secured by Shopify, and our team is here to help before and after you buy.</p>"
+      },
+      {
+        "type": "header",
+        "content": "Delivery timeline (product page)"
+      },
+      {
+        "type": "paragraph",
+        "content": "Shows Ordered → Dispatched → Delivered with estimated dates, worked out in the shopper's browser from the numbers below. Weekends and the dates you list are skipped. The numbers are examples: set your real ones."
+      },
+      {
+        "type": "checkbox",
+        "id": "timeline_enabled",
+        "label": "Show delivery timeline",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "timeline_cutoff",
+        "label": "Same-day dispatch cut-off",
+        "info": "Orders after this hour count from the next working day.",
+        "min": 0,
+        "max": 23,
+        "step": 1,
+        "unit": "h",
+        "default": 14
+      },
+      {
+        "type": "range",
+        "id": "timeline_dispatch_min",
+        "label": "Dispatch: earliest (working days)",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "timeline_dispatch_max",
+        "label": "Dispatch: latest (working days)",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "default": 1
+      },
+      {
+        "type": "range",
+        "id": "timeline_transit_min",
+        "label": "Delivery after dispatch: earliest (working days)",
+        "min": 1,
+        "max": 15,
+        "step": 1,
+        "default": 2
+      },
+      {
+        "type": "range",
+        "id": "timeline_transit_max",
+        "label": "Delivery after dispatch: latest (working days)",
+        "min": 1,
+        "max": 15,
+        "step": 1,
+        "default": 4
+      },
+      {
+        "type": "textarea",
+        "id": "timeline_closed",
+        "label": "Days you don't dispatch or deliver",
+        "info": "Dates as YYYY-MM-DD, separated by commas, for example UK bank holidays.",
+        "default": "2026-12-25, 2026-12-26, 2026-12-28, 2027-01-01, 2027-03-26, 2027-03-29, 2027-05-03, 2027-05-31, 2027-08-30, 2027-12-27, 2027-12-28"
+      },
+      {
+        "type": "text",
+        "id": "timeline_label_1",
+        "label": "Step 1 label",
+        "default": "Ordered"
+      },
+      {
+        "type": "text",
+        "id": "timeline_label_2",
+        "label": "Step 2 label",
+        "default": "Dispatched"
+      },
+      {
+        "type": "text",
+        "id": "timeline_label_3",
+        "label": "Step 3 label",
+        "default": "Delivered"
       }
     ]
   },

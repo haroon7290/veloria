@@ -1,0 +1,7 @@
+{%- comment -%} One wishlist card (Section Rendering API): the product card plus a remove heart. {%- endcomment -%}
+{%- if product -%}
+  <div class="wishlist-card" data-wishlist-card>
+    {% render 'product-card', card_product: product, index: 1, hide_quick_add: true, sizes: '(min-width: 990px) 25vw, 50vw' %}
+    {% render 'wishlist-button', product: product %}
+  </div>
+{%- endif -%}

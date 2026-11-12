@@ -47,6 +47,11 @@
     assign on_sale = true
   endif
   assign first_variant = card_product.selected_or_first_available_variant
+  assign sale_pct = 0
+  if on_sale and settings.card_sale_badge == 'percent' and first_variant.compare_at_price > first_variant.price
+    assign sale_diff = first_variant.compare_at_price | minus: first_variant.price
+    assign sale_pct = sale_diff | times: 100.0 | divided_by: first_variant.compare_at_price | round
+  endif
   assign label_badge = badge_text
   if label_badge == blank and settings.card_badge_tag != blank and settings.card_badge_label != blank
     assign badge_tag = settings.card_badge_tag | strip | downcase
@@ -92,7 +97,11 @@
       {%- if card_product.available == false -%}
         <span class="badge badge--muted">{{ 'products.product.sold_out' | t }}</span>
       {%- elsif on_sale -%}
-        <span class="badge badge--sale">{{ 'products.product.on_sale' | t }}</span>
+        {%- if sale_pct > 0 -%}
+          <span class="badge badge--sale badge--pct"><span aria-hidden="true">−{{ sale_pct }}%</span><span class="visually-hidden">{{ 'products.product.save_percent' | t: percent: sale_pct }}</span></span>
+        {%- else -%}
+          <span class="badge badge--sale">{{ 'products.product.on_sale' | t }}</span>
+        {%- endif -%}
       {%- endif -%}
       {%- if label_badge != blank and card_product.available -%}
         <span class="badge badge--label">{{ label_badge | escape }}</span>
